@@ -27,18 +27,18 @@ public class OrderFoodVO implements Serializable{
 	private Integer orderFoodId;
 	
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "order_id", referencedColumnName = "order_id")
+	@JoinColumn(name = "order_id", nullable=false)
 	private OrderVO order;
 	
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "food_id", referencedColumnName = "food_id")
+	@JoinColumn(name = "food_id", nullable=false)
 	private FoodVO food;
 	
-	@Column(name="food_price")
+	@Column(name="food_price", nullable=false)
 	private BigDecimal foodPrice;
 	
-	@Column(name="food_quantity")
+	@Column(name="food_quantity", nullable=false)
 	private Integer foodQuantity;
 
 	public Integer getOrderFoodId() {

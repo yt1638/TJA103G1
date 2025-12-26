@@ -28,17 +28,17 @@ public class OrderTicketVO implements Serializable{
 	private Integer orderTicketId;
 	
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "order_id", referencedColumnName = "order_id")
+	@JoinColumn(name = "order_id", nullable=false)
 	private OrderVO order;
 	
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "seat_id", referencedColumnName = "seat_id")
+	@JoinColumn(name = "seat_id", nullable=false)
 	private SeatVO seat;
 
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "ticket_type_id", referencedColumnName = "ticket_type_id")
+	@JoinColumn(name = "ticket_type_id", nullable=false)
 	private TicketTypeVO ticketType;
 	
 	@Column(name="ticket_price")
