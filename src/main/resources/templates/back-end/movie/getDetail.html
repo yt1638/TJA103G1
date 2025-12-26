@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="'電影詳細資訊 - ' + ${movieVO.nameTw}">電影詳細資訊</title>
+    
+    <style>
+        /* ---------------------------------------------------- */
+        /* III. 新增/編輯 & 詳細資訊頁面 (addPage/detail) 樣式  */
+        /* ---------------------------------------------------- */
+        body {
+            font-family: Arial, "微軟正黑體", sans-serif;
+            background-color: #f4f4f9;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .movie-form-container {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 1200px;
+            margin-top: 10px;
+        }
+
+        .form-title {
+            color: #333;
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 1.8rem;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        label {
+            font-weight: bold;
+            color: #555;
+            width: 90px; 
+            flex-shrink: 0;
+            padding-right: 10px;
+            text-align: right;
+            font-size: 0.9rem; 
+            padding-top: 5px;
+        }
+        
+        .content-display {
+            flex-grow: 1;
+            padding: 5px 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            background-color: #f9f9f9;
+            color: #333;
+            min-height: 38px;
+            box-sizing: border-box;
+            line-height: 1.5;
+            white-space: pre-wrap; 
+        }
+
+        .content-display.medium-text {
+            min-height: 80px; 
+        }
+
+        .content-display.large-text {
+            min-height: 150px;
+        }
+
+        .image-display-area {
+            width: 100%;
+            height: 400px;
+            margin-bottom: 30px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #e9e9e9;
+            overflow: hidden;
+        }
+        
+        .movie-poster {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .left-fields-group .form-group label {
+            width: 80px; 
+            font-size: 1rem;
+        }
+        
+        .status-and-action {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-top: 20px;
+        }
+
+        .status-display {
+            width: 40%; 
+        }
+        
+        .status-display .content-display {
+             width: 150px;
+        }
+
+        .edit-button {
+            padding: 12px 30px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+            text-decoration: none; 
+            display: inline-block;
+        }
+
+        .edit-button:hover {
+            background-color: #0056b3;
+        }
+        
+        @media (max-width: 900px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            .form-group label {
+                width: 100px;
+                text-align: left;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="movie-form-container">
+        <h2 class="form-title">電影詳細資訊</h2>
+        <h3><a th:href="@{/movie/}">回電影總覽</a></h3>
+        
+        <div class="form-grid">
+            
+            <div class="form-left">
+                <div class="image-display-area">
+                    <div class="poster">
+                        <img th:if="${movieVO.image != null}"
+                             th:src="@{/movie/imageReader(movieId=${movieVO.movieId})}"
+                             class="movie-poster">
+                        <span th:if="${movieVO.image == null}">無海報</span>
+                    </div>
+                </div>
+                
+                <div class="left-fields-group">
+                    <div class="form-group">
+                        <label>片長</label>
+                        <div class="content-display" th:text="${movieVO.duration != null ? movieVO.duration + ' 分鐘' : 'N/A'}"></div>
+                    </div>
+                    <div class="form-group">
+                        <label>出品國</label>
+                        <div class="content-display" th:text="${movieVO.produceCountry ?: 'N/A'}"></div>
+                    </div>
+                    <div class="form-group">
+                        <label>發行商</label>
+                        <div class="content-display" th:text="${movieVO.publisher ?: 'N/A'}"></div>
+                    </div>
+                    <div class="form-group">
+                        <label>電影年份</label>
+                        <div class="content-display" th:text="${movieVO.produceYear ?: 'N/A'}"></div>
+                    </div>
+                    <div class="form-group">
+                        <label>導演</label>
+                        <div class="content-display" th:text="${movieVO.director ?: 'N/A'}"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>編劇</label>
+                        <div class="content-display medium-text" th:text="${movieVO.writer ?: 'N/A'}"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-right">
+                
+                <div class="form-group">
+                    <label>電影名稱(中)</label>
+                    <div class="content-display" th:text="${movieVO.nameTw ?: 'N/A'}"></div>
+                </div>
+                <div class="form-group">
+                    <label>電影名稱(英)</label>
+                    <div class="content-display" th:text="${movieVO.nameEng ?: 'N/A'}"></div>
+                </div>
+                <div class="form-group">
+                    <label>上映日期</label>
+                    <div class="content-display" th:text="${movieVO.releaseDate}"></div>
+                </div>
+                <div class="form-group">
+                    <label>下檔日期</label>
+                    <div class="content-display" th:text="${movieVO.endDate}"></div>
+                </div>
+                
+
+                <div class="form-group">
+                    <label>分級</label>
+                    <div class="content-display" th:text="${movieVO.rating ?: 'N/A'}"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label>演員</label>
+                    <div class="content-display medium-text" th:text="${movieVO.actor != null ? #strings.replace(movieVO.actor, ',', ', ') : 'N/A'}"></div>
+                </div>
+
+                <div class="form-group">
+                    <label>分類</label>
+                    <div class="content-display">
+                        <span th:if="${#lists.isEmpty(movieVO.eachMovieTypes)}">N/A</span>
+                        <th:block th:each="emt, s : ${movieVO.eachMovieTypes}">
+                            <span th:text="${emt.movieType.typeName}"></span>
+                            <span th:if="${!s.last}"> </span>
+                        </th:block>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>預告片連結</label>
+                    <div class="content-display">
+                        <a th:if="${movieVO.trailer != null && !#strings.isEmpty(movieVO.trailer)}" 
+                           th:href="${movieVO.trailer}" target="_blank">點擊觀看預告片</a>
+                        <span th:unless="${movieVO.trailer != null && !#strings.isEmpty(movieVO.trailer)}">N/A</span>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>電影簡介</label>
+                    <div class="content-display large-text" th:text="${movieVO.introduction ?: 'N/A'}"></div>
+                </div>
+                
+                <div class="status-and-action">
+                    <div class="form-group status-display">
+                        <label>狀態</label>
+                        <div class="content-display">
+                            <span th:switch="${movieVO.status}">
+                                <span th:case="1">上映中</span>
+                                <span th:case="2">即將上映</span>
+                                <span th:case="3">已下映</span>
+                                <span th:case="*">未設定</span>
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <form th:action="@{/movie/getOne_For_Update}" method="get" style="margin: 0;">
+                        <input type="hidden" name="movieId" th:value="${movieVO.movieId}">
+                        <button type="submit" class="edit-button">編輯</button>
+                    </form>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</body>
+</html>
