@@ -3,6 +3,7 @@ package com.showise.memberprefertype.model;
 import java.io.Serializable;
 
 import com.showise.member.model.MemberVO;
+import com.showise.movietype.model.MovieTypeVO;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -28,9 +29,9 @@ public class MemberPreferTypeVO implements Serializable{
 	
 //	關聯
 //	電影編號
-//	@ManyToOne
-//	@JoinColumn(name = "movie_type_id", referencedColumnName = "movie_type_id")
-//	private MovieTypeVO movieType;
+	@ManyToOne
+	@JoinColumn(name = "movie_type_id", referencedColumnName = "movie_type_id")
+	private MovieTypeVO movieType;
 	
 	
 //	會員編號
@@ -39,44 +40,34 @@ public class MemberPreferTypeVO implements Serializable{
 	private MemberVO member;
 	
 	
+	
 	public MemberPreferTypeVO() {
 		super();
 	}
 
-
-	
 	public Integer getMemberPreferTypeId() {
 		return memberPreferTypeId;
 	}
-
 
 	public void setMemberPreferTypeId(Integer memberPreferTypeId) {
 		this.memberPreferTypeId = memberPreferTypeId;
 	}
 
+	public MovieTypeVO getMovieType() {
+		return movieType;
+	}
 
-//	public MovieType getMovieType() {
-//		return movieType;
-//	}
-//
-//
-//	public void setMovieType(MovieType movieType) {
-//		this.movieType = movieType;
-//	}
-
+	public void setMovieType(MovieTypeVO movieType) {
+		this.movieType = movieType;
+	}
 
 	public MemberVO getMember() {
 		return member;
 	}
 
-
 	public void setMember(MemberVO member) {
 		this.member = member;
 	}
 
-	
-
-	
-	
 	
 }
