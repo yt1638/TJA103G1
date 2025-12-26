@@ -79,7 +79,6 @@ public class NotificationShowstartController {
     public String delete(@RequestParam("notiShowstNo") Integer notiShowstNo,
                          ModelMap model) {
 
-    	notificationShowstartSvc.deleteNotificationShowstart(notiShowstNo);
 
         model.addAttribute("success", "- (刪除成功)");
         return "redirect:/notification_showstart/listAllNotificationShowstart";

@@ -32,20 +32,16 @@ public class NotificationShowstartVO implements Serializable {
     private Integer notiShowstNo;
 
     /** 多對一：每筆通知對應一個會員 */
-    @Column(name = "member_id")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     @NotNull(message = "會員編號: 請勿空白")
-//    private Integer memberId;
-    private MemberVO member;
+    private MemberVO memberId;
 
     /** 多對一：每筆通知對應一個場次 */
-    @Column(name = "session_id")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "session_id", nullable = false)
     @NotNull(message = "場次: 請勿空白")
-//    private Integer sessionId;
-    private SessionVO session;
+    private SessionVO sessionId;
 
     @NotBlank(message = "通知內容: 請勿空白")
     @Column(name = "noti_ShowstSCON", nullable = false)
@@ -60,8 +56,6 @@ public class NotificationShowstartVO implements Serializable {
     @NotNull(message = "通知狀態: 請勿空白")
     @Column(name = "noti_showstSTAT", nullable = false)
     private Short notiShowstStat;
-
-    public NotificationShowstartVO() {}
 
     public Integer getNotiShowstNo() {
         return notiShowstNo;
@@ -86,17 +80,17 @@ public class NotificationShowstartVO implements Serializable {
 //        this.sessionId = memberId;
 //    }
     public MemberVO getMember() {
-        return member;
+        return memberId;
     }
     public void setMember(MemberVO member) {
-        this.member = member;
+        this.memberId = member;
     }
 
     public SessionVO getSession() {
-        return session;
+        return sessionId;
     }
     public void setSession(SessionVO session) {
-        this.session = session;
+        this.sessionId = session;
     }
 
     public String getNotiShowstScon() {

@@ -79,15 +79,7 @@ public class NotificationPreferenceController {
     }
 
     /** 刪除 */
-    @PostMapping("/delete")
-    public String delete(@RequestParam("notiPrefNo") Integer notiPrefNo,
-                         ModelMap model) {
 
-        notificationPreferenceSvc.deleteNotificationPreference(notiPrefNo);
-
-        model.addAttribute("success", "- (刪除成功)");
-        return "redirect:/notification_preference/listAllNotificationPreference";
-    }
 
     /** 列出全部 */
     @GetMapping("/listAllNotificationPreference")

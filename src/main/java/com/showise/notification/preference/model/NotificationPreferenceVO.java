@@ -32,19 +32,15 @@ public class NotificationPreferenceVO implements Serializable {
     private Integer notiPrefNo;
 
     /** 多對一：每筆通知偏好對應一部電影 */
-    @Column(name = "movie_id")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "movie_id", nullable = false)
     @NotNull(message = "電影編號: 請勿空白")
-//    private Integer movieId;
     private MovieVO movie;
 
     /** 多對一：每筆通知偏好對應一個會員 */
-    @Column(name = "member_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", nullable = false)
+    @JoinColumn(name = "member_id", referencedColumnName = "member_id")
     @NotNull(message = "會員編號: 請勿空白")
-//    private Integer memberId;
     private MemberVO member;
 
     @NotBlank(message = "通知內容: 請勿空白")

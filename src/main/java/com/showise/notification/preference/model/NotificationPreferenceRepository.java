@@ -9,10 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 public interface NotificationPreferenceRepository extends JpaRepository<NotificationPreferenceVO, Integer> {
 
-    @Transactional
-    @Modifying
-    @Query(value = "delete from notification_preference where noti_PrefNO = ?1", nativeQuery = true)
-    void deleteBynotiPrefNo(int notiPrefNo);
 
     // 自訂條件查詢（JPQL：用 Entity 屬性名）
     @Query("from NotificationPreferenceVO where notiPrefNo = ?1 and movieId = ?2 and memberId = ?3 order by notiPrefNo")
