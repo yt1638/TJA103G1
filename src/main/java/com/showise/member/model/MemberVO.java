@@ -7,6 +7,9 @@ import java.util.Set;
 
 import com.showise.memberclass.model.MemberClassVO;
 import com.showise.memberprefertype.model.MemberPreferTypeVO;
+import com.showise.notification.preference.model.NotificationPreferenceVO;
+import com.showise.notification.showstart.model.NotificationShowstartVO;
+import com.showise.order.model.OrderVO;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -92,29 +95,27 @@ public class MemberVO implements Serializable{
 
 	
 //	訂單
-//	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-//	@OrderBy("orderId asc")	
-//	private Set<OrderVO> order;
+	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+	@OrderBy("orderId asc")	
+	private Set<OrderVO> order;
 
 	
 //	喜好通知
-//	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-//	@OrderBy("notiPreferenceId asc")		
-//	private Set<NotiPreference> notiPreference;
+	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+	@OrderBy("notiPrefNo asc")		
+	private Set<NotificationPreferenceVO> notiPref;
 
 	
 // 	開演前通知
-//	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-//	@OrderBy("notiShowStartId asc")	
-//	private Set<NotiShowStart> notiShowStart;
+	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+	@OrderBy("notiShowstNo asc")	
+	private Set<NotificationShowstartVO> notiShowst;
 	
 	
 	public MemberVO() {
 		super();
 	}
 
-	
-	
 	public Integer getMemberId() {
 		return memberId;
 	}
@@ -147,6 +148,7 @@ public class MemberVO implements Serializable{
 		this.password = password;
 	}
 
+	
 	public String getName() {
 		return name;
 	}
@@ -163,6 +165,7 @@ public class MemberVO implements Serializable{
 		this.phone = phone;
 	}
 
+	
 	public Date getBirthdate() {
 		return birthdate;
 	}
@@ -179,6 +182,7 @@ public class MemberVO implements Serializable{
 		this.status = status;
 	}
 
+	
 	public Timestamp getCreateTime() {
 		return createTime;
 	}
@@ -195,55 +199,38 @@ public class MemberVO implements Serializable{
 		this.accConsumption = accConsumption;
 	}
 
-
-
 	public Set<MemberPreferTypeVO> getMemberPreferType() {
 		return memberPreferType;
 	}
-
-
 
 	public void setMemberPreferType(Set<MemberPreferTypeVO> memberPreferType) {
 		this.memberPreferType = memberPreferType;
 	}
 
+	
+	public Set<NotificationPreferenceVO> getNotiPref() {
+		return notiPref;
+	}
 
+	public void setNotiPref(Set<NotificationPreferenceVO> notiPref) {
+		this.notiPref = notiPref;
+	}
 
-//	public Set<OrderVO> getOrder() {
-//		return order;
-//	}
-//
-//
-//
-//	public void setOrderVO(Set<OrderVO> order) {
-//		this.orderVO = order;
-//	}
-//
-//
-//
-//	public Set<NotiPreference> getNotiPreference() {
-//		return notiPreference;
-//	}
-//
-//
-//
-//	public void setNotiPreference(Set<NotiPreference> notiPreference) {
-//		this.notiPreference = notiPreference;
-//	}
-//
-//
-//
-//	public Set<NotiShowStart> getNotiShowStart() {
-//		return notiShowStart;
-//	}
-//
-//
-//
-//	public void setNotiShowStart(Set<NotiShowStart> notiShowStart) {
-//		this.notiShowStart = notiShowStart;
-//	}
-//	
+	public Set<NotificationShowstartVO> getNotiShowst() {
+		return notiShowst;
+	}
 
+	public void setNotiShowst(Set<NotificationShowstartVO> notiShowst) {
+		this.notiShowst = notiShowst;
+	}
+
+	public Set<OrderVO> getOrder() {
+		return order;
+	}
+
+	public void setOrder(Set<OrderVO> order) {
+		this.order = order;
+	}
 	
 }
 
