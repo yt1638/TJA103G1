@@ -3,6 +3,7 @@ package com.showise.orderfood.model;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+import com.showise.food.model.FoodVO;
 import com.showise.order.model.OrderVO;
 
 import jakarta.persistence.Column;
@@ -30,9 +31,9 @@ public class OrderFoodVO implements Serializable{
 	private OrderVO order;
 	
 
-//	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-//	@JoinColumn(name = "food_id", referencedColumnName = "food_id")
-//	private FoodVO food;
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@JoinColumn(name = "food_id", referencedColumnName = "food_id")
+	private FoodVO food;
 	
 	@Column(name="food_price")
 	private BigDecimal foodPrice;
@@ -56,13 +57,13 @@ public class OrderFoodVO implements Serializable{
 		this.order = order;
 	}
 
-//	public FoodVO getFood() {
-//		return food;
-//	}
-//
-//	public void setFood(FoodVO food) {
-//		this.food = food;
-//	}
+	public FoodVO getFood() {
+		return food;
+	}
+
+	public void setFood(FoodVO food) {
+		this.food = food;
+	}
 
 	public BigDecimal getFoodPrice() {
 		return foodPrice;
@@ -80,6 +81,4 @@ public class OrderFoodVO implements Serializable{
 		this.foodQuantity = foodQuantity;
 	}
 
-	
-	
 }
