@@ -5,6 +5,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import com.showise.foodcategory.model.FoodCategoryVO;
+import com.showise.orderfood.model.OrderFoodVO;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -33,8 +34,8 @@ public class FoodVO implements Serializable{
 	@ManyToOne
 	@JoinColumn(name ="food_category_id",referencedColumnName="food_category_id",nullable = false)
 	private FoodCategoryVO foodCate;
-//	@OneToMany(mappedBy = "food",cascade = CascadeType.ALL)
-//	private Set<OrderFoodVO> set;
+	@OneToMany(mappedBy = "food",cascade = CascadeType.ALL)
+	private Set<OrderFoodVO> set;
 	
 	
 	@NotEmpty(message = "餐飲名稱請勿空白")

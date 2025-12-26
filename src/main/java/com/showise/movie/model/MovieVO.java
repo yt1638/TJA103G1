@@ -11,6 +11,8 @@ import java.util.Set;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.showise.eachmovietype.model.EachMovieTypeVO;
+import com.showise.notification.preference.model.NotificationPreferenceVO;
+import com.showise.notification.showstart.model.NotificationShowstartVO;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -108,6 +110,12 @@ public class MovieVO implements Serializable{
     
     @OneToMany(mappedBy = "movie",cascade = CascadeType.ALL,orphanRemoval = true)
     private Set<EachMovieTypeVO> eachMovieTypes;
+    
+    @OneToMany(mappedBy = "movie",cascade = CascadeType.ALL)
+    private Set<NotificationPreferenceVO> notiPSet;
+    
+    @OneToMany(mappedBy = "movie",cascade = CascadeType.ALL)
+    private Set<NotificationShowstartVO> notiSSet;
     
     public Set<EachMovieTypeVO> getEachMovieTypes() {
     	return eachMovieTypes;
