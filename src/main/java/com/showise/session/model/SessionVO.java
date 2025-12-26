@@ -7,6 +7,8 @@ import java.util.Set;
 
 import com.showise.cinema.model.CinemaVO;
 import com.showise.movie.model.MovieVO;
+import com.showise.notification.showstart.model.NotificationShowstartVO;
+import com.showise.order.model.OrderVO;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -44,8 +46,11 @@ public class SessionVO implements Serializable{
 	@ManyToOne
 	@JoinColumn (name = "cinema_id" , referencedColumnName = "cinema_id")
 	private CinemaVO cinema;
-//	@OneToMany (mappedBy = "session",cascade = CascadeType.ALL)
-//	private Set<OrderVO> set;
+	@OneToMany (mappedBy = "session",cascade = CascadeType.ALL)
+	private Set<OrderVO> orderSet;
+	@OneToMany (mappedBy = "session",cascade = CascadeType.ALL)
+	private Set<NotificationShowstartVO> notiSet;
+	
 	
 	
 	public Integer getSessionId() {
