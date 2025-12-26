@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
+import com.showise.member.model.MemberVO;
+import com.showise.session.model.SessionVO;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -23,13 +26,13 @@ public class OrderVO implements Serializable {
     @Column(name = "order_id")
     private Integer orderId;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "session_id", nullable = false)
-//    private SessionVO session;
-//
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "member_id", nullable = false)
-//    private MemberVO member;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "session_id", nullable = false)
+    private SessionVO session;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id", nullable = false)
+    private MemberVO member;
 
     @Column(name = "total_price", nullable = false)
     private BigDecimal totalPrice;
@@ -48,21 +51,21 @@ public class OrderVO implements Serializable {
 		this.orderId = orderId;
 	}
 
-//	public SessionVO getSession() {
-//		return session;
-//	}
-//
-//	public void setSession(SessionVO session) {
-//		this.session = session;
-//	}
-//
-//	public MemberVO getMember() {
-//		return member;
-//	}
-//
-//	public void setMember(MemberVO member) {
-//		this.member = member;
-//	}
+	public SessionVO getSession() {
+		return session;
+	}
+
+	public void setSession(SessionVO session) {
+		this.session = session;
+	}
+
+	public MemberVO getMember() {
+		return member;
+	}
+
+	public void setMember(MemberVO member) {
+		this.member = member;
+	}
 
 	public BigDecimal getTotalPrice() {
 		return totalPrice;
