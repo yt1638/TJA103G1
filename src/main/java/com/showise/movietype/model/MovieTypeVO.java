@@ -5,6 +5,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import com.showise.eachmovietype.model.EachMovieTypeVO;
+import com.showise.memberprefertype.model.MemberPreferTypeVO;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -17,6 +18,7 @@ import jakarta.persistence.Table;
 @Entity
 @Table (name = "movie_type")
 public class MovieTypeVO implements Serializable{
+	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "movie_type_id",nullable=false)
@@ -41,6 +43,9 @@ public class MovieTypeVO implements Serializable{
 		MovieTypeVO other = (MovieTypeVO) obj;
 		return Objects.equals(movieTypeId, other.movieTypeId);
 	}
+	
+	@OneToMany(mappedBy = "movieType",cascade = CascadeType.ALL)
+	private Set<MemberPreferTypeVO> memSet;
 	public MovieTypeVO() {
 		super();
 		// TODO Auto-generated constructor stub

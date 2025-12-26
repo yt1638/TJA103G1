@@ -114,9 +114,6 @@ public class MovieVO implements Serializable{
     @OneToMany(mappedBy = "movie",cascade = CascadeType.ALL)
     private Set<NotificationPreferenceVO> notiPSet;
     
-    @OneToMany(mappedBy = "movie",cascade = CascadeType.ALL)
-    private Set<NotificationShowstartVO> notiSSet;
-    
     public Set<EachMovieTypeVO> getEachMovieTypes() {
     	return eachMovieTypes;
     }
