@@ -1,0 +1,156 @@
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>喜好通知管理 - select_page.html</title>
+
+<th:block th:insert="~{/back-end/notification_preference/included-fragment}"></th:block>
+<!-- <head th:insert="~{/back-end/notification_preference/included-fragment}"></head> 使用included-fragment.html網頁的全部 -->
+<style type="text/css">
+
+	button {
+		padding: 5px;
+	}
+	form {
+		display: table;
+	}
+	form div {
+		display: table-row;
+	}
+	label, input, span, select {
+		display: table-cell;
+		margin: 2px;
+		text-align: left;		
+	}
+	input[type=text], input[type=password], select, textarea {
+		width: 200px;
+		margin: 2px;
+	}
+	form div div {
+		display: table-cell;
+	}
+	.center {
+        margin-left: auto;
+        margin-right: auto;
+    }
+    span {
+		display: inline-block;
+		width: 150px;
+		text-align: left;
+		font-weight: bold;
+	}
+	div.a {
+        display: inline-block;
+        width: 50%;
+        height: auto;
+        padding: 5px;
+        border: 0px solid blue;    
+        background-color: white; 
+    }
+    div.b {
+        position: absolute; 
+        bottom: 1%; 
+        right: 2%; 
+        width: 45%;
+        padding: 5px; 
+        border: 1px solid blue;
+    }
+</style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-md navbar-dark bg-success fixed-top justify-content-center">
+		 <div align="center"> <h2>喜好通知管理 - select_page.html</h2>
+		 <h3><a class="navbar-brand" th:href="@{/}"><img th:src="@{/images/back1.gif}">回index.html</a></h3></div>
+</nav>
+
+	<h4><span>資料查詢:</span></h4>
+	<!-- 錯誤表列 -->
+	<div class="errorblock" th:utext="${errorMessage}">${errorMessage}</div><br>
+	<div class="a">
+	  <ul>
+		<li><h5><a href='listAllNotificationPreference'>List</a> all NotificationPreferences. <br><br></h5></li>
+
+		<li>
+			<form method="post" th:action="@{getOne_For_Display}">
+				輸入喜好通知編號:
+				<input type="text" name="notiPrefNo" th:value="${param.notiPrefNo}" > 
+				<input type="submit" value="送出"> (輸入如1)
+			</form><br>
+		</li>
+
+		
+		
+		
+		<li><form method="post" th:action="@{getOne_For_Display}">
+				選擇喜好通知編號:
+				<select name="notiPrefNo">
+				     <option th:each="notificationPreferenceVO : ${notificationPreferenceListData}" th:value="${notificationPreferenceVO.notiPrefNo}" th:text="${notificationPreferenceVO.notiPrefNo}" />
+			    </select>
+				<input type="submit" value="送出">
+			</form><br>
+		</li>
+
+		
+		
+		
+		<li><form method="post" th:action="@{getOne_For_Display}">
+				選擇電影編號:
+				<select name="notiPrefNo">
+				     <option th:each="notificationPreferenceVO : ${notificationPreferenceListData}" th:value="${notificationPreferenceVO.notiPrefNo}" th:text="${notificationPreferenceVO.movieId}" />
+			    </select>
+				<input type="submit" value="送出">
+			</form><br>
+		</li>
+		
+		
+		
+		
+<!--  複合查詢-以下欄位-可隨意增減 -->
+  
+  <li>   
+    <form method="post" th:action="@{listNotificationPreferences_ByCompositeQuery}">
+        <font color=blue>複合查詢:</font><br>
+        輸入通知編號: 
+        <input type="text" name="notiPrefNo" value="1"><br>
+           
+        輸入電影編號: 
+        <input type="text" name="movieId" value="1"><br>
+       
+        輸入會員編號: 
+        <input type="text" name="memberId" value="1"><br>
+               
+        
+        發送日期:
+	    <input name="notiPrefStime" type="date">
+	    
+        <input type="submit" value="送出">
+     
+     </form>
+  </li>
+</ul>	
+	
+      <h4><span>喜好通知管理</span></h4>
+	  <ul>
+		  <li><h5><a th:href="@{/notification_preference/addNotificationPreference}">Add</a> a new NotificationPreference.</h5></li>
+	  </ul>
+	</div>
+    
+    <!-- 旗標notificationPreferenceVO見EmpnoController.java的第73行 -->
+    <div class="b" th:if="${notificationPreferenceVO!=null}">
+        <!--使用listOneEmp.html網頁的listOneEmp-div片段--> <!-- 見listOneEmp.html的第35行的th:fragment="listOneEmp-div" --> <!-- 使用th:replace也可 -->
+        <div th:insert="~{/back-end/notification_preference/listOneNotificationPreference :: listOneNotificationPreference-div}"></div>
+    </div>
+
+</body>
+</html>
