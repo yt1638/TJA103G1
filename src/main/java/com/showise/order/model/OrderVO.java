@@ -90,9 +90,4 @@ public class OrderVO implements Serializable {
 	public void setOrderCreateTime(Timestamp orderCreateTime) {
 		this.orderCreateTime = orderCreateTime;
 	}
-    
-    
-
-
-
 }
