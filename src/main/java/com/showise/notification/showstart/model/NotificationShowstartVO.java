@@ -5,11 +5,17 @@ import java.sql.Date;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.showise.member.model.MemberVO;
+import com.showise.session.model.SessionVO;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
@@ -27,19 +33,19 @@ public class NotificationShowstartVO implements Serializable {
 
     /** 多對一：每筆通知對應一個會員 */
     @Column(name = "member_id")
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "member_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id", nullable = false)
     @NotNull(message = "會員編號: 請勿空白")
-    private Integer memberId;
-//    private MemberVO member;
+//    private Integer memberId;
+    private MemberVO member;
 
     /** 多對一：每筆通知對應一個場次 */
     @Column(name = "session_id")
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "session_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "session_id", nullable = false)
     @NotNull(message = "場次: 請勿空白")
-    private Integer sessionId;
-//    private SessionVO session;
+//    private Integer sessionId;
+    private SessionVO session;
 
     @NotBlank(message = "通知內容: 請勿空白")
     @Column(name = "noti_ShowstSCON", nullable = false)
@@ -64,34 +70,34 @@ public class NotificationShowstartVO implements Serializable {
         this.notiShowstNo = notiShowstNo;
     }
 
-    public Integer getmemberId() {
-        return memberId;
-    }
-
-    public void setsessionId(Integer sessionId) {
-        this.memberId = sessionId;
-    }
-    
-    public Integer getMemberId() {
-        return sessionId;
-    }
-
-    public void setMemberId(Integer memberId) {
-        this.sessionId = memberId;
-    }
-//    public MemberVO getMember() {
-//        return member;
-//    }
-//    public void setMember(MemberVO member) {
-//        this.member = member;
+//    public Integer getmemberId() {
+//        return memberId;
 //    }
 //
-//    public SessionVO getSession() {
-//        return session;
+//    public void setsessionId(Integer sessionId) {
+//        this.memberId = sessionId;
 //    }
-//    public void setSession(SessionVO session) {
-//        this.session = session;
+//    
+//    public Integer getMemberId() {
+//        return sessionId;
 //    }
+//
+//    public void setMemberId(Integer memberId) {
+//        this.sessionId = memberId;
+//    }
+    public MemberVO getMember() {
+        return member;
+    }
+    public void setMember(MemberVO member) {
+        this.member = member;
+    }
+
+    public SessionVO getSession() {
+        return session;
+    }
+    public void setSession(SessionVO session) {
+        this.session = session;
+    }
 
     public String getNotiShowstScon() {
         return notiShowstScon;
