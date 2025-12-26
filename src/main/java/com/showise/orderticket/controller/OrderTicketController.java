@@ -8,6 +8,6 @@ import com.showise.orderticket.model.OrderTicketService;
 public class OrderTicketController {
 	
 	@Autowired
-	OrderTicketService orderTcicketServce;
+	OrderTicketService orderTcicketService;
 
 }
