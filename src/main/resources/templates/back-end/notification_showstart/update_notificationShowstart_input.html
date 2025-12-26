@@ -12,9 +12,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>員工資料新增 - addNotificationPreference.html</title>
+<title>開演通知資料修改 - update_notificationShowstart_input.html</title>
 
-<head th:insert="~{/back-end/notification_preference/included-fragment}"></head>
+<head th:insert="~{/back-end/notification_showstart/included-fragment}"></head>
 <style type="text/css">
 	
 	button {
@@ -47,23 +47,17 @@
 <body>
 
 <nav class="navbar navbar-expand-md navbar-dark bg-success fixed-top justify-content-center">
-		 <div align="center"> <h2>喜好通知新增 - addNotificationPreference.html</h2>
-		 <h3><a class="navbar-brand" th:href="@{/notification_preference/select_page}"><img th:src="@{/images/back1.gif}">回查詢頁</a></h3></div>
+		 <div align="center"> <h2>開演通知資料修改 - update_notificationShowstart_input.html</h2>
+		 <h3><a class="navbar-brand" th:href="@{/notification_showstart/select_page}"><img th:src="@{/images/back1.gif}">回查詢頁</a></h3></div>
 </nav>
 
 	<div align="center">
 		<h3><b>所有欄位皆為必填欄位</b></h3>
-		<form th:action="@{/notification_preference/insert}" method="post" th:object="${notificationPreferenceVO}" enctype="multipart/form-data">
-			
-			
-			
-			
-			
-			
+		<form th:action="@{update}" method="post" th:object="${notificationShowstartVO}" enctype="multipart/form-data">
 			<div>
-			<label>電影編號:</label>
-			<input type="text" th:field="*{movieId}" onclick="hideContent('movieId.errors');" /><br/>
-			<span  th:if="${#fields.hasErrors('movieId')}" th:errors="*{movieId}" class="error" id="movieId.errors"></span>
+			<label>開演通知編號:</label>
+			<input type="text" th:field="*{notiShowstNo}" style="border:0px ; font-weight: bold;" readonly /><br/>
+
 			</div>
 			
 			<div>
@@ -73,25 +67,33 @@
 			</div>
 			
 			<div>
+			<label>場次編號:</label>
+			<input type="text" th:field="*{sessionId}" onclick="hideContent('sessionId.errors');" /><br/>
+			<span  th:if="${#fields.hasErrors('sessionId')}" th:errors="*{sessionId}" class="error" id="sessionId.errors"></span>
+			</div>
+			
+			<div>
 			<label>發送內容:</label>
-			<input type="text" th:field="*{notiPrefScon}" onclick="hideContent('notiPrefScon.errors');" /><br/>
-			<span  th:if="${#fields.hasErrors('notiPrefScon')}" th:errors="*{notiPrefScon}" class="error" id="notiPrefScon.errors"></span>
+			<input type="text" th:field="*{notiShowstScon}" onclick="hideContent('notiShowstScon.errors');" /><br/>
+			<span  th:if="${#fields.hasErrors('notiShowstScon')}" th:errors="*{notiShowstScon}" class="error" id="notiShowstScon.errors"></span>
 			</div>
 			
 			<div>
 			<label>發送日期:</label>
-			<input type="date" th:field="*{notiPrefStime}" onclick="hideContent('notiPrefStime.errors');" /><br/>
-			<span  th:if="${#fields.hasErrors('notiPrefStime')}" th:errors="*{notiPrefStime}" class="error" id="notiPrefStime.errors"></span>
+			<input type="date" th:field="*{notiShowstStime}" onclick="hideContent('notiShowstStime.errors');" /><br/>
+			<span  th:if="${#fields.hasErrors('notiShowstStime')}" th:errors="*{notiShowstStime}" class="error" id="notiShowstStime.errors"></span>
 			</div>
-
-			
 			
 			<div>
 			<label>發送狀態:</label>
-			<input type="text" th:field="*{notiPrefStat}" onclick="hideContent('notiPrefStat.errors');" /><br/>
-			<span  th:if="${#fields.hasErrors('notiPrefStat')}" th:errors="*{notiPrefStat}" class="error" id="notiPrefStat.errors"></span>
+			<input type="text" th:field="*{notiShowstStat}" onclick="hideContent('notiShowstStat.errors');" /><br/>
+			<span  th:if="${#fields.hasErrors('notiShowstStat')}" th:errors="*{notiShowstStat}" class="error" id="notiShowstStat.errors"></span>
 			</div>
-				<div><button type="submit" id="submit"> 送出新增 </button></div>
+
+			
+			<div>
+				<div></div>
+				<div><button type="submit" id="submit"> 送出修改 </button></div>
 				<div></div>
 			</div>		
 		</form>

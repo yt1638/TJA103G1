@@ -27,10 +27,6 @@ public class NotificationShowstartService {
 		repository.save(notificationShowstartVO);
 	}
 
-	public void deleteNotificationShowstart(Integer notiShowstNo) {
-		if (repository.existsById(notiShowstNo))
-			repository.deleteBynotiShowstNo(notiShowstNo);
-	}
 
 	public NotificationShowstartVO getOneNotificationShowstart(Integer notiShowstNo) {
 		Optional<NotificationShowstartVO> optional = repository.findById(notiShowstNo);

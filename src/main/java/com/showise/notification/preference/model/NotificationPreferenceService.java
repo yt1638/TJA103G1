@@ -27,10 +27,6 @@ public class NotificationPreferenceService {
 		repository.save(notificationPreferenceVO);
 	}
 
-	public void deleteNotificationPreference(Integer notiPrefNo) {
-		if (repository.existsById(notiPrefNo))
-			repository.deleteBynotiPrefNo(notiPrefNo);
-	}
 
 	public NotificationPreferenceVO getOneNotificationPreference(Integer notiPrefNo) {
 		Optional<NotificationPreferenceVO> optional = repository.findById(notiPrefNo);

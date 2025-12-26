@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 
 import com.showise.order.model.OrderVO;
 import com.showise.seat.model.SeatVO;
-import com.showise.ticket.model.TicketTypeVO;
+import com.showise.tickettype.model.TicketTypeVO;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
