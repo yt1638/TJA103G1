@@ -5,8 +5,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import com.showise.cinema.model.CinemaVO;
-import com.showise.session.model.SessionVO;
-
+import com.showise.orderticket.model.OrderTicketVO;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -30,13 +29,13 @@ public class SeatVO implements Serializable{
 	@Column (name = "seat_id",nullable = false)
 	private Integer seatId;
 	@Column (name = "seat_row",nullable = false, length = 1, columnDefinition = "CHAR(1)")
-	private String row;
+	private String rowNo;
 	@Column (name = "seat_column",nullable = false)
-	private Integer Column;
+	private Integer columnNo;
 	@Column (name = "seat_status",nullable = false)
 	private Integer seatStatus;
-//	@OneToMany (mappedBy = "seat",cascade = CascadeType.ALL)
-//	private Set<OrderTicketVO> set;
+	@OneToMany (mappedBy = "seat",cascade = CascadeType.ALL)
+	private Set<OrderTicketVO> set;
 	
 	
 	@ManyToOne 
@@ -55,22 +54,22 @@ public class SeatVO implements Serializable{
 
 
 	public String getRow() {
-		return row;
+		return rowNo;
 	}
 
 
-	public void setRow(String row) {
-		this.row = row;
+	public void setRow(String rowNo) {
+		this.rowNo = rowNo;
 	}
 
 
 	public Integer getColumn() {
-		return Column;
+		return columnNo;
 	}
 
 
-	public void setColumn(Integer column) {
-		Column = column;
+	public void setColumn(Integer columnNo) {
+		this.columnNo = columnNo;
 	}
 
 
@@ -94,11 +93,11 @@ public class SeatVO implements Serializable{
 	}
 
 
-	public SeatVO(Integer seatId, String row, Integer column, Integer seatStatus) {
+	public SeatVO(Integer seatId, String rowNo, Integer columnNo, Integer seatStatus) {
 		super();
 		this.seatId = seatId;
-		this.row = row;
-		Column = column;
+		this.rowNo = rowNo;
+		this.columnNo = columnNo;
 		this.seatStatus = seatStatus;
 	}
 
