@@ -5,11 +5,17 @@ import java.sql.Date;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.showise.member.model.MemberVO;
+import com.showise.movie.model.MovieVO;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
@@ -27,19 +33,19 @@ public class NotificationPreferenceVO implements Serializable {
 
     /** 多對一：每筆通知偏好對應一部電影 */
     @Column(name = "movie_id")
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "movie_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "movie_id", nullable = false)
     @NotNull(message = "電影編號: 請勿空白")
-    private Integer movieId;
-//    private MovieVO movie;
+//    private Integer movieId;
+    private MovieVO movie;
 
     /** 多對一：每筆通知偏好對應一個會員 */
     @Column(name = "member_id")
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "member_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id", nullable = false)
     @NotNull(message = "會員編號: 請勿空白")
-    private Integer memberId;
-//    private MemberVO member;
+//    private Integer memberId;
+    private MemberVO member;
 
     @NotBlank(message = "通知內容: 請勿空白")
     @Column(name = "noti_prefSCON", nullable = false)
@@ -64,34 +70,34 @@ public class NotificationPreferenceVO implements Serializable {
         this.notiPrefNo = notiPrefNo;
     }
 
-    public Integer getMovieId() {
-        return movieId;
-    }
-
-    public void setMovieId(Integer movieId) {
-        this.movieId = movieId;
-    }
-    
-    public Integer getMemberId() {
-        return memberId;
-    }
-
-    public void setMemberId(Integer memberId) {
-        this.memberId = memberId;
-    }
-//    public MovieVO getMovie() {
-//        return movie;
-//    }
-//    public void setMovie(MovieVO movie) {
-//        this.movie = movie;
+//    public Integer getMovieId() {
+//        return movieId;
 //    }
 //
-//    public MemberVO getMember() {
-//        return member;
+//    public void setMovieId(Integer movieId) {
+//        this.movieId = movieId;
 //    }
-//    public void setMember(MemberVO member) {
-//        this.member = member;
+//    
+//    public Integer getMemberId() {
+//        return memberId;
 //    }
+//
+//    public void setMemberId(Integer memberId) {
+//        this.memberId = memberId;
+//    }
+    public MovieVO getMovie() {
+        return movie;
+    }
+    public void setMovie(MovieVO movie) {
+        this.movie = movie;
+    }
+
+    public MemberVO getMember() {
+        return member;
+    }
+    public void setMember(MemberVO member) {
+        this.member = member;
+    }
 
     public String getNotiPrefScon() {
         return notiPrefScon;

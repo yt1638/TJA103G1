@@ -1,12 +1,12 @@
-package com.showise.ticket.controller;
+package com.showise.tickettype.controller;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.showise.ticket.model.TicketTypeService;
-import com.showise.ticket.model.TicketTypeVO;
+import com.showise.tickettype.model.TicketTypeService;
+import com.showise.tickettype.model.TicketTypeVO;
 
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
