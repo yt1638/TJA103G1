@@ -1,4 +1,4 @@
-package com.showise.ticket.controller;
+package com.showise.tickettype.controller;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;

@@ -1,4 +1,4 @@
-package com.showise.ticket.model;
+package com.showise.tickettype.model;
 
 
 public class TicketTypeVO implements java.io.Serializable{

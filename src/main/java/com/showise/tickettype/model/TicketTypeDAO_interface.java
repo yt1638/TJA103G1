@@ -1,4 +1,4 @@
-package com.showise.ticket.model;
+package com.showise.tickettype.model;
 
 import java.util.List;
 
