@@ -102,5 +102,4 @@ public class MemberClassVO implements Serializable{
 		this.member = member;
 	}
 
-	
 }

@@ -231,6 +231,7 @@ public class MemberVO implements Serializable{
 	public void setOrder(Set<OrderVO> order) {
 		this.order = order;
 	}
+	
 }
 
 

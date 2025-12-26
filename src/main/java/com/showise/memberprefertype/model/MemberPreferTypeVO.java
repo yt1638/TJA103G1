@@ -69,5 +69,4 @@ public class MemberPreferTypeVO implements Serializable{
 		this.member = member;
 	}
 
-	
 }
