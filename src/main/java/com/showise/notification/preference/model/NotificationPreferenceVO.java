@@ -2,7 +2,6 @@ package com.showise.notification.preference.model;
 
 import java.io.Serializable;
 import java.sql.Date;
-import java.sql.Timestamp;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -52,7 +51,7 @@ public class NotificationPreferenceVO implements Serializable {
     @Future(message = "日期必須是在今日(不含)之後")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Column(name = "noti_prefSTIME", nullable = false)
-    private Timestamp notiPrefStime;
+    private Date notiPrefStime;
 
     @NotNull(message = "通知狀態: 請勿空白")
     @Column(name = "noti_prefSTAT", nullable = false)
@@ -66,22 +65,6 @@ public class NotificationPreferenceVO implements Serializable {
     public void setNotiPrefNo(Integer notiPrefNo) {
         this.notiPrefNo = notiPrefNo;
     }
-
-//    public Integer getMovieId() {
-//        return movieId;
-//    }
-//
-//    public void setMovieId(Integer movieId) {
-//        this.movieId = movieId;
-//    }
-//    
-//    public Integer getMemberId() {
-//        return memberId;
-//    }
-//
-//    public void setMemberId(Integer memberId) {
-//        this.memberId = memberId;
-//    }
     public MovieVO getMovie() {
         return movie;
     }
@@ -103,10 +86,10 @@ public class NotificationPreferenceVO implements Serializable {
         this.notiPrefScon = notiPrefScon;
     }
 
-    public Timestamp getNotiPrefStime() {
+    public Date getNotiPrefStime() {
         return notiPrefStime;
     }
-    public void setNotiPrefStime(Timestamp notiPrefStime) {
+    public void setNotiPrefStime(Date notiPrefStime) {
         this.notiPrefStime = notiPrefStime;
     }
 
