@@ -2,7 +2,6 @@ package com.showise.notification.showstart.model;
 
 import java.io.Serializable;
 import java.sql.Date;
-import java.sql.Timestamp;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -36,13 +35,13 @@ public class NotificationShowstartVO implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     @NotNull(message = "會員編號: 請勿空白")
-    private MemberVO memberId;
+    private MemberVO member;
 
     /** 多對一：每筆通知對應一個場次 */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "session_id", nullable = false)
     @NotNull(message = "場次: 請勿空白")
-    private SessionVO sessionId;
+    private SessionVO session;
 
     @NotBlank(message = "通知內容: 請勿空白")
     @Column(name = "noti_ShowstSCON", nullable = false)
@@ -52,7 +51,7 @@ public class NotificationShowstartVO implements Serializable {
     @Future(message = "日期必須是在今日(不含)之後")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Column(name = "noti_showstSTIME", nullable = false)
-    private Timestamp notiShowstStime;
+    private Date notiShowstStime;
 
     @NotNull(message = "通知狀態: 請勿空白")
     @Column(name = "noti_showstSTAT", nullable = false)
@@ -81,17 +80,17 @@ public class NotificationShowstartVO implements Serializable {
 //        this.sessionId = memberId;
 //    }
     public MemberVO getMember() {
-        return memberId;
+        return member;
     }
     public void setMember(MemberVO member) {
-        this.memberId = member;
+        this.member = member;
     }
 
     public SessionVO getSession() {
-        return sessionId;
+        return session;
     }
     public void setSession(SessionVO session) {
-        this.sessionId = session;
+        this.session = session;
     }
 
     public String getNotiShowstScon() {
@@ -101,10 +100,10 @@ public class NotificationShowstartVO implements Serializable {
         this.notiShowstScon = notiShowstScon;
     }
 
-    public Timestamp getNotiShowstStime() {
+    public Date getNotiShowstStime() {
         return notiShowstStime;
     }
-    public void setNotiShowstStime(Timestamp notiShowstStime) {
+    public void setNotiShowstStime(Date notiShowstStime) {
         this.notiShowstStime = notiShowstStime;
     }
 

@@ -11,6 +11,12 @@ public interface NotificationPreferenceRepository extends JpaRepository<Notifica
 
 
     // 自訂條件查詢（JPQL：用 Entity 屬性名）
-    @Query("from NotificationPreferenceVO where notiPrefNo = ?1 and movieId = ?2 and memberId = ?3 order by notiPrefNo")
+	@Query("""
+		    from NotificationPreferenceVO n
+		    where n.notiPrefNo = ?1
+		      and n.movie.movieId = ?2
+		      and n.member.memberId = ?3
+		    order by n.notiPrefNo
+		""")
     List<NotificationPreferenceVO> findByOthers(int notiPrefNo, int movieId, int memberId);
 }
