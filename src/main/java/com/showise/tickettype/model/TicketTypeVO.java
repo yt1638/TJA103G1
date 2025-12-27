@@ -22,7 +22,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "tickettype")
+@Table(name = "ticket_type")
 public class TicketTypeVO implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -47,7 +47,6 @@ public class TicketTypeVO implements Serializable {
     @Column(name = "ticket_IMAGES", nullable = false)    
     private Short ticketImages;
 
-    public void TicketTypeVO() {}
 
     public TicketTypeVO getticketTypeId(TicketTypeVO ticketTypeId) {
         return ticketTypeId;

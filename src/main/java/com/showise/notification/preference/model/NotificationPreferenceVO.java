@@ -2,6 +2,7 @@ package com.showise.notification.preference.model;
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.sql.Timestamp;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -51,7 +52,7 @@ public class NotificationPreferenceVO implements Serializable {
     @Future(message = "日期必須是在今日(不含)之後")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Column(name = "noti_prefSTIME", nullable = false)
-    private Date notiPrefStime;
+    private Timestamp notiPrefStime;
 
     @NotNull(message = "通知狀態: 請勿空白")
     @Column(name = "noti_prefSTAT", nullable = false)
@@ -102,10 +103,10 @@ public class NotificationPreferenceVO implements Serializable {
         this.notiPrefScon = notiPrefScon;
     }
 
-    public Date getNotiPrefStime() {
+    public Timestamp getNotiPrefStime() {
         return notiPrefStime;
     }
-    public void setNotiPrefStime(Date notiPrefStime) {
+    public void setNotiPrefStime(Timestamp notiPrefStime) {
         this.notiPrefStime = notiPrefStime;
     }
 
