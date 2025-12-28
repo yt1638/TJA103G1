@@ -1,6 +1,7 @@
 package com.showise.seat.model;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -32,10 +33,20 @@ public class SeatVO implements Serializable{
 	private String rowNo;
 	@Column (name = "seat_column",nullable = false)
 	private Integer columnNo;
+	public Set<OrderTicketVO> getOrderTickets() {
+		return orderTickets;
+	}
+
+
+	public void setOrderTickets(Set<OrderTicketVO> orderTickets) {
+		this.orderTickets = orderTickets;
+	}
+
+
 	@Column (name = "seat_status",nullable = false)
 	private Integer seatStatus;
 	@OneToMany (mappedBy = "seat",cascade = CascadeType.ALL)
-	private Set<OrderTicketVO> set;
+	private Set<OrderTicketVO> orderTickets = new HashSet<OrderTicketVO>();;
 	
 	
 	@ManyToOne 

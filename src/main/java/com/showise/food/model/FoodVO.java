@@ -1,6 +1,7 @@
 package com.showise.food.model;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -35,12 +36,18 @@ public class FoodVO implements Serializable{
 	@JoinColumn(name ="food_category_id",referencedColumnName="food_category_id",nullable = false)
 	private FoodCategoryVO foodCate;
 	@OneToMany(mappedBy = "food",cascade = CascadeType.ALL)
-	private Set<OrderFoodVO> set;
+	private Set<OrderFoodVO> orderFoods = new HashSet<OrderFoodVO>();
 	
 	
 	@NotEmpty(message = "餐飲名稱請勿空白")
 	@Column (name = "food_name",nullable = false)
 	private String foodName;
+	public Set<OrderFoodVO> getOrderFoods() {
+		return orderFoods;
+	}
+	public void setOrderFoods(Set<OrderFoodVO> orderFoods) {
+		this.orderFoods = orderFoods;
+	}
 	@Column (name = "food_image")
 	private byte[] foodImage;
 	public Integer getFoodId() {
