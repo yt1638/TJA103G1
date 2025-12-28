@@ -1,5 +1,6 @@
 package com.showise.foodcategory.model;
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -54,7 +55,7 @@ public class FoodCategoryVO implements Serializable{
 		super();
 		this.foodCategoryId = foodCategoryId;
 		this.categoryName = categoryName;
-		this.set = set;
+		this.foods = set;
 	}
 
 	public void setFoodCategoryId(Integer foodCategoryId) {
@@ -70,17 +71,17 @@ public class FoodCategoryVO implements Serializable{
 	}
 
 	public Set<FoodVO> getSet() {
-		return set;
+		return foods;
 	}
 
 	public void setSet(Set<FoodVO> set) {
-		this.set = set;
+		this.foods = set;
 	}
 
 	@Column (name = "category_name",nullable = false)
 	private String categoryName;
 	
 	@OneToMany(mappedBy = "foodCate",cascade = CascadeType.ALL)
-	private Set<FoodVO> set;
+	private Set<FoodVO> foods = new HashSet<FoodVO>();
 
 }

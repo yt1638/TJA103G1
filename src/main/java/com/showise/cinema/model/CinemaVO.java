@@ -1,6 +1,7 @@
 package com.showise.cinema.model;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -33,7 +34,7 @@ public class CinemaVO implements Serializable{
 	private Integer cinemaTotalSeat;
 	
 	@OneToMany (mappedBy = "cinema",cascade = CascadeType.ALL)	
-	private Set<SeatVO> set;
+	private Set<SeatVO> seats = new HashSet<SeatVO>();
 
 	public Integer getCinemaId() {
 		return cinemaId;
@@ -59,12 +60,12 @@ public class CinemaVO implements Serializable{
 		this.cinemaTotalSeat = cinemaTotalSeat;
 	}
 
-	public Set<SeatVO> getSet() {
-		return set;
+	public Set<SeatVO> getSeats() {
+		return seats;
 	}
 
-	public void setSet(Set<SeatVO> set) {
-		this.set = set;
+	public void setSeats(Set<SeatVO> set) {
+		this.seats = set;
 	}
 
 	public static long getSerialversionuid() {
