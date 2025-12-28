@@ -107,7 +107,7 @@
 		<li><form method="post" th:action="@{getOne_For_Display}">
 				選擇電影編號:
 				<select name="notiPrefNo">
-				     <option th:each="notificationPreferenceVO : ${notificationPreferenceListData}" th:value="${notificationPreferenceVO.notiPrefNo}" th:text="${notificationPreferenceVO.movieId}" />
+				     <option th:each="notificationPreferenceVO : ${notificationPreferenceListData}" th:value="${notificationPreferenceVO.notiPrefNo}" th:text="${notificationPreferenceVO.movie}" />
 			    </select>
 				<input type="submit" value="送出">
 			</form><br>
@@ -125,10 +125,10 @@
         <input type="text" name="notiPrefNo" value="1"><br>
            
         輸入電影編號: 
-        <input type="text" name="movieId" value="1"><br>
+        <input type="text" name="movie" value="1"><br>
        
         輸入會員編號: 
-        <input type="text" name="memberId" value="1"><br>
+        <input type="text" name="member" value="1"><br>
                
         
         發送日期:
