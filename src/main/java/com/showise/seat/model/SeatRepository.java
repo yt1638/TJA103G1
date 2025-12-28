@@ -10,7 +10,7 @@ public interface SeatRepository extends JpaRepository<SeatVO,Integer>{
 		    select s
 		    from SeatVO s
 		    where s.cinema.cinemaId = :cinemaId
-		    order by s.row asc, s.column asc
+		    order by s.rowNo asc, s.columnNo asc
 		""")
 	List<SeatVO> listByCinema(Integer cinemaId);
 }

@@ -53,22 +53,22 @@ public class SeatVO implements Serializable{
 	}
 
 
-	public String getRow() {
+	public String getRowNo() {
 		return rowNo;
 	}
 
 
-	public void setRow(String rowNo) {
+	public void setRowNo(String rowNo) {
 		this.rowNo = rowNo;
 	}
 
 
-	public Integer getColumn() {
+	public Integer getColumnNo() {
 		return columnNo;
 	}
 
 
-	public void setColumn(Integer columnNo) {
+	public void setColumnNo(Integer columnNo) {
 		this.columnNo = columnNo;
 	}
 
