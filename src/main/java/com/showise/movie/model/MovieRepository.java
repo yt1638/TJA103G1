@@ -1,5 +1,6 @@
 package com.showise.movie.model;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,6 +19,8 @@ public interface MovieRepository extends JpaRepository<MovieVO,Integer>{
 	List<MovieVO> findByType(Integer movieTypeId);
 	
 	List<MovieVO> findAllByOrderByMovieIdDesc();
+	@Query(value = "from MovieVO m where ?1 >= m.releaseDate AND ?1<=m.endDate AND m.status=1")
+	List<MovieVO> findByDate(LocalDate searchDate);
 
 
 }
