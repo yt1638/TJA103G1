@@ -18,7 +18,9 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table (name="food")
@@ -122,8 +124,12 @@ public class FoodVO implements Serializable{
 	public void setFoodStatus(Integer foodStatus) {
 		this.foodStatus = foodStatus;
 	}
+	@NotNull(message = "餐飲原價請勿空白")
+	@Min(value=1,message="售價請填正整數")
 	@Column (name = "food_original_price")
 	private Integer foodOriginalPrice;
+	@NotNull(message = "餐飲網路售價請勿空白")
+	@Min(value=1,message="售價請填正整數")
 	@Column (name = "food_price")
 	private Integer foodPrice;
 	@Column (name = "food_status")
