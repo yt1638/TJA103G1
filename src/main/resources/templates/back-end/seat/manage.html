@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Showise - 座位管理</title>
+
+<style>
+    /* 核心佈局 (與食物列表一致) */
+    body {
+        font-family: "微軟正黑體", Arial, sans-serif;
+        background-color: #f4f7f6;
+        margin: 0;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .main-container {
+        width: 95%;
+        max-width: 1200px;
+    }
+
+    /* 標題區塊 (粉紅風格) */
+    #table-1 {
+        width: 100%;
+        background-color: #f8abb2;
+        margin-bottom: 20px;
+        border-radius: 10px;
+        border: 1px solid #eccbcd;
+    }
+
+    #table-1 h3 {
+        color: #333;
+        margin: 15px;
+        letter-spacing: 2px;
+    }
+
+    /* 查詢區塊 */
+    .search-bar {
+        background-color: #ffffff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        margin-bottom: 30px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    select {
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        min-width: 150px;
+    }
+
+    .btn-query {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 8px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    /* 座位網格佈局 - 修改為 15 列 */
+    .seat-grid {
+        display: grid;
+        grid-template-columns: repeat(15, 1fr); /* 核心修正：15個一列 */
+        gap: 12px;
+        background-color: #fff;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .seat {
+        aspect-ratio: 1 / 1; /* 保持正方形 */
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        font-size: 12px;
+        font-weight: bold;
+        transition: transform 0.2s;
+    }
+
+    .seat:hover {
+        transform: scale(1.05);
+    }
+
+    /* 座位狀態顏色 */
+    .seat.normal {
+        background-color: #ffffff;
+        color: #333;
+    }
+
+    .seat.broken {
+        background-color: #333333;
+        color: #ffffff;
+        border-color: #000;
+    }
+
+    /* 按鈕樣式微調 */
+    .seat form { margin: 2px 0; }
+    
+    .btn-seat {
+        padding: 2px 6px;
+        font-size: 10px;
+        border-radius: 4px;
+        border: none;
+        cursor: pointer;
+    }
+    
+    .btn-lock { background-color: #ffc1c1; color: #333; }
+    .btn-unlock { background-color: #e0e0e0; color: #333; }
+
+    /* 銀幕提示 */
+    .screen-notice {
+        width: 60%;
+        height: 30px;
+        background-color: #ddd;
+        margin: 0 auto 40px auto;
+        text-align: center;
+        line-height: 30px;
+        border-radius: 0 0 50px 50px;
+        color: #777;
+        font-size: 14px;
+    }
+</style>
+</head>
+
+<body>
+
+<div class="main-container">
+    <table id="table-1">
+        <tr>
+            <td>
+                <h3>
+						座位管理 -
+						<th:block th:if="${cinemaId != null}">
+							<span th:each="c : ${cinemaList}"
+								th:if="${c.cinemaId == cinemaId}" th:text="${c.cinemaName}">
+							</span>
+						</th:block>
+
+						<span th:unless="${cinemaId != null}">請選擇影廳</span>
+					</h3>
+				</td>
+        </tr>
+    </table>
+
+    <div class="search-bar">
+        <form method="get" th:action="@{/seat/}">
+            <label>選擇管理影廳：</label>
+            <select name="cinemaId">
+                <option value="">-- 請選擇影廳 --</option>
+                <option th:each="cinema : ${cinemaList}"
+                        th:value="${cinema.cinemaId}"
+                        th:text="${cinema.cinemaName}"
+                        th:selected="${cinema.cinemaId == cinemaId}">
+                </option>
+            </select>
+            <button type="submit" class="btn-query">載入座位圖</button>
+        </form>
+    </div>
+
+    <div th:if="${seatList != null}">
+        <div class="screen-notice">SCREEN (銀幕方向)</div>
+        
+        <div class="seat-grid">
+            <div th:each="seat : ${seatList}"
+                 th:class="'seat ' + (${seat.seatStatus} == 1 ? 'normal' : 'broken')">
+
+                <div class="seat-name">[[${seat.rowNo}]][[${seat.columnNo}]]</div>
+
+                <form th:if="${seat.seatStatus == 1}" method="post" th:action="@{/seat/updateStatus}">
+                    <input type="hidden" name="seatId" th:value="${seat.seatId}">
+                    <input type="hidden" name="status" value="0">
+                    <input type="hidden" name="cinemaId" th:value="${cinemaId}">
+                    <button type="submit" class="btn-seat btn-lock">鎖定</button>
+                </form>
+
+                <form th:unless="${seat.seatStatus == 1}" method="post" th:action="@{/seat/updateStatus}">
+                    <input type="hidden" name="seatId" th:value="${seat.seatId}">
+                    <input type="hidden" name="status" value="1">
+                    <input type="hidden" name="cinemaId" th:value="${cinemaId}">
+                    <button type="submit" class="btn-seat btn-unlock">復原</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
