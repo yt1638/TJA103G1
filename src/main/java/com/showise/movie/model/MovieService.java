@@ -1,5 +1,6 @@
 package com.showise.movie.model;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -51,5 +52,9 @@ public class MovieService {
 	
 	public List<MovieVO> listByType(Integer movieTypeId){
 		return repository.findByType(movieTypeId);
+	}
+	
+	public List<MovieVO> listByDate(LocalDate searchDate){
+		return repository.findByDate(searchDate);
 	}
 }
