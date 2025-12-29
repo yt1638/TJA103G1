@@ -38,6 +38,8 @@ public class SessionVO implements Serializable{
 	private Timestamp endTime;
 	@Column (name = "all_seat_status",nullable = false)
 	private String allSeatStatus;
+	@Column(name = "session_status",nullable = false)
+	private Integer sessionStatus;
 	
 	
 	@ManyToOne
@@ -47,12 +49,30 @@ public class SessionVO implements Serializable{
 	@JoinColumn (name = "cinema_id" , referencedColumnName = "cinema_id")
 	private CinemaVO cinema;
 	@OneToMany (mappedBy = "session",cascade = CascadeType.ALL)
-	private Set<OrderVO> orderSet;
+	private Set<OrderVO> orders;
 	@OneToMany (mappedBy = "session",cascade = CascadeType.ALL)
-	private Set<NotificationShowstartVO> notiSet;
+	private Set<NotificationShowstartVO> notishows;
 	
 	
 	
+	public Integer getSessionStatus() {
+		return sessionStatus;
+	}
+	public void setSessionStatus(Integer sessionStatus) {
+		this.sessionStatus = sessionStatus;
+	}
+	public Set<OrderVO> getOrders() {
+		return orders;
+	}
+	public void setOrders(Set<OrderVO> orders) {
+		this.orders = orders;
+	}
+	public Set<NotificationShowstartVO> getNotishows() {
+		return notishows;
+	}
+	public void setNotishows(Set<NotificationShowstartVO> notishows) {
+		this.notishows = notishows;
+	}
 	public Integer getSessionId() {
 		return sessionId;
 	}
@@ -89,6 +109,7 @@ public class SessionVO implements Serializable{
 	public void setCinema(CinemaVO cinema) {
 		this.cinema = cinema;
 	}
+	
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}

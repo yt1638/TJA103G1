@@ -17,7 +17,10 @@ import com.showise.food.model.FoodService;
 import com.showise.food.model.FoodVO;
 import com.showise.foodcategory.model.FoodCateService;
 import com.showise.foodcategory.model.FoodCategoryVO;
+import com.showise.movie.model.MovieVO;
 
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 
 @Controller 
@@ -33,6 +36,7 @@ public class FoodController {
 	@GetMapping("/")
 	public String getAll(Model model) {
 		model.addAttribute("foodList",foodService.getAll());
+		model.addAttribute("foodCateList",foodCateService.getAll());
 		return "back-end/food/listAll";
 	}
 	
@@ -44,11 +48,20 @@ public class FoodController {
 		
 	}
 	
-	@PostMapping("/addFood")
-	public String addFood(@Valid FoodVO foodVO,Model model,BindingResult result,@RequestParam(value = "foodCategoryId") Integer foodCategoryId,@RequestParam(value = "imageFile") MultipartFile image) throws IOException {
+	@GetMapping("/addFood")
+	public String addFood(Model model) {
+		FoodVO foodVO = new FoodVO();
+		model.addAttribute("foodVO",foodVO);
+		model.addAttribute("foodCateList",foodCateService.getAll());
+		return "back-end/food/save";
+	}
+	
+	@PostMapping("/insert")
+	public String addFood(@Valid FoodVO foodVO,BindingResult result,Model model,@RequestParam(value = "foodCategoryId") Integer foodCategoryId,@RequestParam(value = "imageFile") MultipartFile image) throws IOException {
 		
 		if(result.hasErrors()) {
-			return "back-end/food/liatAll";
+			model.addAttribute("foodCateList",foodCateService.getAll());
+			return "back-end/food/save";
 		}
 		
 		if(!image.isEmpty()) {
@@ -63,8 +76,20 @@ public class FoodController {
 		return "redirect:/food/";
 	}
 	
-	@PostMapping("/updateFood")
-	public String updateFood(@Valid FoodVO foodVO,Model model,BindingResult result,@RequestParam(value = "foodCategoryId") Integer foodCategoryId,@RequestParam(value = "imageFile") MultipartFile image) throws IOException {
+	@GetMapping("getOne_For_Update")
+	public String getOne_For_Update(@RequestParam(value = "foodId") Integer foodId,Model model) {
+		model.addAttribute("foodVO",foodService.getById(foodId));
+		model.addAttribute("foodCateList",foodCateService.getAll());
+		return "back-end/food/save";
+	}
+	
+	@PostMapping("/update")
+	public String updateFood(@Valid FoodVO foodVO,BindingResult result,Model model,@RequestParam(value = "foodCategoryId") Integer foodCategoryId,@RequestParam(value = "imageFile") MultipartFile image) throws IOException {
+		
+		if(result.hasErrors()) {
+			model.addAttribute("foodCateList",foodCateService.getAll());
+			return "back-end/food/save";
+		} 
 		
 		if(image.isEmpty()) {
 			byte[] oldImage = foodService.getById(foodVO.getFoodId()).getFoodImage();
@@ -85,6 +110,7 @@ public class FoodController {
 	public String listByName(@RequestParam(value = "foodName") String foodName,Model model) {
 		List<FoodVO> list = foodService.listByName(foodName);
 		model.addAttribute("foodList",list);
+		model.addAttribute("foodCateList",foodCateService.getAll());
 		return "back-end/food/listAll";
 	}
 	
@@ -92,14 +118,26 @@ public class FoodController {
 	public String listByStatus(Model model,@RequestParam(value = "status") Integer status) {
 		List<FoodVO> list = foodService.listByStatus(status);
 		model.addAttribute("foodList",list);
+		model.addAttribute("foodCateList",foodCateService.getAll());
 		return "back-end/food/listAll";
 	}
 	
 	@GetMapping("/listByCate")
 	public String listByType(Model model, @RequestParam (value = "foodCategoryId") Integer foodCategoryId) {
 		List<FoodVO> list = foodService.listByCate(foodCategoryId);
+		model.addAttribute("foodCateList",foodCateService.getAll());
 		model.addAttribute("foodList",list);
 		return "back-end/food/listAll";
+	}
+	
+	@GetMapping("/imageReader")
+	public void readImage(@RequestParam("foodId") Integer foodId,HttpServletResponse res) throws IOException {
+		res.setContentType("image/jpeg");
+		ServletOutputStream out = res.getOutputStream();
+		byte[]image = foodService.getById(foodId).getFoodImage();
+		if(image!=null) {
+			out.write(image);
+		}
 	}
 	
 	
