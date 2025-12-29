@@ -62,14 +62,14 @@
 			
 			<div>
 			<label>電影編號:</label>
-			<input type="text" th:field="*{movieId}" onclick="hideContent('movieId.errors');" /><br/>
-			<span  th:if="${#fields.hasErrors('movieId')}" th:errors="*{movieId}" class="error" id="movieId.errors"></span>
+			<input type="text" th:field="*{movie}" onclick="hideContent('movie.errors');" /><br/>
+			<span  th:if="${#fields.hasErrors('movie')}" th:errors="*{movie}" class="error" id="movie.errors"></span>
 			</div>
 			
 			<div>
 			<label>會員編號:</label>
-			<input type="text" th:field="*{memberId}" onclick="hideContent('memberId.errors');" /><br/>
-			<span  th:if="${#fields.hasErrors('memberId')}" th:errors="*{memberId}" class="error" id="memberId.errors"></span>
+			<input type="text" th:field="*{member}" onclick="hideContent('member.errors');" /><br/>
+			<span  th:if="${#fields.hasErrors('member')}" th:errors="*{member}" class="error" id="member.errors"></span>
 			</div>
 			
 			<div>
