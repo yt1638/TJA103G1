@@ -64,21 +64,6 @@ public class NotificationShowstartVO implements Serializable {
         this.notiShowstNo = notiShowstNo;
     }
 
-//    public Integer getmemberId() {
-//        return memberId;
-//    }
-//
-//    public void setsessionId(Integer sessionId) {
-//        this.memberId = sessionId;
-//    }
-//    
-//    public Integer getMemberId() {
-//        return sessionId;
-//    }
-//
-//    public void setMemberId(Integer memberId) {
-//        this.sessionId = memberId;
-//    }
     public MemberVO getMember() {
         return member;
     }

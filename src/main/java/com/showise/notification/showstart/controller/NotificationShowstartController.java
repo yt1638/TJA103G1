@@ -24,14 +24,12 @@ public class NotificationShowstartController {
     @Autowired
     private NotificationShowstartService notificationShowstartSvc;
 
-    /** 進入新增頁 */
     @GetMapping("/addNotificationShowstart")
     public String addNotificationShowstart(ModelMap model) {
         model.addAttribute("notificationShowstartVO", new NotificationShowstartVO());
         return "back-end/notification_showstart/addNotificationShowstart";
     }
 
-    /** 新增 */
     @PostMapping("/insert")
     public String insert(@Valid NotificationShowstartVO notificationShowstartVO,
                          BindingResult result,
@@ -46,7 +44,6 @@ public class NotificationShowstartController {
         return "redirect:/notification_showstart/listAllNotificationPreference";
     }
 
-    /** 查一筆進入修改頁 */
     @PostMapping("/getOne_For_Update")
     public String getOne_For_Update(@RequestParam("notiShowstNo") Integer notiShowstNo,
                                     ModelMap model) {
@@ -58,7 +55,6 @@ public class NotificationShowstartController {
         return "back-end/notification_showstart/update_notificationPreference_input";
     }
 
-    /** 修改 */
     @PostMapping("/update")
     public String update(@Valid NotificationShowstartVO notificationShowstartVO,
                          BindingResult result,
@@ -74,7 +70,6 @@ public class NotificationShowstartController {
         return "redirect:/notification_showstart/listAllNotificationShowstart";
     }
 
-    /** 刪除 */
     @PostMapping("/delete")
     public String delete(@RequestParam("notiShowstNo") Integer notiShowstNo,
                          ModelMap model) {
@@ -84,14 +79,12 @@ public class NotificationShowstartController {
         return "redirect:/notification_showstart/listAllNotificationShowstart";
     }
 
-    /** 列出全部 */
     @GetMapping("/listAllNotificationShowstart")
     public String listAll(ModelMap model) {
         List<NotificationShowstartVO> list = notificationShowstartSvc.getAll();
         model.addAttribute("notificationShowstartData", list);
         return "back-end/notification_showstart/listAllNotificationShowstart";
     }
-    /** 進入查詢頁(select_page) */
     @GetMapping("/select_page")
     public String selectPage(ModelMap model) {
         List<NotificationShowstartVO> list = notificationShowstartSvc.getAll();

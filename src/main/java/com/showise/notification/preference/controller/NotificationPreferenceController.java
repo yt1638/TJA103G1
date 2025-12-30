@@ -27,14 +27,12 @@ public class NotificationPreferenceController {
     @Autowired
     private NotificationPreferenceService notificationPreferenceSvc;
 
-    /** 進入新增頁 */
     @GetMapping("/addNotificationPreference")
     public String addNotificationPreference(ModelMap model) {
         model.addAttribute("notificationPreferenceVO", new NotificationPreferenceVO());
         return "back-end/notification_preference/addNotificationPreference";
     }
 
-    /** 新增 */
     @PostMapping("/insert")
     public String insert(@Valid NotificationPreferenceVO notificationPreferenceVO,
                          BindingResult result,
@@ -50,7 +48,6 @@ public class NotificationPreferenceController {
     }
     
 
-    /** 查一筆進入修改頁 */
     @PostMapping("/getOne_For_Update")
     public String getOne_For_Update(@RequestParam("notiPrefNo") Integer notiPrefNo,
                                     ModelMap model) {
@@ -62,7 +59,6 @@ public class NotificationPreferenceController {
         return "back-end/notification_preference/update_notificationPreference_input";
     }
 
-    /** 修改 */
     @PostMapping("/update")
     public String update(@Valid NotificationPreferenceVO notificationPreferenceVO,
                          BindingResult result,
@@ -78,17 +74,14 @@ public class NotificationPreferenceController {
         return "redirect:/notification_preference/listAllNotificationPreference";
     }
 
-    /** 刪除 */
 
 
-    /** 列出全部 */
     @GetMapping("/listAllNotificationPreference")
     public String listAll(ModelMap model) {
         List<NotificationPreferenceVO> list = notificationPreferenceSvc.getAll();
         model.addAttribute("notificationPreferenceListData", list);
         return "back-end/notification_preference/listAllNotificationPreference";
     }
-    /** 進入查詢頁(select_page) */
     @GetMapping("/select_page")
     public String selectPage(ModelMap model) {
         List<NotificationPreferenceVO> list = notificationPreferenceSvc.getAll();

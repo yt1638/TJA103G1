@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 public interface NotificationPreferenceRepository extends JpaRepository<NotificationPreferenceVO, Integer> {
 
 
-    // 自訂條件查詢（JPQL：用 Entity 屬性名）
 	@Query("""
 		    from NotificationPreferenceVO n
 		    where n.notiPrefNo = ?1

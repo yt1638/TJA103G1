@@ -30,8 +30,7 @@ public class NotificationShowstartService {
 
 	public NotificationShowstartVO getOneNotificationShowstart(Integer notiShowstNo) {
 		Optional<NotificationShowstartVO> optional = repository.findById(notiShowstNo);
-//		return optional.get();
-		return optional.orElse(null);  // public T orElse(T other) : 如果值存在就回傳其值，否則回傳other的值
+		return optional.orElse(null);  
 	}
 
 	public List<NotificationShowstartVO> getAll() {

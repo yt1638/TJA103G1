@@ -42,11 +42,9 @@ public class NotiPrefNoController {
             @RequestParam("notiPrefNo") String notiPrefNo,
             ModelMap model) {
 
-        // 2.開始查詢資料
         NotificationPreferenceVO notificationPreferenceVO =
                 notificationPreferenceSvc.getOneNotificationPreference(Integer.valueOf(notiPrefNo));
 
-        // select_page 需要的列表資料
         List<NotificationPreferenceVO> list = notificationPreferenceSvc.getAll();
         model.addAttribute("notificationPreferenceListData", list);
 
@@ -55,7 +53,6 @@ public class NotiPrefNoController {
             return "back-end/notification_preference/select_page";
         }
 
-        // 3.查詢完成
         model.addAttribute("notificationPreferenceVO", notificationPreferenceVO);
         return "back-end/notification_preference/select_page";
     }
@@ -71,7 +68,6 @@ public class NotiPrefNoController {
             strBuilder.append(violation.getMessage()).append("<br>");
         }
 
-        // 回 select_page 仍需要列表資料
         List<NotificationPreferenceVO> list = notificationPreferenceSvc.getAll();
         model.addAttribute("notificationPreferenceListData", list);
 
