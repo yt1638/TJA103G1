@@ -99,8 +99,10 @@ public class MovieVO implements Serializable{
     @Column(name="publisher")
     private String publisher;
     @Column(name="release_date")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate releaseDate;
     @Column(name="end_date")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate endDate;
     @Column(name="create_time",nullable=false,insertable = false,updatable=false)  
     private Timestamp createTime;

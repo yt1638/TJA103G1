@@ -3,9 +3,6 @@ package com.showise.movie.model;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-
-import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,9 +13,6 @@ public class MovieService {
 	
 	@Autowired
 	MovieRepository repository;
-	
-	@Autowired
-	private SessionFactory sessionFactory;
 	
 	@Transactional
 	public void addMovie(MovieVO movieVO) {

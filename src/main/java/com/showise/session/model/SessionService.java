@@ -37,7 +37,10 @@ public class SessionService {
 		if(conflict > 0) {
 			throw new IllegalArgumentException("ADDCONFLICT");
 		}
+		String defaultSeats = "1".repeat(75);
 		SessionVO sessionVO = new SessionVO();
+		sessionVO.setSessionStatus(1);
+		sessionVO.setAllSeatStatus(defaultSeats);
 		sessionVO.setCinema(cinemaService.getById(cinemaId));
 		sessionVO.setMovie(movieVO);
 		sessionVO.setStartTime(Timestamp.valueOf(startDateTime));
@@ -81,5 +84,13 @@ public class SessionService {
 		Timestamp end = Timestamp.valueOf(date.plusDays(1).atStartOfDay());
 		return repository.listByDate(start, end);
 	}
-
+	
+	public List<SessionVO> listAll(){
+		return repository.findAll();
+	}
+	
+	public SessionVO getById(Integer sessionId) {
+		Optional<SessionVO> optional = repository.findById(sessionId);
+		return optional.orElse(null);
+	}
 }
