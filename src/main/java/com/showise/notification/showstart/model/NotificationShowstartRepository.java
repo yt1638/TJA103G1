@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 public interface NotificationShowstartRepository extends JpaRepository<NotificationShowstartVO, Integer> {
 
-    // JPQL：用 Entity 屬性名 + Integer 用 =
 	@Query("""
 			from NotificationShowstartVO n
 			where n.notiShowstNo = ?1

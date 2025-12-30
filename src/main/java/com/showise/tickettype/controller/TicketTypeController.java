@@ -27,7 +27,6 @@ public class TicketTypeController {
    
        
 
-    /** 查一筆進入修改頁 */
     @PostMapping("/getOne_For_Update")
     public String getOne_For_Update(@RequestParam("ticketTypeId") Integer ticketTypeId,
                                     ModelMap model) {
@@ -39,7 +38,6 @@ public class TicketTypeController {
         return "back-end/tickettype/update_TicketType_input";
     }
 
-    /** 修改 */
     @PostMapping("/update")
     public String update(@Valid TicketTypeVO ticketTypeVO,
                          BindingResult result,
@@ -57,7 +55,6 @@ public class TicketTypeController {
 
     
 
-    /** 列出全部 */
     @GetMapping("/")
     public String listAll(ModelMap model) {
         List<TicketTypeVO> list = ticketTypeSvc.getAll();

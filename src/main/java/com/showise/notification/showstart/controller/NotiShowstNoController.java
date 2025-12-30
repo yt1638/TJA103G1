@@ -42,11 +42,9 @@ public class NotiShowstNoController {
             @RequestParam("notiShowstNo") String notiShowstNo,
             ModelMap model) {
 
-        // 2.開始查詢資料
     	NotificationShowstartVO notificationShowstartVO =
     			notificationShowstartSvc.getOneNotificationShowstart(Integer.valueOf(notiShowstNo));
 
-        // select_page 需要的列表資料
         List<NotificationShowstartVO> list = notificationShowstartSvc.getAll();
         model.addAttribute("notificationShowstartListData", list);
 
@@ -55,7 +53,6 @@ public class NotiShowstNoController {
             return "back-end/notification_showstart/select_page";
         }
 
-        // 3.查詢完成
         model.addAttribute("notificationShowstartVO", notificationShowstartVO);
         return "back-end/notification_showstart/select_page";
     }
@@ -71,7 +68,6 @@ public class NotiShowstNoController {
             strBuilder.append(violation.getMessage()).append("<br>");
         }
 
-        // 回 select_page 仍需要列表資料
         List<NotificationShowstartVO> list = notificationShowstartSvc.getAll();
         model.addAttribute("notificationShowstartListData", list);
 

@@ -31,13 +31,11 @@ public class NotificationPreferenceVO implements Serializable {
     @Column(name = "noti_prefNO")
     private Integer notiPrefNo;
 
-    /** 多對一：每筆通知偏好對應一部電影 */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "movie_id", nullable = false)
     @NotNull(message = "電影編號: 請勿空白")
     private MovieVO movie;
 
-    /** 多對一：每筆通知偏好對應一個會員 */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", referencedColumnName = "member_id")
     @NotNull(message = "會員編號: 請勿空白")
