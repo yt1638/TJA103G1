@@ -22,16 +22,43 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.showise.employeedata.model.EmployeeDataService;
 import com.showise.employeedata.model.EmployeeDataVO;
+import com.showise.tickettype.model.TicketTypeVO;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
-@Controller
-@RequestMapping("/employee_data")
-public class EmployeeDataController {
+	
+	@Controller
+	@RequestMapping("/employee_data")
+	public class EmployeeDataController {
 
-	@Autowired
-	EmployeeDataService empSvc;
+	    @Autowired
+	    EmployeeDataService empSvc;
+
+	    @GetMapping("/select_page")
+	    public String selectPage(ModelMap model) {
+
+	        List<EmployeeDataVO> list = empSvc.getAll();
+	        model.addAttribute("employeeDataListData", list);
+
+	        if (!model.containsAttribute("employeeDataVO")) {
+	            model.addAttribute("employeeDataVO", new EmployeeDataVO());
+	        }
+
+	        return "back-end/employee_data/select_page";
+	    }
+
+	    @PostMapping("/getOne_For_Display")
+	    public String getOne_For_Display(@RequestParam("empId") Integer empId, ModelMap model) {
+
+	        EmployeeDataVO employeeDataVO = empSvc.getOneEmp(empId);
+	        model.addAttribute("employeeDataVO", employeeDataVO);
+
+	        List<EmployeeDataVO> list = empSvc.getAll();
+	        model.addAttribute("employeeDataListData", list);
+
+	        return "back-end/employee_data/select_page";
+	    }
 
 
 

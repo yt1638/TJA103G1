@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>單一員工資料</title>
+</head>
+<body>
+<div th:fragment="listOneEmployeeData-div">
+    <table border="1">
+        <tr>
+            <th>員工編號</th>
+            <th>員工姓名</th>
+            <th>到職日期</th>
+            <!-- 依你的欄位加 -->
+        </tr>
+        <tr th:if="${employeeDataVO != null}">
+            <td th:text="${employeeDataVO.empId}"></td>
+            <td th:text="${employeeDataVO.empName}"></td>
+            <td th:text="${employeeDataVO.empCreateTime}"></td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>

@@ -73,6 +73,7 @@ body {
 		<th>票種價格</th>
 		<th>票種內容</th>
 		<th>修改</th>
+		<th>刪除</th> 
 	</tr>
   </thead>
 	
@@ -82,7 +83,7 @@ body {
 				<td th:text="${ticketTypeVOStat.count}"></td>
 				<td th:text="${ticketTypeVO.ticketTypeId}"></td>
 				<td th:text="${ticketTypeVO.ticketName}"></td>
-				<td th:text="${ticketTypeVO.ticketPRICE}"></td>
+				<td th:text="${ticketTypeVO.ticketPrice}"></td>
 				<td th:text="${ticketTypeVO.ticketDescription}"></td>
 			<td>
 			  <form method="post" th:action="@{/tickettype/getOne_For_Update}" style="margin-bottom: 0px;">
