@@ -84,7 +84,7 @@
 		<li>
 			<form method="post" th:action="@{getOne_For_Display}">
 				輸入票種編號:
-				<input type="text" name="notiPrefNo" th:value="${param.notiPrefNo}" > 
+				<input type="text" name="ticketTypeId" th:value="${param.ticketTypeId}" > 
 				<input type="submit" value="送出"> (輸入如1)
 			</form><br>
 		</li>
@@ -128,7 +128,7 @@
         <input type="text" name="ticketName" value="全票"><br>
        
         輸入票種價格: 
-        <input type="text" name="ticketPRICE" value="250"><br>
+        <input type="text" name="ticketPrice" value="250"><br>
                
      
      </form>
@@ -141,7 +141,6 @@
 	  </ul>
 	</div>
     
-    <!-- 旗標ticketTypeVO見EmpnoController.java的第73行 -->
     <div class="b" th:if="${ticketTypeVO!=null}">
         <!--使用listOneEmp.html網頁的listOneEmp-div片段--> <!-- 見listOneEmp.html的第35行的th:fragment="listOneEmp-div" --> <!-- 使用th:replace也可 -->
         <div th:insert="~{/back-end/tickettype/listOneTicketType :: listOneTicketType-div}"></div>

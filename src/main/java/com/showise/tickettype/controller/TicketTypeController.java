@@ -16,7 +16,6 @@ import com.showise.tickettype.model.TicketTypeVO;
 
 import jakarta.validation.Valid;
 
-
 @Controller
 @RequestMapping("/tickettype")
 public class TicketTypeController {
@@ -24,16 +23,38 @@ public class TicketTypeController {
     @Autowired
     private TicketTypeService ticketTypeSvc;
 
-   
-       
+    @GetMapping("/select_page")
+    public String selectPage(ModelMap model) {
+        List<TicketTypeVO> list = ticketTypeSvc.getAll();
+        model.addAttribute("ticketTypeListData", list);
+        return "back-end/tickettype/select_page";
+    }
+
+    @PostMapping("/getOne_For_Display")
+    public String getOne_For_Display(@RequestParam("ticketTypeId") Integer ticketTypeId,
+                                     ModelMap model) {
+
+        TicketTypeVO ticketTypeVO = ticketTypeSvc.getOneById(ticketTypeId);
+        model.addAttribute("ticketTypeVO", ticketTypeVO);   
+
+        List<TicketTypeVO> list = ticketTypeSvc.getAll();
+        model.addAttribute("ticketTypeListData", list);
+
+        return "back-end/tickettype/select_page";
+    }
+
+    @GetMapping("/listAllTicketType")
+    public String listAllTicketType(ModelMap model) {
+        List<TicketTypeVO> list = ticketTypeSvc.getAll();
+        model.addAttribute("ticketTypeListData", list);
+        return "back-end/tickettype/listAllTicketType";
+    }
 
     @PostMapping("/getOne_For_Update")
     public String getOne_For_Update(@RequestParam("ticketTypeId") Integer ticketTypeId,
                                     ModelMap model) {
 
-    	TicketTypeVO ticketTypeVO =
-    			ticketTypeSvc.getOneById(ticketTypeId);
-
+        TicketTypeVO ticketTypeVO = ticketTypeSvc.getOneById(ticketTypeId);
         model.addAttribute("ticketTypeVO", ticketTypeVO);
         return "back-end/tickettype/update_TicketType_input";
     }
@@ -48,21 +69,13 @@ public class TicketTypeController {
         }
 
         ticketTypeSvc.updateTicket(ticketTypeVO);
-
-
         return "redirect:/tickettype/listAllTicketType";
     }
-
-    
 
     @GetMapping("/")
     public String listAll(ModelMap model) {
         List<TicketTypeVO> list = ticketTypeSvc.getAll();
-        model.addAttribute("tiketTypeData", list);
+        model.addAttribute("ticketTypeListData", list);
         return "back-end/tickettype/listAllTicketType";
     }
-
-
-
 }
-

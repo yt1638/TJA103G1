@@ -1,9 +1,11 @@
 package com.showise.notification.showstart.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,9 +13,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.showise.notification.preference.model.NotificationPreferenceVO;
 import com.showise.notification.showstart.model.NotificationShowstartService;
 import com.showise.notification.showstart.model.NotificationShowstartVO;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 
@@ -95,6 +99,13 @@ public class NotificationShowstartController {
     public String home() {
         return "index";
     }
+    @PostMapping("listNotificationShowstart_ByCompositeQuery")
+	public String listAllNotificationShowstartData(HttpServletRequest req, Model model) {
+		Map<String, String[]> map = req.getParameterMap();
+		List<NotificationShowstartVO> list = notificationShowstartSvc.getAll(map);
+		model.addAttribute("notificationShowstartListData", list); 
+		return "back-end/notification_showstart/listAllNotificationShowstart";
+	}
 
 
 }

@@ -5,47 +5,537 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>index.html - Spring Boot - Maven - Spring MVC - Thymeleaf Demo</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
 
-<link rel="stylesheet" th:href="@{/webjars/bootstrap/4.2.1/css/bootstrap.min.css}"/>
-<link rel="stylesheet" th:href="@{/css/index.css}"/>
+    <title>Dashboard</title>
 
-<link rel="stylesheet" th:href="@{/out-statics/out-css/style.css}"/>
-<script th:src="@{/out-statics/out-js/app4.js}"/></script>
+    <!-- Custom fonts for this template-->
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet">
+
+    <!-- Custom styles for this template-->
+    <link href="css/sb-admin-2.min.css" rel="stylesheet">
+
+    <link href="./vendor/fontawesome-free-7.1.0-web/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- 🔹 後台標題樣式：桌機＋手機都會自適應 -->
+    <style>
+        /* Topbar「後台系統」標題樣式 */
+        .topbar-title {
+            font-family: 'Baloo 2', 'Nunito', 'Microsoft JhengHei', sans-serif; /* 可愛字體 */
+            font-size: 30px;                 /* 字體大小（桌機） */
+            font-weight: 600;                /* 粗體 */
+            color: #6f98ff;                  /* 主色 */
+            letter-spacing: 2px;             /* 字距 */
+            text-align: center;              /* 置中 */
+            flex: 1 1 auto;                  /* 允許縮放，避免撐爆版面 */
+
+            /* 膠囊邊框與底色 */
+            display: inline-block;
+            background: #f3feff;             /* 柔色背景 */
+            border: 2px solid #a6bbff;       /* 邊框顏色 */
+            padding: 6px 26px;               /* 內距 */
+            border-radius: 999px;            /* 膠囊形狀 */
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12); /* 陰影 */
+
+            /* 動畫效果 */
+            transition: all 0.25s ease;
+
+            /* 避免在手機超出畫面 */
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+
+        .topbar-title:hover {
+            transform: translateY(-2px);     /* 浮起效果 */
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.18);
+        }
+
+        /* 🔸 手機版：縮小字體與 padding，讓「後台系統」在手機上更好看 */
+        @media (max-width: 767.98px) {
+            .topbar-title {
+                font-size: 22px;             /* 手機字體變小 */
+                padding: 4px 16px;           /* 內距縮小 */
+                letter-spacing: 1px;         /* 字距略縮 */
+            }
+        }
+        @media (max-width: 768px) {
+
+        /* 電影管理、會員管理、所有左側 menu 大字體 */
+        .sidebar .nav-link span {
+            font-size: 13px !important;
+            font-weight: 700;
+        }
+
+        /* icon 也一起放大 */
+        .sidebar .nav-link i {
+            font-size: 13px !important;
+            margin-right: 6px;
+        }
+
+        /* Sidebar Brand 也放大 */
+        .sidebar-brand-text {
+            font-size: 13px !important;
+        }
+        }
+    </style>
+
 </head>
-<body>
 
-<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top justify-content-center" onclick="changeColor()" th:fragment="mynavbar">
-		 <div align="center"><h2 style="font-size: 30px ; width: max-content;">
-		 <span class="hello-color" th:text="'Hello, ' + ${message} +' : '"></span> Spring Boot + Spring MVC + Thymeleaf
-		 （
-		    <img width="95px"  height="80px" th:src="@{/images/spring boot.png}"> + 
-		    <img width="95px"  height="80px" th:src="@{/images/spring mvc.png}"> + 
-		    <img width="110px" height="30px" th:src="@{/images/thymeleaf.png}">
-		 ）
-		 </h2><h3><a class="navbar-brand" href="https://start.spring.io/">
-		 Spring Boot Quickstart 官網 : https://start.spring.io </a></h3></div>
-</nav>
-	
-<!-- 	<main role="main" class="container"> -->
-       <div class="starter-template">
-           <span class="color1" id="title1">前端展示層(View) - 搭配Thymeleaf模板引擎 - 改用HTML</span>
-           <h1><a href="https://spring.io/projects/spring-boot" class="index-green" id="title2">Spring Boot</a> <font color=black>+</font> 
-               <a href="https://maven.apache.org/">Maven</a> ->  
-               <a href="https://docs.spring.io/spring-framework/docs/current/reference/html/web.html" class="index-green" id="title3">Spring MVC</a> <font color=black>+</font> 
-               <a href="https://www.thymeleaf.org" class="index-green" id="title4">Thymeleaf</a> ->
-               <a href="https://www.tibame.com/course/33">Java WebApp</a>
+<body id="page-top">
+
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+
+        <!-- Sidebar -->
+        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+            <!-- Sidebar - Brand -->
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+                <div class="sidebar-brand-icon">
+                    <i class="fa-solid fa-house fa-2x"></i>
+                </div>
+                <div class="sidebar-brand-text mr-3" style="font-size: 18px;">影智推 HOME</div>
+            </a>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider my-0">
+
+            <!-- Nav Item - Dashboard -->
+            <li class="nav-item active">
+                <a class="nav-link" href="index.html">
+                    <span><i class="fa-solid fa-gauge"></i>Dashboard</span>
+                </a>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <!-- Nav Item - Pages Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
+                    aria-expanded="true" aria-controls="collapseTwo">
+                    <span><i class="fas fa-clapperboard"></i> 電影管理</span>
+                </a>
+                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" href="buttons.html">電影資料管理</a>
+                        <a class="collapse-item" href="cards.html">場次管理</a>
+                        <a class="collapse-item" href="cards.html">座位管理</a>
+                    </div>
+                </div>
+            </li>
+
+            <!-- Nav Item - Utilities Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
+                    aria-expanded="true" aria-controls="collapseUtilities">
+                    <span><i class="fa-solid fa-user"></i> 會員管理</span>
+                </a>
+                <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
+                    data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" href="utilities-color.html">會員資料管理</a>
+                        <a class="collapse-item" href="utilities-border.html">會員分級管理</a>
+                    </div>
+                </div>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <!-- Nav Item - Pages Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseFood"
+                    aria-expanded="true" aria-controls="collapseFood">
+                    <span><i class="fa-solid fa-burger"></i> 餐飲管理</span>
+                </a>
+
+                <div id="collapseFood" class="collapse" aria-labelledby="headingFood" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item">菜單概覽</a>
+                    </div>
+                </div>
+            </li>
+
+            <!-- Nav Item - Charts -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTicket"
+                    aria-expanded="true" aria-controls="collapseTicket">
+                    <span><i class="fa-solid fa-ticket"></i> 票種管理</span>
+                </a>
+
+                <div id="collapseTicket" class="collapse" aria-labelledby="headingTicket"
+                    data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" th:href="@{/tickettype/select_page}">票券編輯</a>
+                    </div>
+                </div>
+            </li>
+
+            <!-- Nav Item - Tables -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#orderPages"
+                    aria-expanded="true" aria-controls="orderPages">
+                    <span><i class="fa-solid fa-list"></i> 訂單管理</span>
+                </a>
+
+                <div id="orderPages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item">會員訂單管理</a>
+                        <a class="collapse-item">會員消費明細</a>
+                    </div>
+                </div>
+            </li>
+
+            <!-- Nav Item - Pages Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
+                    aria-expanded="true" aria-controls="collapsePages">
+                    <span><i class="fa-solid fa-address-card"></i> 權限管理</span>
+                </a>
+                <div id="collapsePages" class="collapse" aria-labelledby="headingPages"
+                    data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item">新增權限</a>
+                        <a class="collapse-item" th:href="@{/employee_data/select_page}">編輯權限</a>
+                    </div>
+                </div>
+            </li>
+
+            <!-- Nav Item - Pages Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#notifyPages"
+                    aria-expanded="true" aria-controls="notifyPages">
+                    <span><i class="fa-regular fa-envelope-open"></i> 通知管理</span>
+                </a>
+                <div id="notifyPages" class="collapse" aria-labelledby="headingPages"
+                    data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" th:href="@{/notification_showstart/select_page}">開演通知</a>
+                        <a class="collapse-item" th:href="@{/notification_preference/select_page}">喜好通知</a>
+                    </div>
+                </div>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider d-none d-md-block">
+
+            <!-- Sidebar Toggler (Sidebar) -->
+            <div class="text-center d-none d-md-inline">
+                <button class="rounded-circle border-0" id="sidebarToggle"></button>
+            </div>
+
+            <!-- Sidebar Message -->
+            <div class="sidebar-card d-none d-lg-flex">
+                <img class="sidebar-card-illustration mb-2" src="img/undraw_rocket.svg" alt="...">
+            </div>
+
+        </ul>
+        <!-- End of Sidebar -->
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content">
+
+                <!-- Topbar -->
+                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+
+                    <!-- Sidebar Toggle (Topbar) - 只在手機顯示 -->
+                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                        <i class="fa fa-bars"></i>
+                    </button>
+
+                    <!-- 中間「後台系統」標題，會隨螢幕大小伸縮 -->
+                    <div class="topbar-title mx-auto">
+                        後台系統
+                    </div>
+
+                    <!-- Topbar Navbar -->
+                    <ul class="navbar-nav ml-auto">
+
+                        <!-- Nav Item - User Information -->
+                        <li class="nav-item dropdown no-arrow">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">登錄帳號人</span>
+                                <img class="img-profile rounded-circle" src="img/undraw_profile.svg">
+                            </a>
+                            <!-- Dropdown - User Information -->
+                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                                aria-labelledby="userDropdown">
+                                <a class="dropdown-item" href="#">
+                                    <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    個人資料
+                                </a>
+                                <a class="dropdown-item" href="#">
+                                    <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    設定
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    登出
+                                </a>
+                            </div>
+                        </li>
+
+                    </ul>
+
+                </nav>
+                <!-- End of Topbar -->
+
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+
+                    <!-- Content Row -->
+                    <div class="row">
+
+                        <!-- Earnings (Monthly) Card Example -->
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-primary shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                本週訂單數量</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">257單</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Earnings (Annual) Card Example -->
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-success shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                                本周上映數</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">5部</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tasks Card Example -->
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-info shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">任務
+                                            </div>
+                                            <div class="row no-gutters align-items-center">
+                                                <div class="col-auto">
+                                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">50%</div>
+                                                </div>
+                                                <div class="col">
+                                                    <div class="progress progress-sm mr-2">
+                                                        <div class="progress-bar bg-info" role="progressbar"
+                                                            style="width: 50%" aria-valuenow="50" aria-valuemin="0"
+                                                            aria-valuemax="100"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pending Requests Card Example -->
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-warning shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                                待處理請求</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">18</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-comments fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Content Row -->
+                    <div class="row">
+
+                        <!-- Area Chart -->
+                        <div class="col-xl-8 col-lg-7">
+                            <div class="card shadow mb-4">
+                                <!-- Card Header - Dropdown -->
+                                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    <h6 class="m-0 font-weight-bold text-primary">新增會員人數</h6>
+                                    <div class="dropdown no-arrow">
+                                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                                        </a>
+                                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                                            aria-labelledby="dropdownMenuLink">
+                                            <div class="dropdown-header">選單標題：</div>
+                                            <a class="dropdown-item" href="#">動作</a>
+                                            <a class="dropdown-item" href="#">其他動作</a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item" href="#">更多項目</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Card Body -->
+                                <div class="card-body">
+                                    <div class="chart-area">
+                                        <canvas id="myAreaChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pie Chart -->
+                        <div class="col-xl-4 col-lg-5">
+                            <div class="card shadow mb-4">
+                                <!-- Card Header - Dropdown -->
+                                <div class="card-header py-2 d-flex flex-row align-items-center justify-content-between">
+                                    <h6 class="m-0 font-weight-bold text-primary">訂單來源</h6>
+                                    <div class="dropdown no-arrow">
+                                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                                        </a>
+                                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                                            aria-labelledby="dropdownMenuLink">
+                                            <div class="dropdown-header">選單標題：</div>
+                                            <a class="dropdown-item" href="#">動作</a>
+                                            <a class="dropdown-item" href="#">其他動作</a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item" href="#">更多項目</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Card Body -->
+                                <div class="card-body">
+                                    <div class="chart-pie pt-4 pb-2">
+                                        <canvas id="myPieChart"></canvas>
+                                    </div>
+                                    <div class="mt-4 text-center small">
+                                        <span class="mr-2">
+                                            <i class="fas fa-circle text-primary"></i> 一般會員
+                                        </span>
+                                        <span class="mr-2">
+                                            <i class="fas fa-circle text-success"></i> 白金會員
+                                        </span>
+                                        <span class="mr-2">
+                                            <i class="fas fa-circle text-warning"></i> 黃金會員
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <!-- /.container-fluid -->
+
+            </div>
+            <!-- End of Main Content -->
+
+        </div>
+        <!-- End of Content Wrapper -->
+
+    </div>
+    <!-- End of Page Wrapper -->
+
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+    <!-- Logout Modal-->
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">確定要登出？</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">若要結束目前的登入狀態，請在下方選擇「登出」。</div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">取消</button>
+                    <a class="btn btn-primary" th:href="@{/login}">登出</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap core JavaScript-->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script src="js/sb-admin-2.min.js"></script>
+
+    <!-- Page level plugins -->
+    <script src="vendor/chart.js/Chart.min.js"></script>
+
+    <!-- Page level custom scripts -->
+    <script src="js/demo/chart-area-demo.js"></script>
+    <script src="js/demo/chart-pie-demo.js"></script>
+    <script src="./vendor/fontawesome-free-7.1.0-web/js/all.min.js"></script>
+    	    <footer class="sticky-footer bg-white">
+            <div class="container my-auto">
+                <div class="copyright text-center my-auto">
+                    <span>版權所有 &copy; Showise</span>
+                </div>
+            </div>
+        </footer>
+
+</body>
+
+</html>
            </h1><hr><br>
            <h2><a th:href="@{/notification_preference/select_page}" style="text-decoration:underline;color: black;">Click here to 喜好通知系統</a></h2>
 			<br>
 		   <h2><a th:href="@{/notification_showstart/select_page}" style="text-decoration:underline;color: black;">Click here to 開演通知系統</a></h2>
+		   <br>
+		   <h2><a th:href="@{/tickettype/select_page}" style="text-decoration:underline;color: black;">Click here to 票種系統</a></h2>
+		   <br>
+		   <h2><a th:href="@{/employee_data/select_page}" style="text-decoration:underline;color: black;">Click here to 員工管理系統</a></h2>
        </div>
        
        <div style="float: right;left: -90%;position: relative;">
 
-<!--     </main> -->
 
 </body>
 </html>
