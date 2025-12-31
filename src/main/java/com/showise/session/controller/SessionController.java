@@ -66,8 +66,12 @@ public class SessionController {
     }
     
     @PostMapping("/updateStatus")
-    public String toggleStatus(@RequestParam(value = "sessionId") Integer sessionId) {
+    public String toggleStatus(@RequestParam(value = "sessionId") Integer sessionId,RedirectAttributes ra) {
+     try {
      sessionService.toggleStatus(sessionId);
+     }catch(IllegalArgumentException i) {
+    	 ra.addFlashAttribute("error","狀態更新失敗：該場次已有訂單記錄");
+     }
      SessionVO sessionVO = sessionService.getById(sessionId);
      LocalDate sessionDate = sessionVO.getStartTime().toLocalDateTime().toLocalDate();
      
@@ -81,6 +85,8 @@ public class SessionController {
       ra.addFlashAttribute("message","場次時間更新成功");
      }catch(IllegalArgumentException i) {
       ra.addFlashAttribute("error","更新失敗：更新後時間與已存在場次重疊");
+     }catch(IllegalStateException i) {
+      ra.addFlashAttribute("error","場次編輯失敗：該場次已有訂單記錄"); 
      }
      
      SessionVO sessionVO = sessionService.getById(sessionId);

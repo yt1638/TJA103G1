@@ -14,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.showise.cinema.model.CinemaService;
 import com.showise.movie.model.MovieService;
 import com.showise.movie.model.MovieVO;
+import com.showise.order.model.OrderRepository;
+import com.showise.seat.model.SeatService;
 
 @Service
 public class SessionService {
@@ -24,6 +26,10 @@ public class SessionService {
 	MovieService movieService;
 	@Autowired 
 	CinemaService cinemaService;
+	@Autowired
+	SeatService seatService;
+	@Autowired
+	OrderRepository orderRepository;
 	
 	@Transactional
 	public void addSession(LocalDate searchDate,Integer movieId,Integer cinemaId,String startTimeStr) {
@@ -37,10 +43,10 @@ public class SessionService {
 		if(conflict > 0) {
 			throw new IllegalArgumentException("ADDCONFLICT");
 		}
-		String defaultSeats = "1".repeat(75);
+		String initialStatus = seatService.listSeatStatusByCinema(cinemaId);
 		SessionVO sessionVO = new SessionVO();
 		sessionVO.setSessionStatus(1);
-		sessionVO.setAllSeatStatus(defaultSeats);
+		sessionVO.setAllSeatStatus(initialStatus);
 		sessionVO.setCinema(cinemaService.getById(cinemaId));
 		sessionVO.setMovie(movieVO);
 		sessionVO.setStartTime(Timestamp.valueOf(startDateTime));
@@ -50,8 +56,12 @@ public class SessionService {
 	@Transactional
 	public void toggleStatus(Integer sessionId) {
 		SessionVO sessionVO = repository.findById(sessionId).orElseThrow(() -> new RuntimeException("場次不存在"));
+		if(orderRepository.existsBySession_SessionIdAndOrderStatus(sessionId, 1)) {
+			throw new IllegalArgumentException("Ordered");
+		}else {
 		sessionVO.setSessionStatus(sessionVO.getSessionStatus() == 1?0:1);
 		repository.save(sessionVO);
+		}
 	}
 	
 	@Transactional
@@ -72,8 +82,13 @@ public class SessionService {
 		}
 		sessionVO.setStartTime(Timestamp.valueOf(startDateTime));
 		sessionVO.setEndTime(Timestamp.valueOf(endDateTime));
-		repository.save(sessionVO);
+		if(orderRepository.existsBySession_SessionIdAndOrderStatus(sessionId, 1)) {
+			throw new IllegalStateException("Ordered");
+		}else {
+			repository.save(sessionVO);
+		}
 	}
+		
 	
 	public List<SessionVO> listByMovieId(Integer movieId) {
 		return repository.listByMovieId(movieId);
@@ -92,5 +107,9 @@ public class SessionService {
 	public SessionVO getById(Integer sessionId) {
 		Optional<SessionVO> optional = repository.findById(sessionId);
 		return optional.orElse(null);
+	}
+	
+	public List<SessionVO> listByCinema(Integer cinemaId){
+		return repository.listByCinema(cinemaId);
 	}
 }
