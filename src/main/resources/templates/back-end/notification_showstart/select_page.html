@@ -102,7 +102,7 @@
 		<li><form method="post" th:action="@{getOne_For_Display}">
 				選擇場次編號:
 				<select name="notiShowstNo">
-				     <option th:each="notificationShowstartVO : ${notificationShowstartVOListData}" th:value="${notificationShowstartVOVO.notiShowstNo}" th:text="${notificationShowstartVO.sessionId}" />
+				     <option th:each="notificationShowstartVO : ${notificationShowstartVOListData}" th:value="${notificationShowstartVO.notiShowstNo}" th:text="${notificationShowstartVO.sessionId}" />
 			    </select>
 				<input type="submit" value="送出">
 			</form><br>
@@ -143,9 +143,7 @@
 	  </ul>
 	</div>
     
-    <!-- 旗標notificationShowstartVO見EmpnoController.java的第73行 -->
     <div class="b" th:if="${notificationShowstartVO!=null}">
-        <!--使用listOneEmp.html網頁的listOneEmp-div片段--> <!-- 見listOneEmp.html的第35行的th:fragment="listOneEmp-div" --> <!-- 使用th:replace也可 -->
         <div th:insert="~{/back-end/notification_showstart/listOneNotificationShowstartVO :: listOneNotificationShowstartVO-div}"></div>
     </div>
 

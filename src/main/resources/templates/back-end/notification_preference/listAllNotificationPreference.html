@@ -67,7 +67,6 @@ body {
 <table id="example" class="display" style="width: 100%">
   <thead >
 	<tr style="background-color:#CCCCFF">
-		<th>計數</th>
 		<th>喜好通知編號</th>
 		<th>電影編號</th>
 		<th>會員編號</th>
@@ -81,7 +80,6 @@ body {
   <tbody>
 		<th:block th:each="notificationPreferenceVO : ${notificationPreferenceListData}">
 			<tr>
-				<td th:text="${notificationPreferenceVOStat.count}"></td>
 				<td th:text="${notificationPreferenceVO.notiPrefNo}"></td>
 				<td th:text="${notificationPreferenceVO.movie}"></td>
 				<td th:text="${notificationPreferenceVO.member}"></td>
@@ -91,12 +89,6 @@ body {
 			<td>
 			  <form method="post" th:action="@{/notification_preference/getOne_For_Update}" style="margin-bottom: 0px;">
 			     <input type="submit" value="修改">
-			     <input type="hidden" name="notiPrefNo" th:value="${notificationPreferenceVO.notiPrefNo}"></form>
-			
-			</td>
-			<td>
-			  <form method="post" th:action="@{/notification_preference/delete}" style="margin-bottom: 0px;">
-			     <input type="submit" value="刪除">
 			     <input type="hidden" name="notiPrefNo" th:value="${notificationPreferenceVO.notiPrefNo}"></form>
 			
 			</td>
