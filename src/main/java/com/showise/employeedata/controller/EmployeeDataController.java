@@ -1,21 +1,23 @@
 package com.showise.employeedata.controller;
 
-import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.showise.employeedata.model.EmployeeDataService;
 import com.showise.employeedata.model.EmployeeDataVO;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 @Controller
@@ -52,63 +54,53 @@ public class EmployeeDataController {
 
     @GetMapping("/addEmployeeData")
     public String addEmp(ModelMap model) {
-        EmployeeDataVO empVO = new EmployeeDataVO();
-        model.addAttribute("employeeDataVO", empVO);
+        EmployeeDataVO employeeDataVO = new EmployeeDataVO();
+        model.addAttribute("employeeDataVO", employeeDataVO);
         return "back-end/employee_data/addEmployeeData";
     }
 
     @PostMapping("/insert")
-    public String insert(@Valid EmployeeDataVO empVO,
+    public String insert(@Valid EmployeeDataVO employeeDataVO,
                          BindingResult result,
-                         ModelMap model,
-                         @RequestParam("upFiles") MultipartFile[] parts) throws IOException {
-
-        result = removeFieldError(empVO, result, "upFiles");
+                         ModelMap model) {
 
         if (result != null && result.hasErrors()) {
+            model.addAttribute("employeeDataVO", employeeDataVO);
             return "back-end/employee_data/addEmployeeData";
         }
 
-        empSvc.addEmp(empVO);
+        empSvc.addEmp(employeeDataVO);
 
         return "redirect:/employee_data/listAllEmployeeData";
     }
 
-    private BindingResult removeFieldError(@Valid EmployeeDataVO empVO,
-                                           BindingResult result,
-                                           String fieldName) {
-        return result;
-    }
-
-    /** 進入修改頁 */
-    @PostMapping("/getOne_For_Update")
-    public String getOne_For_Update(@RequestParam("empId") String empId, ModelMap model) {
-        EmployeeDataVO empVO = empSvc.getOneEmp(Integer.valueOf(empId));
-        model.addAttribute("empVO", empVO);
-        return "back-end/employee_data/update_employee_data_input";
-    }
-
     @PostMapping("/update")
-    public String update(@Valid EmployeeDataVO empVO,
+    public String update(@Valid EmployeeDataVO employeeDataVO,
                          BindingResult result,
-                         ModelMap model,
-                         @RequestParam("upFiles") MultipartFile[] parts) throws IOException {
-
-        result = removeFieldError(empVO, result, "upFiles");
+                         ModelMap model) {
 
         if (result != null && result.hasErrors()) {
-            model.addAttribute("empVO", empVO);
+            model.addAttribute("employeeDataVO", employeeDataVO);
             return "back-end/employee_data/update_employee_data_input";
         }
 
-        empSvc.updateEmp(empVO);
+        empSvc.updateEmp(employeeDataVO);
 
         model.addAttribute("success", "- (修改成功)");
-        empVO = empSvc.getOneEmp(empVO.getEmpId());
-        model.addAttribute("empVO", empVO);
+        employeeDataVO = empSvc.getOneEmp(employeeDataVO.getEmpId());
+        model.addAttribute("employeeDataVO", employeeDataVO);
 
         return "back-end/employee_data/listOne_employee_data";
     }
+
+
+    @PostMapping("/getOne_For_Update")
+    public String getOne_For_Update(@RequestParam("empId") String empId, ModelMap model) {
+        EmployeeDataVO employeeDataVO = empSvc.getOneEmp(Integer.valueOf(empId));
+        model.addAttribute("employeeDataVO", employeeDataVO);
+        return "back-end/employee_data/update_employee_data_input";
+    }
+      
 
     @GetMapping("/listAllEmployeeData")
     public String listAllEmployeeData(ModelMap model) {
@@ -119,6 +111,14 @@ public class EmployeeDataController {
 
         return "back-end/employee_data/listAllEmployeeData";
     }
+    
+    @PostMapping("listEmployeeDatas_ByCompositeQuery")
+	public String listAllEmployeeData(HttpServletRequest req, Model model) {
+		Map<String, String[]> map = req.getParameterMap();
+		List<EmployeeDataVO> list = empSvc.getAll(map);
+		model.addAttribute("employeeDataVOListData", list); 
+		return "back-end/employee_data/listAllEmployeeData";
+	}
 
 
 }

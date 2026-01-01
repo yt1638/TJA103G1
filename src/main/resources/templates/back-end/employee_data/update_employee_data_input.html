@@ -1,0 +1,125 @@
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>員工資料修改 - update_employee_data_input.html</title>
+
+<head th:insert="~{/back-end/employee_data/included-fragment}"></head>
+<style type="text/css">
+	
+	button {
+		padding: 5px;
+	}
+	form {
+		display: table;
+	}
+	form div {
+		display: table-row;
+	}
+	label, input, span, select {
+		display: table-cell;
+		margin: 5px;
+		text-align: left;		
+	}
+	input[type=text], input[type=password], select, textarea {
+		width: 200px;
+		margin: 5px;
+	}
+	form div div {
+		display: table-cell;
+	}
+	.center {
+        margin-left: auto;
+        margin-right: auto;
+    }
+</style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-md navbar-dark bg-success fixed-top justify-content-center">
+		 <div align="center"> <h2>員工資料修改 - update_notificationPreference_input.html</h2>
+		 <h3><a class="navbar-brand" th:href="@{/employee_data/select_page}"><img th:src="@{/images/back1.gif}">回查詢頁</a></h3></div>
+</nav>
+
+	<div align="center">
+		<h3><b>所有欄位皆為必填欄位</b></h3>
+		<form th:action="@{update}" method="post" th:object="${employeeDataVO}" enctype="multipart/form-data">
+			<div>
+			<label>員工編號:</label>
+			<input type="text" th:field="*{empId}" style="border:0px ; font-weight: bold;" readonly /><br/>
+
+			</div>
+			
+			<div>
+			<label>員工姓名:</label>
+			<input type="text" th:field="*{empName}" onclick="hideContent('empName.errors');" /><br/>
+			<span  th:if="${#fields.hasErrors('empName')}" th:errors="*{empName}" class="error" id="empName.errors"></span>
+			</div>
+			
+			<div>
+			<label>員工帳號:</label>
+			<input type="text" th:field="*{empAccount}" onclick="hideContent('empAccount.errors');" /><br/>
+			<span  th:if="${#fields.hasErrors('empAccount')}" th:errors="*{empAccount}" class="error" id="empAccount.errors"></span>
+			</div>
+			
+			<div>
+			<label>員工密碼:</label>
+			<input type="text" th:field="*{empPassword}" onclick="hideContent('empPassword.errors');" /><br/>
+			<span  th:if="${#fields.hasErrors('empPassword')}" th:errors="*{empPassword}" class="error" id="empPassword.errors"></span>
+			</div>
+			
+			<div>
+			<label>員工信箱:</label>
+			<input type="text" th:field="*{empEmail}" onclick="hideContent('empEmail.errors');" /><br/>
+			<span  th:if="${#fields.hasErrors('empEmail')}" th:errors="*{empEmail}" class="error" id="empEmail.errors"></span>
+			</div>
+			
+			<div>
+			<label>員工狀態:</label>
+			<input type="text" th:field="*{empStatus}" onclick="hideContent('empStatus.errors');" /><br/>
+			<span  th:if="${#fields.hasErrors('empStatus')}" th:errors="*{empStatus}" class="error" id="empStatus.errors"></span>
+			</div>
+			
+			<div>
+			<label>到職日期:</label>
+			<input type="date" th:field="*{empCreateTime}" onclick="hideContent('empCreateTime.errors');" /><br/>
+			<span  th:if="${#fields.hasErrors('empCreateTime')}" th:errors="*{empCreateTime}" class="error" id="empCreateTime.errors"></span>
+			</div>
+			
+			<div>
+			<label>員工權限:</label>
+			<input type="text" th:field="*{empPermissions}" onclick="hideContent('empPermissions.errors');" /><br/>
+			<span  th:if="${#fields.hasErrors('empPermissions')}" th:errors="*{empPermissions}" class="error" id="empPermissions.errors"></span>
+			</div>
+
+			
+			<div>
+				<div></div>
+				<div><button type="submit" id="submit"> 送出修改 </button></div>
+				<div></div>
+			</div>		
+		</form>
+	
+	</div>
+
+
+<script type="text/javascript">
+function hideContent(d) {
+     document.getElementById(d).style.display = "none";
+}
+
+
+</script>
+
+</body>
+</html>

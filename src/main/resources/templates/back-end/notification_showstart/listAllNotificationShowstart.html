@@ -78,18 +78,18 @@ body {
   </thead>
 	
   <tbody>
-		<th:block th:each="notificationShowstartVO : ${notificationShowstartListData}">
+		<th:block th:each="notificationShowstartVO : ${notificationShowstartData}">
 			<tr>
 				<td th:text="${notificationShowstartVO.notiShowstNo}"></td>
-				<td th:text="${notificationShowstartVO.member}"></td>
-				<td th:text="${notificationShowstartVO.session}"></td>
+				<td th:text="${notificationShowstartVO.member.memberId}"></td>
+				<td th:text="${notificationShowstartVO.session.sessionId}"></td>
 				<td th:text="${notificationShowstartVO.notiShowstScon}"></td>
 				<td th:text="${notificationShowstartVO.notiShowstStime}"></td>
 				<td th:text="${notificationShowstartVO.notiShowstStat}"></td>
 			<td>
 			  <form method="post" th:action="@{/notification_showstart/getOne_For_Update}" style="margin-bottom: 0px;">
 			     <input type="submit" value="修改">
-			     <input type="hidden" name="notiPrefNo" th:value="${notificationShowstartVO.notiPrefNo}"></form>
+			     <input type="hidden" name="notiPrefNo" th:value="${notificationShowstartVO.notiShowstNo}"></form>
 			
 			</td>
 			</tr>

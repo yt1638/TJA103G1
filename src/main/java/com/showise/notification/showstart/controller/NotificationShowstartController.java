@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.showise.notification.preference.model.NotificationPreferenceVO;
 import com.showise.notification.showstart.model.NotificationShowstartService;
 import com.showise.notification.showstart.model.NotificationShowstartVO;
 
@@ -40,12 +39,12 @@ public class NotificationShowstartController {
                          ModelMap model) {
 
         if (result.hasErrors()) {
-            return "back-end/notification_showstart/addNotificationPreference";
+            return "back-end/notification_showstart/addNotificationShowstart";
         }
 
         notificationShowstartSvc.addNotificationShowstart(notificationShowstartVO);
         model.addAttribute("success", "- (新增成功)");
-        return "redirect:/notification_showstart/listAllNotificationPreference";
+        return "redirect:/notification_showstart/listAllNotificationShowstart";
     }
 
     @PostMapping("/getOne_For_Update")
@@ -56,7 +55,7 @@ public class NotificationShowstartController {
     			notificationShowstartSvc.getOneNotificationShowstart(notiShowstNo);
 
         model.addAttribute("notificationShowstartVO", notificationShowstartVO);
-        return "back-end/notification_showstart/update_notificationPreference_input";
+        return "back-end/notification_showstart/update_notificationShowstart_input";
     }
 
     @PostMapping("/update")
@@ -65,7 +64,7 @@ public class NotificationShowstartController {
                          ModelMap model) {
 
         if (result.hasErrors()) {
-            return "back-end/notification_showstart/update_notificationPreference_input";
+            return "back-end/notification_showstart/update_notificationShowstart_input";
         }
 
         notificationShowstartSvc.updateNotificationShowstart(notificationShowstartVO);
@@ -92,21 +91,20 @@ public class NotificationShowstartController {
     @GetMapping("/select_page")
     public String selectPage(ModelMap model) {
         List<NotificationShowstartVO> list = notificationShowstartSvc.getAll();
-        model.addAttribute("notificationShowstartData", list);
+        model.addAttribute("notificationShowstartVOListData", list);
         return "back-end/notification_showstart/select_page";
     }
     @GetMapping("/")
     public String home() {
         return "index";
     }
-    @PostMapping("listNotificationShowstart_ByCompositeQuery")
-	public String listAllNotificationShowstartData(HttpServletRequest req, Model model) {
+    @PostMapping("listNotificationShowstarts_ByCompositeQuery")
+	public String listAllNotificationShowstart(HttpServletRequest req, Model model) {
 		Map<String, String[]> map = req.getParameterMap();
 		List<NotificationShowstartVO> list = notificationShowstartSvc.getAll(map);
-		model.addAttribute("notificationShowstartListData", list); 
+		model.addAttribute("notificationShowstartData", list); 
 		return "back-end/notification_showstart/listAllNotificationShowstart";
 	}
-
 
 }
 
