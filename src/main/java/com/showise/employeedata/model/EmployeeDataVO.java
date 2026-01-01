@@ -2,6 +2,9 @@ package com.showise.employeedata.model;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.time.LocalDate;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -37,7 +40,8 @@ public class EmployeeDataVO implements Serializable {
     private Short empStatus;
 
     @Column(name = "employee_create_time")
-    private Timestamp empCreateTime;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate empCreateTime;
 
     @Column(name = "employee_permissions")
     private Short empPermissions;
@@ -93,11 +97,11 @@ public class EmployeeDataVO implements Serializable {
         this.empStatus = empStatus;
     }
 
-    public Timestamp getEmpCreateTime() {
+    public LocalDate getEmpCreateTime() {
         return empCreateTime;
     }
 
-    public void setEmpCreateTime(Timestamp empCreateTime) {
+    public void setEmpCreateTime(LocalDate empCreateTime) {
         this.empCreateTime = empCreateTime;
     }
 

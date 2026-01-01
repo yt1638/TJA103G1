@@ -37,7 +37,6 @@ public class NotificationShowstartVO implements Serializable {
     @NotNull(message = "會員編號: 請勿空白")
     private MemberVO member;
 
-    /** 多對一：每筆通知對應一個場次 */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "session_id", nullable = false)
     @NotNull(message = "場次: 請勿空白")

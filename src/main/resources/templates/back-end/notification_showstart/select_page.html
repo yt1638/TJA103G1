@@ -92,7 +92,7 @@
 		<li><form method="post" th:action="@{getOne_For_Display}">
 				選擇會員編號:
 				<select name="notiShowstNo">
-				     <option th:each="notificationShowstartVO : ${notificationShowstartVOListData}" th:value="${notificationShowstartVO.notiShowstNo}" th:text="${notificationShowstartVO.memberId}" />
+				     <option th:each="notificationShowstartVO : ${notificationShowstartVOListData}" th:value="${notificationShowstartVO.notiShowstNo}" th:text="${notificationShowstartVO.member.memberId}" />
 			    </select>
 				<input type="submit" value="送出">
 			</form><br>
@@ -102,7 +102,7 @@
 		<li><form method="post" th:action="@{getOne_For_Display}">
 				選擇場次編號:
 				<select name="notiShowstNo">
-				     <option th:each="notificationShowstartVO : ${notificationShowstartVOListData}" th:value="${notificationShowstartVO.notiShowstNo}" th:text="${notificationShowstartVO.sessionId}" />
+				     <option th:each="notificationShowstartVO : ${notificationShowstartVOListData}" th:value="${notificationShowstartVO.notiShowstNo}" th:text="${notificationShowstartVO.session.sessionId}" />
 			    </select>
 				<input type="submit" value="送出">
 			</form><br>
@@ -144,7 +144,7 @@
 	</div>
     
     <div class="b" th:if="${notificationShowstartVO!=null}">
-        <div th:insert="~{/back-end/notification_showstart/listOneNotificationShowstartVO :: listOneNotificationShowstartVO-div}"></div>
+        <div th:insert="~{back-end/notification_showstart/listOneNotificationShowstart :: listOneNotificationShowstart-div}"></div>
     </div>
 
 </body>
