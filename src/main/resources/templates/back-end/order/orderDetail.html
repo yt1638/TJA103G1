@@ -1,0 +1,206 @@
+
+<!DOCTYPE html>
+<html lang="en"xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>訂單明細</title>
+    <link th:href="@{/css/sb-admin-2.min.css}" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Begin Page Content -->
+    <div class="container-fluid">
+
+        <!-- Page Heading + 返回按鈕 -->
+        <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800">訂單明細</h1>
+            <a th:href="@{/backend/order/}" class="btn btn-sm btn-secondary">
+                <i class="fas fa-arrow-left mr-1"></i> 返回訂單列表
+            </a>
+        </div>
+        <!-- 錯誤顯示 -->
+        <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+        <!-- 第一排：基本資訊 + 會員資訊 -->
+        <div class="row text-gray-900">
+
+            <!-- 基本資訊區 -->
+            <div class="col-lg-6 mb-4">
+                <div class="card shadow h-100">
+                    <div class="card-header">
+                        <h6 class="section-title">基本資訊</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <span>訂單編號：</span>
+                            <span th:text="${order.orderId}"></span>
+                        </div>
+                        <div class="mb-3">
+                            <span>訂單狀態：</span>
+                            <span class="badge badge-success" th:if="${order.orderStatus == 1}">已售出</span>
+                            <span class="badge badge-secondary" th:if="${order.orderStatus == 0}">未付款</span>
+                        </div>
+                        <div class="mb-3">
+                            <span>建立時間：</span>
+                            <span th:text="${#dates.format(order.orderCreateTime, 'yyyy-MM-dd HH:mm')}"></span>
+                        </div>
+                        <div class="mb-1">
+                            <span>訂單總金額：</span>
+                            <span class="text-danger font-weight-bold" th:text="'$ '+${order.totalPrice}"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 會員資訊區 -->
+            <div class="col-lg-6 mb-4">
+                <div class="card shadow h-100">
+                    <div class="card-header">
+                        <h6 class="section-title">會員資訊</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <span>會員編號：</span>
+                            <span th:text="${order.member.memberId}"></span>
+                        </div>
+                        <div class="mb-3">
+                            <span>會員姓名：</span>
+                            <span th:text="${order.member.name}"></span>
+                        </div>
+                        <div class="mb-3">
+                            <span>會員帳號（Email）：</span>
+                            <span th:text="${order.member.email}"></span>
+                        </div>
+                        <div class="mb-1">
+                            <span>級別：</span>
+                            <span class="badge badge-primary" th:text="${order.member.memberClass.memberName}"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- 第二排：電影 / 場次 / 座位資訊 -->
+        <div class="row text-gray-900">
+
+            <div class="col-lg-12 mb-4">
+                <div class="card shadow h-100">
+                    <div class="card-header">
+                        <h6 class="section-title">電影、場次、座位資訊</h6>
+                    </div>
+                    <div class="card-body">
+
+                        <div class="row mb-3">
+                            <div class="col-md-6 mb-2">
+                                <span>電影名稱：</span>
+                                <span th:text="${order.session.movie.nameTw}"></span>
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <span>場次日期：</span>
+                                <span th:text="${#dates.format(order.session.startTime , 'yyyy-MM-dd HH:mm')}"></span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6 mb-2">
+                                <span>影廳資訊：</span>
+                                <span th:text="${order.session.cinema.cinemaName}"></span>
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <span>座位資訊：</span>
+                                <span th:each="t , stat:${order.orderTickets}" th:text="${t.seat.rowNo + t.seat.columnNo + (stat.last ? '':'、')}"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- 第三排：票券明細 + 餐飲明細 -->
+        <div class="row text-gray-900">
+
+            <!-- 票券明細表 -->
+            <div class="col-lg-6 mb-4">
+                <div class="card shadow h-100">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h6 class="section-title mb-0">票券明細</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive  text-gray-900">
+                            <table class="table table-bordered table-sm mb-0 text-gray-900">
+                                <thead class="thead-light">
+                                    <tr class="text-center text-gray-900">
+                                        <th>票種</th>
+                                        <th>數量</th>
+                                        <th>單價</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="t : ${ticketSummary}" class="text-center">
+									  <td th:text="${t.ticketName}"></td>
+									  <td th:text="${t.quantity}"></td>
+									  <td th:text="'$ ' + ${t.price}"></td>
+									</tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="2" class="text-right">票券小計</td>
+                                        <td class="text-center"  th:text="'$ '+${ticketTotal}"></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 餐飲明細表 -->
+            <div class="col-lg-6 mb-4 text-gray-900">
+                <div class="card shadow h-100">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h6 class="section-title mb-0">餐飲明細</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-sm mb-0 text-gray-900">
+                                <thead class="thead-light">
+                                    <tr class="text-center">
+                                        <th>品項</th>
+                                        <th>數量</th>
+                                        <th>單價</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="text-center" th:each="f : ${order.orderFoods}">
+                                        <td th:text="${f.food.foodName}"></td>
+                                        <td th:text="${f.foodQuantity}"></td>
+                                        <td th:text="'$ '+${f.foodPrice}"></td>
+                                    </tr>
+                                      <tr th:if="${#sets.isEmpty(order.orderFoods)}">
+									    <td colspan="3" class="text-center text-muted">無餐飲</td>
+									  </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="2" class="text-right">餐飲小計</td>
+                                        <td class="text-center" th:text="'$ '+${foodTotal}"></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+    <!-- /.container-fluid -->
+
+
+</body>
+
+</html>
