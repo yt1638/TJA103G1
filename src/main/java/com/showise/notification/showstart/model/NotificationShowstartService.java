@@ -38,7 +38,38 @@ public class NotificationShowstartService {
 	}
 
 	public List<NotificationShowstartVO> getAll(Map<String, String[]> map) {
-		return repository.findAll();
+
+	    Integer memberId  = parseIntOrNull(getFirst(map, "memberId"));
+	    Integer sessionId = parseIntOrNull(getFirst(map, "sessionId"));
+	    java.sql.Date stime = parseDateOrNull(getFirst(map, "notiShowstStime"));
+
+	    return repository.compositeQuery(memberId, sessionId, stime);
 	}
+
+	private String getFirst(Map<String, String[]> map, String key) {
+	    String[] arr = map.get(key);
+	    if (arr == null || arr.length == 0) return null;
+	    String v = arr[0];
+	    return (v == null || v.trim().isEmpty()) ? null : v.trim();
+	}
+
+	private Integer parseIntOrNull(String s) {
+	    if (s == null) return null;
+	    try {
+	        return Integer.valueOf(s);
+	    } catch (NumberFormatException e) {
+	        return null;
+	    }
+	}
+
+	private java.sql.Date parseDateOrNull(String s) {
+	    if (s == null) return null;
+	    try {
+	        return java.sql.Date.valueOf(s); 
+	    } catch (IllegalArgumentException e) {
+	        return null;
+	    }
+	}
+
 
 }

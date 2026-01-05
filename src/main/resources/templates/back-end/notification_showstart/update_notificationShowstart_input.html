@@ -48,7 +48,7 @@
 
 <nav class="navbar navbar-expand-md navbar-dark bg-success fixed-top justify-content-center">
 		 <div align="center"> <h2>開演通知資料修改 - update_notificationShowstart_input.html</h2>
-		 <h3><a class="navbar-brand" th:href="@{/notification_showstart/select_page}"><img th:src="@{/images/back1.gif}">回查詢頁</a></h3></div>
+		 <h3><a class="navbar-brand" th:href="@{/notification_showstart/select_page}">回查詢頁</a></h3></div>
 </nav>
 
 	<div align="center">
@@ -62,14 +62,14 @@
 			
 			<div>
 			<label>會員編號:</label>
-			<input type="text" th:field="*{memberId}" onclick="hideContent('memberId.errors');" /><br/>
-			<span  th:if="${#fields.hasErrors('memberId')}" th:errors="*{memberId}" class="error" id="memberId.errors"></span>
+			<input type="text" th:field="*{member.memberId}" onclick="hideContent('member.memberId.errors');" /><br/>
+			<span  th:if="${#fields.hasErrors('member.memberId')}" th:errors="*{member.memberId}" class="error" id="member.memberId.errors"></span>
 			</div>
 			
 			<div>
 			<label>場次編號:</label>
-			<input type="text" th:field="*{sessionId}" onclick="hideContent('sessionId.errors');" /><br/>
-			<span  th:if="${#fields.hasErrors('sessionId')}" th:errors="*{sessionId}" class="error" id="sessionId.errors"></span>
+			<input type="text" th:field="*{session.sessionId}" onclick="hideContent('session.sessionId.errors');" /><br/>
+			<span  th:if="${#fields.hasErrors('session.sessionId')}" th:errors="*{session.sessionId}" class="error" id="session.sessionId.errors"></span>
 			</div>
 			
 			<div>
@@ -101,56 +101,12 @@
 	</div>
 
 
-<!-- JavaScript part -->
 <script type="text/javascript">
 //清除提示信息
 function hideContent(d) {
      document.getElementById(d).style.display = "none";
 }
 
-//照片上傳-預覽用
-// var filereader_support = typeof FileReader != 'undefined';
-// if (!filereader_support) {
-// 	alert("No FileReader support");
-// }
-// acceptedTypes = {
-// 		'image/png' : true,
-// 		'image/jpeg' : true,
-// 		'image/gif' : true
-// };
-// function previewImage() {
-// 	var upfile1 = document.getElementById("upFiles");
-// 	upfile1.addEventListener("change", function(event) {
-// 		var files = event.target.files || event.dataTransfer.files;
-// 		for (var i = 0; i < files.length; i++) {
-// 			previewfile(files[i])
-// 		}
-// 	}, false);
-// }
-// function previewfile(file) {
-// 	if (filereader_support === true && acceptedTypes[file.type] === true) {
-// 		var reader = new FileReader();
-// 		reader.onload = function(event) {
-// 			var image = new Image();
-// 			image.src = event.target.result;
-// 			image.width = 100;
-// 			image.height = 75;
-// 			image.border = 2;
-// 			if (blob_holder.hasChildNodes()) {
-// 				blob_holder.removeChild(blob_holder.childNodes[0]);
-// 			}
-// 			blob_holder.appendChild(image);
-// 		};
-// 		reader.readAsDataURL(file);
-// 		document.getElementById('submit').disabled = false;
-// 	} else {
-// 		blob_holder.innerHTML = "<div  style='text-align: left;'>" + "● filename: " + file.name
-// 				+ "<br>" + "● ContentTyp: " + file.type
-// 				+ "<br>" + "● size: " + file.size + "bytes"
-// 				+ "<br>" + "● 上傳ContentType限制: <b> <font color=red>image/png、image/jpeg、image/gif </font></b></div>";
-// 		document.getElementById('submit').disabled = true;
-// 	}
-// }
 </script>
 
 </body>

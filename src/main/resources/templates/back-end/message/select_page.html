@@ -113,6 +113,21 @@
 			</form><br>
 		</li>
 		
+			<li>
+			  <form method="post" th:action="@{/message/getOne_For_Display}">
+			    通知內容:
+			    <select name="msgNo">
+			      <option value="">-- 請選擇 --</option>
+			      <option th:each="messageVO : ${messageListData}"
+			              th:value="${messageVO.msgNo}"
+			              th:text="${messageVO.msgCont}">
+			      </option>
+			    </select>
+			
+			    <input type="submit" value="送出">
+			  </form>
+			</li>
+		
 		
 	
       <h4><span>通知管理</span></h4>

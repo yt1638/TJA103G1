@@ -14,13 +14,12 @@ import com.showise.message.model.MessageVO;
 import jakarta.validation.Valid;
 
 @Controller
-@RequestMapping("/Message")
+@RequestMapping("/message")
 public class MessageController {
 
     @Autowired
     private MessageService messageSvc;
 
-    /** 修改 */
     @PostMapping("/update")
     public String update(@Valid MessageVO messageVO,
                          BindingResult result,
@@ -34,6 +33,11 @@ public class MessageController {
 
         model.addAttribute("success", "- (修改成功)");
         return "redirect:/message/listAllMessage";
+    }
+    
+    @GetMapping("/select_page")
+    public String selectPage() {
+        return "back-end/message/select_page"; 
     }
 
     @GetMapping("/")
