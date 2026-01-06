@@ -1,101 +1,552 @@
-
-
-
-
-
-
-
-
-
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>所有喜好通知資料 - listAllNotificationShowstart.html</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
 
-<head th:insert="~{/back-end/notification_showstart/included-fragment}"></head>
-<script src="https://code.jquery.com/jquery-3.5.1.js"></script>                                    <!-- ●●js  for jquery datatables 用 -->
-<script	src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>              <!-- ●●js  for jquery datatables 用 -->
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/dataTables.jqueryui.min.css" /> <!-- ●●css for jquery datatables 用 -->
+    <title>開演通知查詢</title>
 
-<!-- ●● jquery datatables 設定 -->
-<script>
-	$(document).ready(function() {
-		$('#example').DataTable({
-			"lengthMenu": [3 ,5, 10, 20, 50, 100],
-			"searching": true,  //搜尋功能, 預設是開啟
-		    "paging": true,     //分頁功能, 預設是開啟
-		    "ordering": true,   //排序功能, 預設是開啟
-		    "language": {
-		        "processing": "處理中...",
-		        "loadingRecords": "載入中...",
-		        "lengthMenu": "顯示 _MENU_ 筆結果",
-		        "zeroRecords": "沒有符合的結果",
-		        "info": "顯示第 _START_ 至 _END_ 筆結果，共<font color=red> _TOTAL_ </font>筆",
-		        "infoEmpty": "顯示第 0 至 0 筆結果，共 0 筆",
-		        "infoFiltered": "(從 _MAX_ 筆結果中過濾)",
-		        "infoPostFix": "",
-		        "search": "搜尋:",
-		        "paginate": {
-		            "first": "第一頁",
-		            "previous": "上一頁",
-		            "next": "下一頁",
-		            "last": "最後一頁"
-		        },
-		        "aria": {
-		            "sortAscending":  ": 升冪排列",
-		            "sortDescending": ": 降冪排列"
-		        }
-		    }
-		});
-	});
-</script>
-<style type="text/css">
-body {
-	margin: 1rem 12rem 2rem 12rem;
-}
-</style>
+    <!-- Custom fonts -->
+    <link href="/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+
+    <!-- SB Admin -->
+    <link href="/css/sb-admin-2.min.css" rel="stylesheet">
+    <link href="/vendor/fontawesome-free-7.1.0-web/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- ✅ DataTables -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css" />
+
+    <style>
+        /* Topbar「後台系統」標題樣式 */
+        .topbar-title {
+            font-family: 'Baloo 2', 'Nunito', 'Microsoft JhengHei', sans-serif;
+            font-size: 30px;
+            font-weight: 600;
+            color: #6f98ff;
+            letter-spacing: 2px;
+            text-align: center;
+            flex: 1 1 auto;
+            display: inline-block;
+            background: #f3feff;
+            border: 2px solid #a6bbff;
+            padding: 6px 26px;
+            border-radius: 999px;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
+            transition: all 0.25s ease;
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+
+        .topbar-title:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.18);
+        }
+
+        @media (max-width: 767.98px) {
+            .topbar-title {
+                font-size: 22px;
+                padding: 4px 16px;
+                letter-spacing: 1px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar .nav-link span {
+                font-size: 13px !important;
+                font-weight: 700;
+            }
+
+            .sidebar .nav-link i {
+                font-size: 13px !important;
+                margin-right: 6px;
+            }
+
+            .sidebar-brand-text {
+                font-size: 13px !important;
+            }
+        }
+
+        .page-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1f3c88;
+            display: inline-block;
+            border-bottom: 2px solid #1f3c88;
+            padding-bottom: 4px;
+            margin-bottom: 18px;
+        }
+
+        .page-title-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
+        .edit-showstart-btn {
+            background-color: #000;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .edit-showstart-btn:hover {
+            background-color: #333;
+            transform: translateY(-1px);
+        }
+
+        /* 灰底查詢區 */
+        .search-bar-wrapper {
+            background: #e9eaec;
+            border-radius: 10px;
+            padding: 18px 24px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .search-group {
+            display: flex;
+            align-items: center;
+            margin-right: 40px;
+            margin-bottom: 10px;
+        }
+
+        .search-group label {
+            margin-right: 8px;
+            white-space: nowrap;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .search-group input,
+        .search-group select {
+            min-width: 210px;
+        }
+
+        .search-submit {
+            margin-left: auto;
+            margin-bottom: 10px;
+        }
+
+        .search-submit .btn {
+            padding: 6px 26px;
+            border-radius: 20px;
+        }
+
+        .error-msg {
+            color: red;
+            font-weight: 700;
+            margin-top: 10px;
+            margin-bottom: 0;
+        }
+
+        /* ✅ DataTables 外觀微調：跟 SB Admin 融合 */
+        .dataTables_wrapper {
+            padding: 16px;
+        }
+
+        table.dataTable thead th {
+            text-align: center;
+            background-color: #f5f5f5;
+        }
+
+        table.dataTable tbody td {
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        /* 內容欄位過長時處理 */
+        .td-content {
+            max-width: 380px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* 修改按鈕：黑底白字 */
+		.btn-edit {
+		    padding: 6px 14px;
+		    border-radius: 10px;
+		    border: none;
+		    background: #000;      /* 黑底 */
+		    color: #fff;           /* 白字 */
+		    font-weight: 600;
+		    cursor: pointer;
+		    transition: all 0.2s ease;
+		}
+		
+		.btn-edit:hover {
+		    background: #333;      /* hover 微亮 */
+		    color: #fff;
+		}
+
+        /* 搜尋按鈕：黑底白字 */
+		.search-btn {
+		    background-color: #000 !important;
+		    color: #fff !important;
+		    border: none;
+		    padding: 8px 26px;
+		    border-radius: 999px;
+		    font-weight: 600;
+		    transition: all 0.2s ease;
+		}
+		
+		.search-btn:hover {
+		    background-color: #333 !important;
+		    color: #fff !important;
+		    transform: translateY(-1px);
+		}
+		
+		.search-btn:active {
+		    background-color: #111 !important;
+		}
+        
+    </style>
 </head>
-<body>
 
-<nav class="navbar navbar-expand-md navbar-dark bg-success fixed-top justify-content-center">
-		 <div align="center"> <h2>所有員工資料 - listAllNotificationShowstart.html</h2>
-		 <h3><a class="navbar-brand" th:href="@{/notification_showstart/select_page}"><img th:src="@{/images/back1.gif}">回查詢頁<label th:text="${success}"></label></a></h3></div>
-</nav>
+<body id="page-top">
+<div id="wrapper">
 
-<table id="example" class="display" style="width: 100%">
-  <thead >
-	<tr style="background-color:#CCCCFF">
-		<th>開演通知編號</th>
-		<th>會員編號</th>
-		<th>場次編號</th>
-		<th>發送日期</th>
-		<th>發送內容</th>
-		<th>發送狀態</th>
-		<th>修改</th>
-	</tr>
-  </thead>
-	
-  <tbody>
-		<th:block th:each="notificationShowstartVO : ${notificationShowstartData}">
-			<tr>
-				<td th:text="${notificationShowstartVO.notiShowstNo}"></td>
-				<td th:text="${notificationShowstartVO.member.memberId}"></td>
-				<td th:text="${notificationShowstartVO.session.sessionId}"></td>
-				<td th:text="${notificationShowstartVO.notiShowstScon}"></td>
-				<td th:text="${notificationShowstartVO.notiShowstStime}"></td>
-				<td th:text="${notificationShowstartVO.notiShowstStat}"></td>
-			<td>
-			  <form method="post" th:action="@{/notification_showstart/getOne_For_Update}" style="margin-bottom: 0px;">
-			     <input type="submit" value="修改">
-			     <input type="hidden" name="notiPrefNo" th:value="${notificationShowstartVO.notiShowstNo}"></form>
-			
-			</td>
-			</tr>
-		</th:block>
+    <!-- Sidebar -->
+    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/index">
+            <div class="sidebar-brand-icon">
+                <i class="fa-solid fa-house fa-2x"></i>
+            </div>
+            <div class="sidebar-brand-text mr-3" style="font-size: 18px;">影智推 HOME</div>
+        </a>
+
+        <hr class="sidebar-divider my-0">
+
+        <li class="nav-item">
+            <a class="nav-link" href="/index">
+                <span><i class="fa-solid fa-gauge"></i>Dashboard</span>
+            </a>
+        </li>
+
+        <hr class="sidebar-divider">
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
+               aria-expanded="true" aria-controls="collapseTwo">
+                <span><i class="fas fa-clapperboard"></i> 電影管理</span>
+            </a>
+            <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <a class="collapse-item" href="/buttons.html">電影資料管理</a>
+                    <a class="collapse-item" href="/cards.html">場次管理</a>
+                    <a class="collapse-item" href="/cards.html">座位管理</a>
+                </div>
+            </div>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
+               aria-expanded="true" aria-controls="collapseUtilities">
+                <span><i class="fa-solid fa-user"></i> 會員管理</span>
+            </a>
+            <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
+                 data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <a class="collapse-item" href="/utilities-color.html">會員資料管理</a>
+                    <a class="collapse-item" href="/utilities-border.html">會員分級管理</a>
+                </div>
+            </div>
+        </li>
+
+        <hr class="sidebar-divider">
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseFood"
+               aria-expanded="true" aria-controls="collapseFood">
+                <span><i class="fa-solid fa-burger"></i> 餐飲管理</span>
+            </a>
+            <div id="collapseFood" class="collapse" aria-labelledby="headingFood" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <a class="collapse-item">菜單概覽</a>
+                </div>
+            </div>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTicket"
+               aria-expanded="true" aria-controls="collapseTicket">
+                <span><i class="fa-solid fa-ticket"></i> 票種管理</span>
+            </a>
+            <div id="collapseTicket" class="collapse" aria-labelledby="headingTicket"
+                 data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <a class="collapse-item">票券編輯</a>
+                </div>
+            </div>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#orderPages"
+               aria-expanded="true" aria-controls="orderPages">
+                <span><i class="fa-solid fa-list"></i> 訂單管理</span>
+            </a>
+            <div id="orderPages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <a class="collapse-item">會員訂單管理</a>
+                </div>
+            </div>
+        </li>
+
+        <li class="nav-item active">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#notifyPages"
+               aria-expanded="true" aria-controls="notifyPages">
+                <span><i class="fa-regular fa-envelope-open"></i> 通知管理</span>
+            </a>
+            <div id="notifyPages" class="collapse show" aria-labelledby="headingPages"
+                 data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <a class="collapse-item active" th:href="@{/notification_showstart/select_page}">開演通知</a>
+					<a class="collapse-item" th:href="@{/notification_preference/select_page}">喜好通知</a>
+                </div>
+            </div>
+        </li>
+
+        <hr class="sidebar-divider d-none d-md-block">
+
+        <div class="text-center d-none d-md-inline">
+            <button class="rounded-circle border-0" id="sidebarToggle"></button>
+        </div>
+
+        <div class="sidebar-card d-none d-lg-flex">
+            <img class="sidebar-card-illustration mb-2" src="/img/undraw_rocket.svg" alt="...">
+        </div>
+    </ul>
+    <!-- End Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+        <div id="content">
+
+            <!-- Topbar -->
+            <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+                <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                    <i class="fa fa-bars"></i>
+                </button>
+
+                <div class="topbar-title mx-auto">後台系統</div>
+
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item dropdown no-arrow">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="mr-2 d-none d-lg-inline text-gray-600 small">登錄帳號人</span>
+                            <img class="img-profile rounded-circle" src="/img/undraw_profile.svg">
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                             aria-labelledby="userDropdown">
+                            <a class="dropdown-item" href="#"><i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>個人資料</a>
+                            <a class="dropdown-item" href="#"><i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>設定</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                                <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>登出
+                            </a>
+                        </div>
+                    </li>
+                </ul>
+            </nav>
+            <!-- End Topbar -->
+
+            <div class="container-fluid">
+
+                <div class="page-title-bar">
+                    <span class="page-title">開演通知查詢</span>
+
+                    <button class="edit-showstart-btn" onclick="location.href='/notification_showstart_edit.html'">
+                        開演通知編輯
+                    </button>
+                </div>
+
+                <!-- ✅ 前端錯誤訊息 -->
+                <div id="clientError" class="error-msg"></div>
+
+                <!-- ✅ 複合查詢 -->
+                <form method="post"
+                      action="/notification_showstart/listNotificationShowstarts_ByCompositeQuery"
+                      onsubmit="return validateForm();">
+
+                    <input type="hidden" name="notiShowstNo" value="">
+
+                    <div class="search-bar-wrapper">
+                        <div class="search-group">
+                            <label for="sendDate">已發送日期查詢:</label>
+                            <input type="date" class="form-control" id="sendDate" name="notiShowstStime">
+                        </div>
+
+                        <div class="search-group">
+                            <label for="memberIdInput">選擇會員編號:</label>
+                            <input type="text" class="form-control" id="memberIdInput" name="memberId" placeholder="請輸入會員編號">
+                        </div>
+
+                        <div class="search-group">
+                            <label for="sessionIdInput">選擇場次編號:</label>
+                            <input type="text" class="form-control" id="sessionIdInput" name="sessionId" placeholder="請輸入場次編號">
+                        </div>
+
+                        <div class="search-submit">
+                            <button type="submit" class="btn search-btn">搜尋</button>
+                        </div>
+                    </div>
+                </form>
+
+	<table id="example" class="display" style="width: 100%">
+	  <thead >
+		<tr style="background-color:#CCCCFF">
+			<th>會員編號</th>
+			<th>場次編號</th>
+			<th>發送日期</th>
+			<th>發送內容</th>
+			<th>發送狀態</th>
+		</tr>
+	  </thead>
+		
+	  <tbody>
+			<th:block th:each="notificationShowstartVO : ${notificationShowstartData}">
+				<tr>
+					<td th:text="${notificationShowstartVO.member.memberId}"></td>
+					<td th:text="${notificationShowstartVO.session.sessionId}"></td>
+					<td th:text="${notificationShowstartVO.notiShowstStime}"></td>
+					<td th:text="${notificationShowstartVO.notiShowstScon}"></td>
+					<td th:text="${notificationShowstartVO.notiShowstStat}"></td>
+
+				</tr>
+			</th:block>
   </tbody>
 </table>
+
+            </div><!-- container-fluid -->
+        </div><!-- content -->
+
+    </div><!-- content-wrapper -->
+</div><!-- wrapper -->
+
+<a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+</a>
+
+<!-- Logout Modal -->
+<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">確定要登出？</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">若要結束目前的登入狀態，請在下方選擇「登出」。</div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">取消</button>
+                <a class="btn btn-primary" href="/login.html">登出</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JS -->
+<script src="/vendor/jquery/jquery.min.js"></script>
+<script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="/vendor/jquery-easing/jquery.easing.min.js"></script>
+<script src="/js/sb-admin-2.min.js"></script>
+<script src="/vendor/fontawesome-free-7.1.0-web/js/all.min.js"></script>
+
+<!-- ✅ DataTables -->
+<script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
+
+<script>
+$(document).ready(function () {
+  $('#example').DataTable({
+    // ✅ 不顯示 Show entries 下拉
+    lengthChange: false,
+
+    // ✅ 不顯示 Search 搜尋框
+    searching: false,
+
+    // ✅ 你原本的設定
+    paging: true,
+    ordering: true,
+
+    // ✅ 如果你也不想顯示「顯示第 X 至 Y 筆結果...」這行，就改成 'tip'
+    // dom: 'rtip', // r=processing, t=table, i=info, p=pagination
+    dom: 'rtip',
+
+    language: {
+      zeroRecords: "沒有符合的結果",
+      emptyTable: "查無資料",
+      info: "顯示第 _START_ 至 _END_ 筆結果，共 _TOTAL_ 筆",
+      infoEmpty: "顯示第 0 至 0 筆結果，共 0 筆",
+      paginate: {
+        first: "第一頁",
+        previous: "上一頁",
+        next: "下一頁",
+        last: "最後一頁"
+      }
+    }
+  });
+});
+</script>
+
+<script>
+    // ✅ 前端驗證：至少一個條件 + 數字驗證
+    function validateForm() {
+        const memberId = document.querySelector("[name='memberId']").value.trim();
+        const sessionId = document.querySelector("[name='sessionId']").value.trim();
+        const date = document.querySelector("[name='notiShowstStime']").value.trim();
+
+        let errors = [];
+
+        if (!memberId && !sessionId && !date) {
+            errors.push("請至少輸入一個查詢條件");
+        }
+
+        const numberPattern = /^\d+$/;
+
+        if (memberId && !numberPattern.test(memberId)) {
+            errors.push("會員編號必須為數字");
+        }
+
+        if (sessionId && !numberPattern.test(sessionId)) {
+            errors.push("場次編號必須為數字");
+        }
+
+        const errorDiv = document.getElementById("clientError");
+        errorDiv.innerHTML = "";
+
+        if (errors.length > 0) {
+            errorDiv.innerHTML = errors.join("<br>");
+            return false;
+        }
+
+        return true;
+    }
+</script>
+
+<footer class="sticky-footer bg-white">
+    <div class="container my-auto">
+        <div class="copyright text-center my-auto">
+            <span>版權所有 &copy; Showise</span>
+        </div>
+    </div>
+</footer>
 
 </body>
 </html>

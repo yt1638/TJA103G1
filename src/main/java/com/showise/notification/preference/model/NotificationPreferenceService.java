@@ -1,44 +1,46 @@
 package com.showise.notification.preference.model;
 
+import java.sql.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
-import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-
 
 @Service("notification_preference")
 public class NotificationPreferenceService {
 
-	@Autowired
-	NotificationPreferenceRepository repository;
-	
-	@Autowired
-    private SessionFactory sessionFactory;
+    @Autowired
+    private NotificationPreferenceRepository repository;
 
-	public void addNotificationPreference(NotificationPreferenceVO notificationPreferenceVO) {
-		repository.save(notificationPreferenceVO);
-	}
+    // 新增
+    public void addNotificationPreference(NotificationPreferenceVO notificationPreferenceVO) {
+        repository.save(notificationPreferenceVO);
+    }
 
-	public void updateNotificationPreference(NotificationPreferenceVO notificationPreferenceVO) {
-		repository.save(notificationPreferenceVO);
-	}
+    // 修改
+    public void updateNotificationPreference(NotificationPreferenceVO notificationPreferenceVO) {
+        repository.save(notificationPreferenceVO);
+    }
 
+    // 刪除（✅補上，配合 Controller）
+    public void deleteNotificationPreference(Integer notiPrefNo) {
+        repository.deleteById(notiPrefNo);
+    }
 
-	public NotificationPreferenceVO getOneNotificationPreference(Integer notiPrefNo) {
-		Optional<NotificationPreferenceVO> optional = repository.findById(notiPrefNo);
-		return optional.orElse(null);  
-	}
+    // 單筆查詢
+    public NotificationPreferenceVO getOneNotificationPreference(Integer notiPrefNo) {
+        Optional<NotificationPreferenceVO> optional = repository.findById(notiPrefNo);
+        return optional.orElse(null);
+    }
 
-	public List<NotificationPreferenceVO> getAll() {
-		return repository.findAll();
-	}
+    // 全部查詢
+    public List<NotificationPreferenceVO> getAll() {
+        return repository.findAll();
+    }
 
-	public List<NotificationPreferenceVO> getAll(Map<String, String[]> map) {
-		return repository.findAll();
-	}
-
+    // 複合查詢（✅你現在的 Repository JPQL 就是吃這三個）
+    public List<NotificationPreferenceVO> compositeQuery(Integer memberId, Integer movieId, Date sendDate) {
+        return repository.compositeQuery(memberId, movieId, sendDate);
+    }
 }

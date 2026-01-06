@@ -19,7 +19,6 @@ import com.showise.notification.preference.model.NotificationPreferenceVO;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
-
 @Controller
 @RequestMapping("/notification_preference")
 public class NotificationPreferenceController {
@@ -27,10 +26,10 @@ public class NotificationPreferenceController {
     @Autowired
     private NotificationPreferenceService notificationPreferenceSvc;
 
-    @GetMapping("/addNotificationPreference")
-    public String addNotificationPreference(ModelMap model) {
+    @GetMapping("/update_notificationPreference_input")
+    public String updateNotificationPreferenceInput(Model model) {
         model.addAttribute("notificationPreferenceVO", new NotificationPreferenceVO());
-        return "back-end/notification_preference/addNotificationPreference";
+        return "back-end/notification_preference/update_notificationPreference_input";
     }
 
     @PostMapping("/insert")
@@ -46,7 +45,6 @@ public class NotificationPreferenceController {
         model.addAttribute("success", "- (新增成功)");
         return "redirect:/notification_preference/listAllNotificationPreference";
     }
-    
 
     @PostMapping("/getOne_For_Update")
     public String getOne_For_Update(@RequestParam("notiPrefNo") Integer notiPrefNo,
@@ -69,11 +67,9 @@ public class NotificationPreferenceController {
         }
 
         notificationPreferenceSvc.updateNotificationPreference(notificationPreferenceVO);
-
         model.addAttribute("success", "- (修改成功)");
         return "redirect:/notification_preference/listAllNotificationPreference";
     }
-
 
 
     @GetMapping("/listAllNotificationPreference")
@@ -82,24 +78,74 @@ public class NotificationPreferenceController {
         model.addAttribute("notificationPreferenceListData", list);
         return "back-end/notification_preference/listAllNotificationPreference";
     }
+
     @GetMapping("/select_page")
-    public String selectPage(ModelMap model) {
-        List<NotificationPreferenceVO> list = notificationPreferenceSvc.getAll();
-        model.addAttribute("notificationPreferenceListData", list);
+    public String selectPage(Model model) {
+        model.addAttribute("notificationPreferenceListData", java.util.Collections.emptyList());
         return "back-end/notification_preference/select_page";
     }
+
     @GetMapping("/")
     public String home() {
         return "index";
     }
-	@PostMapping("listNotificationPreferences_ByCompositeQuery")
-	public String listAllNotificationPreference(HttpServletRequest req, Model model) {
-		Map<String, String[]> map = req.getParameterMap();
-		List<NotificationPreferenceVO> list = notificationPreferenceSvc.getAll(map);
-		model.addAttribute("notificationPreferenceListData", list); // for listAllEmp.html 第85行用
-		return "back-end/notification_preference/listAllNotificationPreference";
-	}
 
+    @PostMapping("/listNotificationPreferences_ByCompositeQuery")
+    public String listNotificationPreferences_ByCompositeQuery(HttpServletRequest req, Model model) {
 
+        Map<String, String[]> parameterMap = req.getParameterMap();
+
+        String memberIdStr = getFirstTrimmed(parameterMap, "memberId");
+        String movieIdStr  = getFirstTrimmed(parameterMap, "movieId");
+        String stimeStr    = getFirstTrimmed(parameterMap, "notiPrefStime"); // yyyy-MM-dd
+
+        if (memberIdStr.isEmpty() && movieIdStr.isEmpty() && stimeStr.isEmpty()) {
+            model.addAttribute("errorMessage", "請至少輸入一個查詢條件");
+            model.addAttribute("notificationPreferenceListData", notificationPreferenceSvc.getAll());
+            return "back-end/notification_preference/select_page";
+        }
+
+        if (!memberIdStr.isEmpty() && !isDigits(memberIdStr)) {
+            model.addAttribute("errorMessage", "會員編號必須為數字");
+            model.addAttribute("notificationPreferenceListData", notificationPreferenceSvc.getAll());
+            return "back-end/notification_preference/select_page";
+        }
+        if (!movieIdStr.isEmpty() && !isDigits(movieIdStr)) {
+            model.addAttribute("errorMessage", "電影編號必須為數字");
+            model.addAttribute("notificationPreferenceListData", notificationPreferenceSvc.getAll());
+            return "back-end/notification_preference/select_page";
+        }
+
+        Integer memberId = memberIdStr.isEmpty() ? null : Integer.valueOf(memberIdStr);
+        Integer movieId  = movieIdStr.isEmpty()  ? null : Integer.valueOf(movieIdStr);
+
+        java.sql.Date sendDate = null;
+        if (!stimeStr.isEmpty()) {
+            try {
+                sendDate = java.sql.Date.valueOf(stimeStr);
+            } catch (IllegalArgumentException e) {
+                model.addAttribute("errorMessage", "日期格式錯誤（請用 yyyy-MM-dd）");
+                model.addAttribute("notificationPreferenceListData", notificationPreferenceSvc.getAll());
+                return "back-end/notification_preference/select_page";
+            }
+        }
+        
+        List<NotificationPreferenceVO> list =
+                notificationPreferenceSvc.compositeQuery(memberId, movieId, sendDate);
+
+        model.addAttribute("notificationPreferenceListData", list);
+        return "back-end/notification_preference/select_page";
+    }
+
+    private String getFirstTrimmed(Map<String, String[]> parameterMap, String key) {
+        String[] values = parameterMap.get(key);
+        if (values == null || values.length == 0 || values[0] == null) {
+            return "";
+        }
+        return values[0].trim();
+    }
+
+    private boolean isDigits(String value) {
+        return value != null && value.matches("\\d+");
+    }
 }
-
