@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>訂單管理</title>
+<link th:href="@{/css/sb-admin-2.min.css}" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/dataTables.jqueryui.min.css" /> <!-- ●●css for jquery datatables 用 -->
+</head>
+
+<body>
+
+
+	<!-- Begin Page Content -->
+	<div class="container-fluid">
+
+		<!-- Page Heading -->
+		<div class="d-sm-flex align-items-center justify-content-between mb-4">
+			<h1 class="h3 mb-0 text-gray-800">訂單管理</h1>
+		</div>
+
+		<!-- 一、搜尋 / 篩選區 -->
+		<div class="card mb-4 text-gray-900">
+			<div class="card-header">搜尋條件</div>
+			<div class="card-body">
+				<!-- 錯誤顯示 -->
+			    <div th:if="${errorMessage}" class="alert alert-danger">
+				    <ul class="mb-0">
+				        <li th:each="msg : ${errorMessage}"
+				            th:text="${msg}"></li>
+				    </ul>
+				</div>
+				<form method="post" th:action="@{listOrders_ByCompositeNativeSQLQuery}">
+					<div class="form-row">
+						<!-- 訂單編號 -->
+						<div class="form-group col-md-3">
+							<label for="orderId">訂單編號</label> 
+							<input type="text" class="form-control" id="orderId" placeholder="請輸入訂單編號" name="orderId" th:value="${param.orderId}">
+						</div>
+
+						<!-- 會員編號 -->
+						<div class="form-group col-md-3">
+							<label for="memberId">會員編號</label> 
+							<input type="text" class="form-control" id="memberId" placeholder="請輸入會員編號" name="memberId" th:value="${param.memberId}">
+						</div>
+
+						<!-- 訂單日期（起） -->
+						<div class="form-group col-md-3">
+							<label for="startDate">訂單日期（起）</label> 
+							<input type="date" class="form-control" id="startDate" name="startDate" th:value="${param.startDate}">
+						</div>
+
+						<!-- 訂單日期（訖） -->
+						<div class="form-group col-md-3">
+							<label for="endDate">訂單日期（訖）</label> 
+							<input type="date" class="form-control" id="endDate" name="endDate" th:value="${param.endDate}">
+						</div>
+					</div>
+
+					<div class="form-row">
+						<!-- 訂單狀態 -->
+						<div class="form-group col-md-3">
+							<label for="orderStatus">訂單狀態</label> 
+							<select id="orderStatus" class="form-control" name="orderStatus">
+								<option value="">全部</option>
+								<option value="1" th:selected="${param.orderStatus == '1'}">已售出</option>
+								<option value="0" th:selected="${param.orderStatus == '0'}">未付款</option>
+							</select>
+						</div>
+					</div>
+
+					<div class="text-right">
+						<a th:href="@{/backend/order/}"
+						   class="btn btn-secondary btn-sm mr-2">
+						    清除條件
+						</a>
+						<button type="submit" class="btn btn-primary btn-sm" name="action">搜尋</button>
+					</div>
+				</form>
+			</div>
+		</div>
+
+		<!-- 二、訂單列表 Table + DataTables -->
+		<div class="card mb-4 text-gray-900">
+			<div class="card-header">訂單列表</div>
+			<div class="card-body">
+				<div class="table-responsive">
+					<!-- 加上 id="orderTable" -->
+					<table class="table table-bordered table-hover" id="orderTable" width="100%" cellspacing="0">
+						<thead class="thead-light">
+							<tr class="text-center">
+								<th class="text-center">訂單編號</th>
+								<th class="text-center">會員編號</th>
+								<th class="text-center">影廳</th>
+								<th class="text-center">票券總張數</th>
+								<th class="text-center">是否含餐飲</th>
+								<th class="text-center">訂單金額</th>
+								<th class="text-center">訂單狀態</th>
+								<th class="text-center">建立時間</th>
+								<th class="text-center">操作</th>
+							</tr>
+						</thead>
+						<tbody>
+							<th:block   th:if="${!#lists.isEmpty(orderListData)}" th:each="orderVO : ${orderListData}">
+								<tr class="text-center">
+									<td th:text="${orderVO.orderId}"></td>
+									<td th:text="${orderVO.member.memberId}"></td>
+									<td th:text="${orderVO.session.sessionId}"></td>
+									<td th:text="${orderVO.orderTickets != null ? #lists.size(orderVO.orderTickets) : 0}"></td>
+									<td th:text="${orderVO.orderFoods != null and !#lists.isEmpty(orderVO.orderFoods) ? '有' : '無'}"></td>
+									<td th:text="${orderVO.totalPrice}"></td>
+									<td>
+										<span class="badge badge-success" th:if="${orderVO.orderStatus ==1 }">
+										已售出
+										</span>
+										<span class="badge badge-secondary" th:if="${orderVO.orderStatus ==0 }">
+										未付款
+										</span>
+									</td>
+									<td th:text="${#dates.format(orderVO.orderCreateTime, 'yyyy-MM-dd HH:mm')}"></td>
+									<td><a th:href="@{/backend/order/OrderDetail(orderId=${orderVO.orderId})}" class="btn btn-sm btn-primary"> 訂單詳情 </a></td>
+								</tr>
+							</th:block>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+
+	</div>
+	<!-- /.container-fluid -->
+	
+	<!-- ●● jquery datatables 設定 -->
+	<script src="https://code.jquery.com/jquery-3.5.1.js"></script>                                    <!-- ●●js  for jquery datatables 用 -->
+	<script	src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>              <!-- ●●js  for jquery datatables 用 -->
+    <script>
+        
+    $(document).ready(function() {
+		$('#orderTable').DataTable({
+			"lengthMenu": [5, 10, 20, 50, 100],
+			"searching": false,  //搜尋功能, 預設是開啟
+		    "paging": true,     //分頁功能, 預設是開啟
+		    "ordering": true,   //排序功能, 預設是開啟
+		    "language": {
+		        "processing": "處理中...",
+		        "loadingRecords": "載入中...",
+		        "lengthMenu": "顯示 _MENU_ 筆結果",
+		        "zeroRecords": "沒有符合的結果",
+		        "info": "顯示第 _START_ 至 _END_ 筆結果，共<font color=red> _TOTAL_ </font>筆",
+		        "infoEmpty": "顯示第 0 至 0 筆結果，共 0 筆",
+		        "infoFiltered": "(從 _MAX_ 筆結果中過濾)",
+		        "infoPostFix": "",
+		        "search": "搜尋:",
+		        "paginate": {
+		            "first": "第一頁",
+		            "previous": "上一頁",
+		            "next": "下一頁",
+		            "last": "最後一頁"
+		        },
+		        "aria": {
+		            "sortAscending":  ": 升冪排列",
+		            "sortDescending": ": 降冪排列"
+		        }
+		    }
+		});
+	});
+
+    </script>
+
+</body>
+
+</html>
