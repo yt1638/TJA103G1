@@ -38,9 +38,6 @@ public class TicketTypeVO implements Serializable {
     @Column(name = "ticket_DESCRIPTION", nullable = false)    
     private String ticketDescription;
     
-    @NotNull(message = "圖片: 請勿空白")
-    @Column(name = "ticket_IMAGES", nullable = false)    
-    private byte[] ticketImages;
     
     @OneToMany(mappedBy = "ticketType", cascade = CascadeType.ALL)
     private Set<OrderTicketVO> orderTickets = new HashSet<>();
@@ -77,13 +74,6 @@ public class TicketTypeVO implements Serializable {
 		this.ticketDescription = ticketDescription;
 	}
 
-	public byte[] getTicketImages() {
-		return ticketImages;
-	}
-
-	public void setTicketImages(byte[] ticketImages) {
-		this.ticketImages = ticketImages;
-	}
 
 	public Set<OrderTicketVO> getOrderTickets() {
 		return orderTickets;

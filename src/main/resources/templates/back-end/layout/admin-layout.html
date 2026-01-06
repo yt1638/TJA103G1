@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title th:text="${pageTitle} ?: '影智推 | 後台系統'"></title>
+
+    <link href="/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link href="/css/sb-admin-2.min.css" rel="stylesheet">
+
+    <style>
+        /* 🔹 後台標題樣式：膠囊造型 */
+        .topbar-title {
+            font-family: 'Nunito', 'Microsoft JhengHei', sans-serif;
+            font-size: 30px;
+            font-weight: 600;
+            color: #6f98ff;
+            letter-spacing: 2px;
+            text-align: center;
+            display: inline-block;
+            background: #f3feff;
+            border: 2px solid #a6bbff;
+            padding: 6px 26px;
+            border-radius: 999px;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
+            transition: all 0.25s ease;
+        }
+        .topbar-title:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.18);
+        }
+
+        /* 側邊欄文字強化 */
+        .sidebar .nav-link span {
+            font-weight: 700;
+            margin-left: 8px;
+        }
+
+        @media (max-width: 767.98px) {
+            .topbar-title {
+                font-size: 20px;
+                padding: 4px 16px;
+            }
+        }
+    </style>
+</head>
+
+<body id="page-top">
+
+    <div id="wrapper">
+
+        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" th:href="@{/admin/index}">
+                <div class="sidebar-brand-icon">
+                    <i class="fa-solid fa-house"></i>
+                </div>
+                <div class="sidebar-brand-text mx-2">影智推 HOME</div>
+            </a>
+
+            <hr class="sidebar-divider my-0">
+
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/admin/index}">
+                    <i class="fas fa-fw fa-gauge"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+
+            <hr class="sidebar-divider">
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseMovie">
+                    <i class="fas fa-fw fa-clapperboard"></i>
+                    <span>電影管理</span>
+                </a>
+                <div id="collapseMovie" class="collapse" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" th:href="@{/movie/}">電影資料管理</a>
+                        <a class="collapse-item" th:href="@{/session/}">場次管理</a>
+                        <a class="collapse-item" th:href="@{/seat/}">影廳座位管理</a>
+                    </div>
+                </div>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUser">
+                    <i class="fa-solid fa-fw fa-user"></i>
+                    <span>會員管理</span>
+                </a>
+                <div id="collapseUser" class="collapse" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" href="#">會員資料管理</a>
+                        <a class="collapse-item" href="#">會員分級管理</a>
+                    </div>
+                </div>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseFood">
+                    <i class="fa-solid fa-fw fa-burger"></i>
+                    <span>餐飲管理</span>
+                </a>
+                <div id="collapseFood" class="collapse" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" th:href="@{/food/}">菜單概覽</a>
+                        <a class="collapse-item" href="#">餐飲訂單</a>
+                    </div>
+                </div>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTicket">
+                    <i class="fa-solid fa-fw fa-ticket"></i>
+                    <span>票種管理</span>
+                </a>
+                <div id="collapseTicket" class="collapse" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" th:href="@{/tickettype/select_page}">票券編輯</a>
+                    </div>
+                </div>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOrder">
+                    <i class="fa-solid fa-fw fa-list"></i>
+                    <span>訂單管理</span>
+                </a>
+                <div id="collapseOrder" class="collapse" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" href="#">會員訂單管理</a>
+                        <a class="collapse-item" href="#">消費明細查詢</a>
+                    </div>
+                </div>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseEmployee">
+                    <i class="fa-solid fa-fw fa-address-card"></i>
+                    <span>員工權限</span>
+                </a>
+                <div id="collapseEmployee" class="collapse" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" th:href="@{/employee_data/select_page}">員工管理</a>
+                    </div>
+                </div>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseNotify">
+                    <i class="fa-regular fa-fw fa-envelope-open"></i>
+                    <span>通知管理</span>
+                </a>
+                <div id="collapseNotify" class="collapse" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" th:href="@{/notification_showstart/select_page}">開演通知</a>
+                        <a class="collapse-item" th:href="@{/notification_preference/select_page}">喜好通知</a>
+                    </div>
+                </div>
+            </li>
+
+            <hr class="sidebar-divider d-none d-md-block">
+
+            <div class="text-center d-none d-md-inline">
+                <button class="rounded-circle border-0" id="sidebarToggle"></button>
+            </div>
+        </ul>
+        <div id="content-wrapper" class="d-flex flex-column">
+            <div id="content">
+
+                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                        <i class="fa fa-bars"></i>
+                    </button>
+
+                    <div class="topbar-title mx-auto">後台管理系統</div>
+
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item dropdown no-arrow">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" data-toggle="dropdown">
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">管理員 您好</span>
+                                <img class="img-profile rounded-circle" src="/img/undraw_profile.svg">
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in">
+                                <a class="dropdown-item" href="#"><i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>個人資料</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>登出
+                                </a>
+                            </div>
+                        </li>
+                    </ul>
+                </nav>
+
+                <div class="container-fluid">
+                    <th:block th:replace="~{__${content}__}"></th:block>
+                </div>
+
+            </div>
+
+            <footer class="sticky-footer bg-white">
+                <div class="container my-auto">
+                    <div class="copyright text-center my-auto">
+                        <span>Copyright &copy; Showise 2024</span>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <a class="scroll-to-top rounded" href="#page-top"><i class="fas fa-angle-up"></i></a>
+
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">確定要登出？</h5>
+                    <button class="close" type="button" data-dismiss="modal"><span>×</span></button>
+                </div>
+                <div class="modal-body">選擇「登出」將結束目前的所有作業。</div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">取消</button>
+                    <a class="btn btn-primary" th:href="@{/login}">登出</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/vendor/jquery/jquery.min.js"></script>
+    <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="/vendor/jquery-easing/jquery.easing.min.js"></script>
+    <script src="/js/sb-admin-2.min.js"></script>
+    <script src="/vendor/chart.js/Chart.min.js"></script>
+
+</body>
+</html>

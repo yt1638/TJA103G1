@@ -1,25 +1,25 @@
 package com.showise.notification.showstart.controller;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.showise.notification.showstart.model.NotificationShowstartService;
 import com.showise.notification.showstart.model.NotificationShowstartVO;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-
 
 @Controller
 @RequestMapping("/notification_showstart")
@@ -28,128 +28,163 @@ public class NotificationShowstartController {
     @Autowired
     private NotificationShowstartService notificationShowstartSvc;
 
+    // ===== 共用：統一回 admin-layout，避免漏設 content 造成 template 找不到 =====
+    private String renderAdminLayout(Model model, String pageTitle, String contentFragment) {
+        model.addAttribute("pageTitle", pageTitle);
+        model.addAttribute("content", contentFragment);
+        return "back-end/layout/admin-layout";
+    }
+
     @GetMapping("/update_notificationShowstart_input")
     public String updateNotificationShowstartInput(Model model) {
-
-        // ⚠️ 一定要放一個 notificationShowstartVO 給 th:object 用
         model.addAttribute("notificationShowstartVO", new NotificationShowstartVO());
 
-        return "back-end/notification_showstart/update_notificationShowstart_input";
+        return renderAdminLayout(
+                model,
+                "開演通知管理",
+                "back-end/notification_showstart/update_notificationShowstart_input :: content"
+        );
     }
 
     @PostMapping("/insert")
     public String insert(@Valid NotificationShowstartVO notificationShowstartVO,
                          BindingResult result,
-                         ModelMap model) {
+                         RedirectAttributes redirectAttributes,
+                         Model model) {
 
         if (result.hasErrors()) {
-            return "back-end/notification_showstart/addNotificationShowstart";
+            model.addAttribute("notificationShowstartVO", notificationShowstartVO);
+            return renderAdminLayout(
+                    model,
+                    "開演通知管理",
+                    "back-end/notification_showstart/addNotificationShowstart :: content"
+            );
         }
 
         notificationShowstartSvc.addNotificationShowstart(notificationShowstartVO);
-        model.addAttribute("success", "- (新增成功)");
+        redirectAttributes.addFlashAttribute("success", "- (新增成功)");
         return "redirect:/notification_showstart/listAllNotificationShowstart";
     }
 
     @PostMapping("/getOne_For_Update")
     public String getOne_For_Update(@RequestParam("notiShowstNo") Integer notiShowstNo,
-                                    ModelMap model) {
+                                    Model model) {
 
-    	NotificationShowstartVO notificationShowstartVO =
-    			notificationShowstartSvc.getOneNotificationShowstart(notiShowstNo);
+        NotificationShowstartVO vo =
+                notificationShowstartSvc.getOneNotificationShowstart(notiShowstNo);
 
-        model.addAttribute("notificationShowstartVO", notificationShowstartVO);
-        return "back-end/notification_showstart/update_notificationShowstart_input";
+        model.addAttribute("notificationShowstartVO", vo);
+
+        return renderAdminLayout(
+                model,
+                "開演通知管理",
+                "back-end/notification_showstart/update_notificationShowstart_input :: content"
+        );
     }
 
     @PostMapping("/update")
     public String update(@Valid NotificationShowstartVO notificationShowstartVO,
                          BindingResult result,
-                         ModelMap model) {
+                         RedirectAttributes redirectAttributes,
+                         Model model) {
 
         if (result.hasErrors()) {
-            return "back-end/notification_showstart/update_notificationShowstart_input";
+            model.addAttribute("notificationShowstartVO", notificationShowstartVO);
+            return renderAdminLayout(
+                    model,
+                    "開演通知管理",
+                    "back-end/notification_showstart/update_notificationShowstart_input :: content"
+            );
         }
 
         notificationShowstartSvc.updateNotificationShowstart(notificationShowstartVO);
 
-        model.addAttribute("success", "- (修改成功)");
+        redirectAttributes.addFlashAttribute("success", "- (修改成功)");
         return "redirect:/notification_showstart/listAllNotificationShowstart";
     }
 
-    @PostMapping("/delete")
-    public String delete(@RequestParam("notiShowstNo") Integer notiShowstNo,
-                         ModelMap model) {
-
-
-        model.addAttribute("success", "- (刪除成功)");
-        return "redirect:/notification_showstart/listAllNotificationShowstart";
-    }
 
     @GetMapping("/listAllNotificationShowstart")
-    public String listAll(ModelMap model) {
-        List<NotificationShowstartVO> list = notificationShowstartSvc.getAll();
-        model.addAttribute("notificationShowstartData", list);
-        return "back-end/notification_showstart/listAllNotificationShowstart";
-    }
-    @GetMapping("/select_page")
-    public String selectPage(ModelMap model) {
+    public String listAll(Model model) {
         List<NotificationShowstartVO> list = notificationShowstartSvc.getAll();
         model.addAttribute("notificationShowstartVOListData", list);
-        return "back-end/notification_showstart/select_page";
+
+        return renderAdminLayout(
+                model,
+                "開演通知管理",
+                "back-end/notification_showstart/listAllNotificationShowstart :: content"
+        );
     }
+
+    @GetMapping("/select_page")
+    public String selectPage(Model model) {
+        // 你要預設空白(查無資料) → 用 emptyList
+        model.addAttribute("notificationShowstartVOListData", Collections.emptyList());
+
+        return renderAdminLayout(
+                model,
+                "開演通知管理",
+                "back-end/notification_showstart/select_page :: content"
+        );
+    }
+
+    // ⚠️ 避免跟 welcome page / index 打架
     @GetMapping("/")
     public String home() {
-        return "index";
+        return "redirect:/";
     }
-    @PostMapping("listNotificationShowstarts_ByCompositeQuery")
-    public String listAllNotificationShowstart(HttpServletRequest req, Model model) {
+
+    @PostMapping("/listNotificationShowstarts_ByCompositeQuery")
+    public String listNotificationShowstarts_ByCompositeQuery(HttpServletRequest req, Model model) {
+
         Map<String, String[]> parameterMap = req.getParameterMap();
         Map<String, String[]> criteria = new HashMap<>();
 
-        String notiShowstNo = getFirstTrimmed(parameterMap, "notiShowstNo");
         String memberId    = getFirstTrimmed(parameterMap, "memberId");
         String sessionId   = getFirstTrimmed(parameterMap, "sessionId");
-        String stime       = getFirstTrimmed(parameterMap, "notiShowstStime");
+        String notiShowstStime       = getFirstTrimmed(parameterMap, "notiShowstStime");
 
-        if (notiShowstNo.isEmpty() && memberId.isEmpty() && sessionId.isEmpty() && stime.isEmpty()) {
-            model.addAttribute("errorMessage", "請至少輸入一個查詢條件");
-            return "back-end/notification_showstart/select_page";
-        }
-
-        if (!notiShowstNo.isEmpty()) {
-            if (!isDigits(notiShowstNo)) {
-                model.addAttribute("errorMessage", "通知編號必須為數字");
-                return "back-end/notification_showstart/select_page";
-            }
-            criteria.put("notiShowstNo", new String[] { notiShowstNo });
-        }
+        // ✅ 共用：錯誤就回 select_page（layout）並顯示錯誤
+        java.util.function.Function<String, String> backToSelectPage = (String errorMsg) -> {
+            model.addAttribute("errorMessage", errorMsg);
+            model.addAttribute("notificationShowstartVOListData", Collections.emptyList());
+            return renderAdminLayout(
+                    model,
+                    "開演通知管理",
+                    "back-end/notification_showstart/select_page :: content"
+            );
+        };
 
         if (!memberId.isEmpty()) {
             if (!isDigits(memberId)) {
-                model.addAttribute("errorMessage", "會員編號必須為數字");
-                return "back-end/notification_showstart/select_page";
+                return backToSelectPage.apply("會員編號必須為數字");
             }
             criteria.put("memberId", new String[] { memberId });
         }
 
         if (!sessionId.isEmpty()) {
             if (!isDigits(sessionId)) {
-                model.addAttribute("errorMessage", "場次編號必須為數字");
-                return "back-end/notification_showstart/select_page";
+                return backToSelectPage.apply("場次編號必須為數字");
             }
             criteria.put("sessionId", new String[] { sessionId });
         }
 
-        if (!stime.isEmpty()) {
-            criteria.put("notiShowstStime", new String[] { stime });
+        if (!notiShowstStime.isEmpty()) {
+            // 如果你想驗證日期格式也可以在這裡加
+            criteria.put("notiShowstStime", new String[] { notiShowstStime });
         }
 
         List<NotificationShowstartVO> list = notificationShowstartSvc.getAll(criteria);
-        model.addAttribute("notificationShowstartData", list);
-        return "back-end/notification_showstart/listAllNotificationShowstart";
-    }
 
+        // ✅ 查詢結果也回 select_page（layout），讓你同一頁看結果
+        model.addAttribute("notificationShowstartVOListData", list);
+
+        return renderAdminLayout(
+                model,
+                "開演通知管理",
+                "back-end/notification_showstart/select_page :: content"
+        );
+    }
 
     private String getFirstTrimmed(Map<String, String[]> parameterMap, String key) {
         String[] values = parameterMap.get(key);
@@ -162,6 +197,4 @@ public class NotificationShowstartController {
     private boolean isDigits(String value) {
         return value != null && value.matches("\\d+");
     }
-
 }
-
