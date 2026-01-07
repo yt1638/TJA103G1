@@ -91,11 +91,12 @@
                 <div th:with="dailySessions=${__${'session' + i}__}">
                     <div th:if="${not #lists.isEmpty(dailySessions)}">						
                         <div th:each="sess : ${dailySessions}" style="display: inline-block" class="me-2 mb-2">
-                            <a href="javascript:void(0);" 
-                               class="btn session-btn" 
-                               th:data-session-id="${sess.sessionId}"
-                               th:text="${#dates.format(sess.startTime, 'HH:mm')}">時間</a>
-                        </div>
+									<button class="btn session-btn"
+										th:data-session-id="${sess.sessionId}"
+										th:text="${#dates.format(sess.startTime, 'HH:mm')}">
+										時間</button>
+
+								</div>
                     </div>
                     <div th:if="${#lists.isEmpty(dailySessions)}" class="text-secondary ps-2">當天無播放該電影</div>
                 </div>
