@@ -27,6 +27,17 @@
       border-radius: 14px;
       overflow: hidden;
     }
+    
+    .error {
+	  color: #dc3545;
+	  font-weight: 600;
+	  font-size: 14px;          
+	  line-height: 1.4;
+	  writing-mode: horizontal-tb;
+	  transform: none;         
+	  display: block;
+	  margin-top: 6px;
+	}
   </style>
 
   <div class="container-fluid">
@@ -145,7 +156,6 @@
   </div>
 
   <script>
-    // 你原本在頁面用到 hideContent()，這裡補上避免 JS not defined
     function hideContent(id) {
       var el = document.getElementById(id);
       if (el) el.style.display = "none";
