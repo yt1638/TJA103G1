@@ -13,14 +13,22 @@
     <link href="/css/sb-admin-2.min.css" rel="stylesheet">
 
     <style>
-        /* 🔹 後台標題樣式：膠囊造型 */
+        /* 🔹 後台標題樣式：膠囊造型 + 強制水平居中 */
         .topbar-title {
             font-family: 'Nunito', 'Microsoft JhengHei', sans-serif;
             font-size: 30px;
             font-weight: 600;
             color: #6f98ff;
             letter-spacing: 2px;
-            text-align: center;
+            
+            /* --- 關鍵修改：絕對定位居中 --- */
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap; /* 避免文字換行 */
+            z-index: 1;         /* 確保層級正確 */
+            /* ---------------------------- */
+
             display: inline-block;
             background: #f3feff;
             border: 2px solid #a6bbff;
@@ -29,8 +37,10 @@
             box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
             transition: all 0.25s ease;
         }
+
+        /* 為了保留原本的 hover 效果，需合併 transform */
         .topbar-title:hover {
-            transform: translateY(-2px);
+            transform: translate(-50%, -2px);
             box-shadow: 0 6px 14px rgba(0, 0, 0, 0.18);
         }
 
@@ -180,7 +190,7 @@
                         <i class="fa fa-bars"></i>
                     </button>
 
-                    <div class="topbar-title mx-auto">後台管理系統</div>
+                    <div class="topbar-title">後台管理系統</div>
 
                     <ul class="navbar-nav ml-auto">
                         <li class="nav-item dropdown no-arrow">

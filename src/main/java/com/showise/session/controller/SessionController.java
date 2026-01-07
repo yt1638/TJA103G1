@@ -46,8 +46,12 @@ public class SessionController {
      model.addAttribute("selectedDate",selectedDate);
      model.addAttribute("movieList",movieService.listByDate(selectedDate));
      model.addAttribute("sessionList",sessionService.listByDate(selectedDate));
+     model.addAttribute("pageTitle", "場次管理");
+     model.addAttribute("content", "back-end/session/manage :: content");
+
+     return "back-end/layout/admin-layout";
      
-     return "back-end/session/manage";
+     
     }
     
     @PostMapping("/add")
