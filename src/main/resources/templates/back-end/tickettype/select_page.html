@@ -1,150 +1,77 @@
-
-
-
-
-
-
-
-
-
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>票種管理 - select_page.html</title>
-
-<th:block th:insert="~{/back-end/tickettype/included-fragment}"></th:block>
-
-<style type="text/css">
-
-	button {
-		padding: 5px;
-	}
-	form {
-		display: table;
-	}
-	form div {
-		display: table-row;
-	}
-	label, input, span, select {
-		display: table-cell;
-		margin: 2px;
-		text-align: left;		
-	}
-	input[type=text], input[type=password], select, textarea {
-		width: 200px;
-		margin: 2px;
-	}
-	form div div {
-		display: table-cell;
-	}
-	.center {
-        margin-left: auto;
-        margin-right: auto;
+<div th:fragment="content">
+  <style>
+    .topbar-title {
+      font-family: 'Baloo 2', 'Nunito', 'Microsoft JhengHei', sans-serif;
+      font-size: 30px;
+      font-weight: 600;
+      color: #6f98ff;
+      letter-spacing: 2px;
+      text-align: center;
+      flex: 1 1 auto;
+      display: inline-block;
+      background: #f3feff;
+      border: 2px solid #a6bbff;
+      padding: 6px 26px;
+      border-radius: 999px;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
+      transition: all 0.25s ease;
+      max-width: 100%;
+      box-sizing: border-box;
     }
-    span {
-		display: inline-block;
-		width: 150px;
-		text-align: left;
-		font-weight: bold;
-	}
-	div.a {
-        display: inline-block;
-        width: 50%;
-        height: auto;
-        padding: 5px;
-        border: 0px solid blue;    
-        background-color: white; 
+    .topbar-title:hover { transform: translateY(-2px); box-shadow: 0 6px 14px rgba(0, 0, 0, 0.18); }
+    @media (max-width: 767.98px) { .topbar-title { font-size: 22px; padding: 4px 16px; letter-spacing: 1px; } }
+    @media (max-width: 768px) {
+      .sidebar .nav-link span { font-size: 13px !important; font-weight: 700; }
+      .sidebar .nav-link i { font-size: 13px !important; margin-right: 6px; }
+      .sidebar-brand-text { font-size: 13px !important; }
     }
-    div.b {
-        position: absolute; 
-        bottom: 1%; 
-        right: 2%; 
-        width: 45%;
-        padding: 5px; 
-        border: 1px solid blue;
-    }
-</style>
-</head>
-<body>
+  </style>
 
-<nav class="navbar navbar-expand-md navbar-dark bg-success fixed-top justify-content-center">
-		 <div align="center"> <h2>票種管理 - select_page.html</h2>
-		 <h3><a class="navbar-brand" th:href="@{/}"><img th:src="@{/images/back1.gif}">回index.html</a></h3></div>
-</nav>
+  <h1 class="h3 mb-4 text-gray-800">票券編輯</h1>
 
-	<h4><span>資料查詢:</span></h4>
-	<!-- 錯誤表列 -->
-	<div class="errorblock" th:utext="${errorMessage}">${errorMessage}</div><br>
-	<div class="a">
-	  <ul>
-		<li><h5><a href='listAllTicketType'>List</a> all TicketTypes. <br><br></h5></li>
+  <!-- 全票 -->
+  <form th:action="@{/tickettype/update}" th:object="${fullTicket}" method="post">
+    <input type="hidden" th:field="*{ticketTypeId}">
+    <input type="hidden" th:field="*{ticketName}">
 
-		<li>
-			<form method="post" th:action="@{getOne_For_Display}">
-				輸入票種編號:
-				<input type="text" name="ticketTypeId" th:value="${param.ticketTypeId}" > 
-				<input type="submit" value="送出"> (輸入如1)
-			</form><br>
-		</li>
+    <div class="card mb-4">
+      <div class="card-header"><strong>全票</strong></div>
+      <div class="card-body">
+        <div class="d-flex align-items-center mb-2">
+          <label class="mb-0 mr-2" style="min-width: 80px;">票價金額:</label>
+          <input type="number" class="form-control form-control-sm mr-2"
+                 style="max-width: 180px;"
+                 th:field="*{ticketPrice}" placeholder="請輸入金額">
+          <button type="submit" class="btn btn-dark btn-sm">編輯確認</button>
+        </div>
 
-		
-		
-		
-		<li><form method="post" th:action="@{getOne_For_Display}">
-				選擇票種編號:
-				<select name="ticketTypeId">
-				     <option th:each="ticketTypeVO : ${ticketTypeListData}" th:value="${ticketTypeVO.ticketTypeId}" th:text="${ticketTypeVO.ticketTypeId}" />
-			    </select>
-				<input type="submit" value="送出">
-			</form><br>
-		</li>
-
-		
-		
-		
-		<li><form method="post" th:action="@{getOne_For_Display}">
-				選擇票種名稱:
-				<select name="ticketTypeId">
-				     <option th:each="ticketTypeVO : ${ticketTypeListData}" th:value="${ticketTypeVO.ticketTypeId}" th:text="${ticketTypeVO.ticketName}" />
-			    </select>
-				<input type="submit" value="送出">
-			</form><br>
-		</li>
-		
-		
-		
-		
-<!--  複合查詢-以下欄位-可隨意增減 -->
-  
-  <li>   
-    <form method="post" th:action="@{listTicketTypes_ByCompositeQuery}">
-        <font color=blue>複合查詢:</font><br>
-        輸入票種編號: 
-        <input type="text" name="ticketTypeId" value="1"><br>
-           
-        輸入票種名稱: 
-        <input type="text" name="ticketName" value="全票"><br>
-       
-        輸入票種價格: 
-        <input type="text" name="ticketPrice" value="250"><br>
-               
-     
-     </form>
-  </li>
-</ul>	
-	
-      <h4><span>票種管理</span></h4>
-	  <ul>
-		  <li><h5><a th:href="@{/tickettype/addTicketType}">Add</a> a new TicketType.</h5></li>
-	  </ul>
-	</div>
-    
-    <div class="b" th:if="${ticketTypeVO!=null}">
-        <!--使用listOneEmp.html網頁的listOneEmp-div片段--> <!-- 見listOneEmp.html的第35行的th:fragment="listOneEmp-div" --> <!-- 使用th:replace也可 -->
-        <div th:insert="~{/back-end/tickettype/listOneTicketType :: listOneTicketType-div}"></div>
+        <textarea class="form-control mt-2" rows="3"
+                  th:field="*{ticketDescription}"
+                  placeholder="備註或說明（可留空）"></textarea>
+      </div>
     </div>
+  </form>
 
-</body>
-</html>
+  <!-- 優待票 -->
+  <form th:action="@{/tickettype/update}" th:object="${discountTicket}" method="post">
+    <input type="hidden" th:field="*{ticketTypeId}">
+    <input type="hidden" th:field="*{ticketName}">
+
+    <div class="card mb-4">
+      <div class="card-header"><strong>優待票</strong></div>
+      <div class="card-body">
+        <div class="d-flex align-items-center mb-2">
+          <label class="mb-0 mr-2" style="min-width: 80px;">票價金額:</label>
+          <input type="number" class="form-control form-control-sm mr-2"
+                 style="max-width: 180px;"
+                 th:field="*{ticketPrice}" placeholder="請輸入金額">
+          <button type="submit" class="btn btn-dark btn-sm">編輯確認</button>
+        </div>
+
+        <textarea class="form-control mt-2" rows="3"
+                  th:field="*{ticketDescription}"
+                  placeholder="備註或說明（可留空）"></textarea>
+      </div>
+    </div>
+  </form>
+</div>

@@ -34,6 +34,23 @@ public class TicketTypeService {
 	public void updateTicket (TicketTypeVO ticketTypeVO) {
 		repository.save(ticketTypeVO);
 	}
+	@Autowired
+    private TicketTypeRepository ticketTypeRepository;
+
+    public void update(TicketTypeVO formVO) {
+
+        // 1️⃣ 先用 ID 找原資料（避免整筆被覆蓋成 null）
+        TicketTypeVO dbVO = ticketTypeRepository
+                .findById(formVO.getTicketTypeId())
+                .orElseThrow(() -> new RuntimeException("找不到票種"));
+
+        // 2️⃣ 只更新需要修改的欄位
+        dbVO.setTicketPrice(formVO.getTicketPrice());
+        dbVO.setTicketDescription(formVO.getTicketDescription());
+
+        // 3️⃣ 存回資料庫
+        ticketTypeRepository.save(dbVO);
+    }
 	
 
 
