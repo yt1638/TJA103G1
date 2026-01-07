@@ -3,6 +3,7 @@ package com.showise.eachmovietype.model;
 import java.io.Serializable;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.showise.movie.model.MovieVO;
 import com.showise.movietype.model.MovieTypeVO;
 
@@ -30,6 +31,7 @@ public class EachMovieTypeVO implements Serializable{
 	private MovieTypeVO movieType;
 
 	@ManyToOne 
+	@JsonIgnore
 	@JoinColumn (name="movie_id",referencedColumnName = "movie_id")
 	private MovieVO movie;
 

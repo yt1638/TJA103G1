@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 import java.util.Objects;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.showise.cinema.model.CinemaVO;
 import com.showise.movie.model.MovieVO;
 import com.showise.notification.showstart.model.NotificationShowstartVO;
@@ -46,6 +47,7 @@ public class SessionVO implements Serializable{
 	@JoinColumn (name = "movie_id", referencedColumnName = "movie_id")
 	private MovieVO movie;
 	@ManyToOne
+	@JsonIgnore
 	@JoinColumn (name = "cinema_id" , referencedColumnName = "cinema_id")
 	private CinemaVO cinema;
 	@OneToMany (mappedBy = "session",cascade = CascadeType.ALL)

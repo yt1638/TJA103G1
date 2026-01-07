@@ -1,154 +1,296 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>電影資料編輯/新增</title>
-    
+<div th:fragment="content">
     <style>
-        /* 保留你提供的原始 CSS 樣式 */
-        body { font-family: Arial, "微軟正黑體", sans-serif; background-color: #f4f4f9; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-        .movie-form-container { background: #ffffff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); width: 90%; max-width: 1200px; margin-top: 10px; }
-        .form-title { color: #333; text-align: center; margin-bottom: 25px; font-size: 1.8rem; border-bottom: 2px solid #dc3545; padding-bottom: 10px; }
-        .error-message-box { list-style: none; padding: 15px 20px; margin-bottom: 25px; background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; border-radius: 8px; font-weight: bold; }
-        .error-message-box li { margin-left: 20px; list-style: disc; line-height: 1.6; }
-        .form-grid { display: grid; grid-template-columns: 350px 1fr; gap: 30px; }
-        .form-group { margin-bottom: 18px; display: flex; align-items: flex-start; }
-        label { font-weight: bold; color: #555; width: 90px; flex-shrink: 0; padding-right: 10px; text-align: right; font-size: 0.9rem; padding-top: 5px; }
-        input[type="text"], input[type="number"], input[type="date"], input[type="url"], textarea, select { flex-grow: 1; padding: 10px 12px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; transition: border-color 0.3s; min-width: 0; }
-        textarea { resize: vertical; min-height: 80px; }
-        .image-upload-area { width: 100%; height: 400px; margin-bottom: 30px; border: 2px dashed #dc3545; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; background-color: #f8f8ff; overflow: hidden; }
-        .image-label { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%; cursor: pointer; color: #dc3545; font-size: 1.2rem; }
-        .status-and-submit { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 20px; }
-        .status-select { width: 40%; margin-bottom: 0; }
-        .save-button { padding: 12px 30px; background-color: #dc3545; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 1.1rem; font-weight: bold; transition: background-color 0.3s ease; }
-        .save-button:hover { background-color: #c82333; }
-        .checkbox-options label { width: auto; text-align: left; margin-right: 10px; font-weight: normal; }
-        @media (max-width: 900px) { .form-grid { grid-template-columns: 1fr; } .form-group label { width: 100px; text-align: left; } }
+        /* 1. 基礎容器優化：移除 body 樣式限制 */
+        .movie-edit-container {
+            width: 100%;
+            padding-bottom: 3rem;
+        }
+
+        .edit-card {
+            background: #ffffff;
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            overflow: hidden;
+        }
+
+        .edit-card-header {
+            background-color: #f8f9fc;
+            padding: 1.5rem;
+            border-bottom: 1px solid #e3e6f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .edit-card-title {
+            color: #dc3545; /* 沿用你原本的紅色調 */
+            font-weight: bold;
+            margin: 0;
+            font-size: 1.4rem;
+        }
+
+        /* 2. 網格佈局優化 */
+        .edit-card-body {
+            padding: 2rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 320px 1fr; /* 修正左側圖片寬度 */
+            gap: 2.5rem;
+        }
+
+        /* 3. 海報上傳區 */
+        .image-upload-area {
+            width: 100%;
+            aspect-ratio: 2 / 3;
+            border: 2px dashed #d1d3e2;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            background-color: #f8f9fc;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .image-upload-area:hover {
+            border-color: #dc3545;
+            background-color: #fff5f5;
+        }
+        .image-label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            color: #858796;
+            margin: 0;
+        }
+        .image-label img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* 4. 表單元素美化 */
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+        .form-group label {
+            font-weight: 700;
+            color: #4e73df;
+            margin-bottom: 0.5rem;
+            display: block;
+            text-align: left; /* 改為左對齊更符合現代後台風格 */
+            width: auto;
+        }
+        
+        .form-control {
+            border-radius: 6px;
+            border: 1px solid #d1d3e2;
+            padding: 0.6rem 0.75rem;
+        }
+        .form-control:focus {
+            border-color: #dc3545;
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+        }
+
+        /* 5. 分類勾選區 */
+        .checkbox-container {
+            background: #f8f9fc;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #e3e6f0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            font-weight: normal;
+            margin: 0;
+            cursor: pointer;
+        }
+        .checkbox-item input {
+            margin-right: 6px;
+        }
+
+        /* 6. 按鈕區 */
+        .footer-actions {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e3e6f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .save-button {
+            padding: 0.75rem 2.5rem;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        /* 響應式 */
+        @media (max-width: 992px) {
+            .form-grid { grid-template-columns: 1fr; }
+            .image-upload-area { max-width: 300px; margin: 0 auto; }
+        }
     </style>
-</head>
-<body>
-    <div class="movie-form-container">
-        <h2 class="form-title" th:text="${movieVO.movieId == null ? '新增電影資料' : '編輯電影資料'}">電影資料編輯/新增</h2>
-        <h3><a th:href="@{/movie/}">回電影總覽</a></h3>
-        
-        
-        <div th:if="${#fields.hasErrors('movieVO.*')}" class="error-message-box">
-            <ul>
-                <li th:each="err : ${#fields.errors('movieVO.*')}" th:text="${err}"></li>
-            </ul>
-        </div>
 
-        <form th:action="${movieVO.movieId == null} ? @{/movie/insert} : @{/movie/update}" 
-              method="post" th:object="${movieVO}" enctype="multipart/form-data">
-            
-            <input type="hidden" th:field="*{movieId}">
+    <div class="movie-edit-container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb bg-transparent p-0">
+                <li class="breadcrumb-item"><a th:href="@{/movie/}">電影管理</a></li>
+                <li class="breadcrumb-item active" th:text="${movieVO.movieId == null ? '新增電影' : '編輯電影'}"></li>
+            </ol>
+        </nav>
 
-            <div class="form-grid">
-                
-                <div class="form-left">
-                    <div class="image-upload-area" onclick="document.getElementById('movieImage').click();">
-                        <label class="image-label">
-                            <img id="imagePreview" 
-                                 th:src="${movieVO.movieId != null && movieVO.image != null} ? @{/movie/imageReader(movieId=${movieVO.movieId})} : ''" 
-                                 th:style="${movieVO.image != null} ? 'height:97%;width:97%;display:block;object-fit:cover' : 'height:97%;width:97%;display:none;object-fit:cover'">
-                            <span id="uploadText" th:style="${movieVO.image != null} ? 'display:none' : 'display:block'">點擊上傳圖片</span>
-                        </label>
-                        <input type="file" id="movieImage" name="imageFile" accept="image/*" hidden>
-                    </div>
-                    
-                    <div class="left-fields-group">
-                        <div class="form-group">
-                            <label for="duration">片長<span style="color:red;">*</span></label>
-                            <input type="number" th:field="*{duration}" placeholder="分鐘">
-                        </div>
-                        <div class="form-group">
-                            <label for="produceCountry">出品國</label>
-                            <input type="text" th:field="*{produceCountry}">
-                        </div>
-                        <div class="form-group">
-                            <label for="publisher">發行商</label>
-                            <input type="text" th:field="*{publisher}">
-                        </div>
-                        <div class="form-group">
-                            <label for="produceYear">電影年份</label>
-                            <input type="text" th:field="*{produceYear}">
-                        </div>
-                        <div class="form-group">
-                            <label for="director">導演<span style="color:red;">*</span></label>
-                            <input type="text" th:field="*{director}">
-                        </div>
-                        <div class="form-group">
-                            <label for="writer">編劇</label>
-                            <textarea th:field="*{writer}" rows="3"></textarea>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-right">
-                    <div class="form-group">
-                        <label for="nameTw">電影名稱(中)<span style="color:red;">*</span></label>
-                        <input type="text" th:field="*{nameTw}">
-                    </div>
-                    <div class="form-group">
-                        <label for="nameEng">電影名稱(英)<span style="color:red;">*</span></label>
-                        <input type="text" th:field="*{nameEng}">
-                    </div>
-                    <div class="form-group">
-                        <label for="releaseDate">上映日期</label>
-                        <input type="date" th:field="*{releaseDate}">
-                    </div>
-                    <div class="form-group">
-                        <label for="endDate">下檔日期</label>
-                        <input type="date" th:field="*{endDate}">
-                    </div>
-                    <div class="form-group">
-                        <label for="rating">分級</label>
-                        <input type="text" th:field="*{rating}" placeholder="例如：普遍級">
-                    </div>
-                    <div class="form-group">
-                        <label for="actor">演員<span style="color:red;">*</span></label>
-                        <textarea th:field="*{actor}" rows="3"></textarea>
-                    </div>
-                    
-                    <div class="form-group checkbox-group">
-    <label>分類</label>
-    <div class="checkbox-options">
-        <th:block th:each="typeVO : ${typeList}">
-            <label style="display: inline-block; margin-right: 15px; font-weight: normal;"> 
-                <input type="checkbox" 
-                       name="movieTypeIds" 
-                       th:value="${typeVO.movieTypeId}"
-                       th:checked="${movieVO.eachMovieTypes != null && #lists.contains(movieVO.eachMovieTypes.![movieType.movieTypeId], typeVO.movieTypeId)}">
-                <span th:text="${typeVO.typeName}">分類名稱</span>
-            </label>
-        </th:block>
-    </div>
-</div>
-                    
-                    <div class="form-group">
-                        <label for="trailer">預告片連結</label>
-                        <input type="url" th:field="*{trailer}" placeholder="YouTube 連結">
-                    </div>
-                    <div class="form-group">
-                        <label for="introduction">電影簡介</label>
-                        <textarea th:field="*{introduction}" rows="7"></textarea>
-                    </div>
-                    
-                    <div class="status-and-submit">
-                        <div class="form-group status-select">
-                            <label for="status">狀態<span style="color:red;">*</span></label>
-                            <select th:field="*{status}">
-                                <option value="1">上映中</option>
-                                <option value="2">即將上映</option>
-                                <option value="3">已下映</option>
-                            </select>
-                        </div>
-                        <button type="submit" class="save-button">儲存</button>
-                    </div>
-                </div>
+        <div class="edit-card">
+            <div class="edit-card-header">
+                <h2 class="edit-card-title">🎬 <span th:text="${movieVO.movieId == null ? '新增電影資料' : '編輯電影資料'}"></span></h2>
+                <a th:href="@{/movie/}" class="btn btn-sm btn-outline-secondary">取消並返回</a>
             </div>
-        </form>
+
+            <div class="edit-card-body">
+                <div th:if="${#fields.hasErrors('movieVO.*')}" class="alert alert-danger shadow-sm">
+                    <ul class="mb-0">
+                        <li th:each="err : ${#fields.errors('movieVO.*')}" th:text="${err}"></li>
+                    </ul>
+                </div>
+
+                <form th:action="${movieVO.movieId == null} ? @{/movie/insert} : @{/movie/update}" 
+                      method="post" th:object="${movieVO}" enctype="multipart/form-data">
+                    
+                    <input type="hidden" th:field="*{movieId}">
+
+                    <div class="form-grid">
+                        <div class="form-left">
+                            <div class="image-upload-area" onclick="document.getElementById('movieImage').click();">
+                                <label class="image-label">
+                                    <img id="imagePreview" 
+                                         th:src="${movieVO.movieId != null && movieVO.image != null} ? @{/movie/imageReader(movieId=${movieVO.movieId})} : ''" 
+                                         th:style="${movieVO.image != null} ? 'display:block;' : 'display:none;'">
+                                    <div id="uploadText" th:style="${movieVO.image != null} ? 'display:none' : 'display:flex'" class="flex-column align-items-center">
+                                        <i class="fas fa-cloud-upload-alt fa-3x mb-2"></i>
+                                        <span>點擊上傳海報</span>
+                                    </div>
+                                </label>
+                                <input type="file" id="movieImage" name="imageFile" accept="image/*" hidden>
+                            </div>
+                            
+                            <div class="mt-4">
+                                <div class="form-group">
+                                    <label>片長 (分鐘) <span class="text-danger">*</span></label>
+                                    <input type="number" th:field="*{duration}" class="form-control" placeholder="例：120">
+                                </div>
+                                <div class="form-group">
+                                    <label>出品國</label>
+                                    <input type="text" th:field="*{produceCountry}" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label>電影年份</label>
+                                    <input type="text" th:field="*{produceYear}" class="form-control" placeholder="例：2024">
+                                </div>
+                                <div class="form-group">
+                                    <label>導演 <span class="text-danger">*</span></label>
+                                    <input type="text" th:field="*{director}" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-right">
+                            <div class="row">
+                                <div class="col-md-6 form-group">
+                                    <label>電影名稱 (中) <span class="text-danger">*</span></label>
+                                    <input type="text" th:field="*{nameTw}" class="form-control">
+                                </div>
+                                <div class="col-md-6 form-group">
+                                    <label>電影名稱 (英) <span class="text-danger">*</span></label>
+                                    <input type="text" th:field="*{nameEng}" class="form-control">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 form-group">
+                                    <label>上映日期</label>
+                                    <input type="date" th:field="*{releaseDate}" class="form-control">
+                                </div>
+                                <div class="col-md-6 form-group">
+                                    <label>下檔日期</label>
+                                    <input type="date" th:field="*{endDate}" class="form-control">
+                                </div>
+                            </div>
+
+							<div class="row">
+								<div class="col-md-6 form-group">
+									<label>發行商 <span class="text-danger">*</span></label> <input
+										type="text" th:field="*{publisher}" class="form-control">
+								</div>
+								<div class="col-md-6 form-group">
+									<label>分級</label> <select th:field="*{rating}"
+										class="form-control">
+										<option value="普遍級">普遍級</option>
+										<option value="保護級">保護級</option>
+										<option value="輔12級">輔12級</option>
+										<option value="輔15級">輔15級</option>
+										<option value="限制級">限制級</option>
+									</select>
+								</div>
+							</div>
+
+							<div class="form-group">
+                                <label>電影分類</label>
+                                <div class="checkbox-container">
+                                    <th:block th:each="typeVO : ${typeList}">
+                                        <label class="checkbox-item">
+                                            <input type="checkbox" name="movieTypeIds" 
+                                                   th:value="${typeVO.movieTypeId}"
+                                                   th:checked="${movieVO.eachMovieTypes != null && #lists.contains(movieVO.eachMovieTypes.![movieType.movieTypeId], typeVO.movieTypeId)}">
+                                            <span th:text="${typeVO.typeName}"></span>
+                                        </label>
+                                    </th:block>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>演員 <span class="text-danger">*</span></label>
+                                <textarea th:field="*{actor}" class="form-control" rows="2" placeholder="多位演員請以逗號分隔"></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label>預告片Id (YouTube)</label>
+                                <input th:field="*{trailer}" class="form-control">
+                            </div>
+
+                            <div class="form-group">
+                                <label>電影簡介</label>
+                                <textarea th:field="*{introduction}" class="form-control" rows="5"></textarea>
+                            </div>
+
+                            <div class="footer-actions">
+                                <div class="form-group mb-0" style="width: 200px;">
+                                    <label>電影狀態 <span class="text-danger">*</span></label>
+                                    <select th:field="*{status}" class="form-control">
+                                        <option value="1">上映中</option>
+                                        <option value="2">即將上映</option>
+                                        <option value="3">已下映</option>
+                                    </select>
+                                </div>
+                                <button type="submit" class="btn btn-danger save-button">
+                                    <i class="fas fa-save mr-2"></i> 儲存電影資料
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -168,5 +310,4 @@
         }
     });
     </script>
-</body>
-</html>
+</div>

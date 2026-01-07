@@ -1,161 +1,213 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-<meta charset="UTF-8">
-<title th:text="${foodVO.foodId == null ? '新增餐點' : '修改餐點'}">餐飲管理</title>
+<div th:fragment="content">
 <style>
-    body {
-        font-family: "微軟正黑體", sans-serif;
-        background-color: #f4f7f6;
+    /* 1. 基礎佈局優化 - 移除 body 強制居中 */
+    .food-form-wrapper {
+        width: 100%;
+        display: flex;
+        justify-content: center; /* 讓表單在寬螢幕下居中，但不會限制容器寬度 */
+        padding-bottom: 3rem;
+    }
+
+    .form-card {
+        background-color: white;
+        padding: 0;
+        border-radius: 12px;
+        box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+        width: 100%;
+        max-width: 700px; /* 表單不需要太寬，增加閱讀性 */
+        border: none;
+        overflow: hidden;
+    }
+
+    /* 標題區塊優化 */
+    .form-header {
+        background-color: #f8abb2;
+        padding: 1.5rem;
+        text-align: center;
+        border-bottom: 1px solid #eccbcd;
+    }
+
+    .form-header h2 {
+        color: #333;
+        margin: 0;
+        font-weight: bold;
+        font-size: 1.5rem;
+    }
+
+    .form-body {
+        padding: 2rem;
+    }
+
+    /* 欄位樣式 */
+    .form-group {
+        margin-bottom: 1.25rem;
+    }
+
+    .form-group label {
+        font-weight: bold;
+        color: #4e73df;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+
+    /* 圖片預覽區美化 */
+    .image-preview-container {
+        margin-top: 10px;
+        padding: 10px;
+        border: 2px dashed #d1d3e2;
+        border-radius: 8px;
+        background-color: #f8f9fc;
+        text-align: center;
+        min-height: 100px;
         display: flex;
         flex-direction: column;
         align-items: center;
-        padding: 20px;
+        justify-content: center;
     }
-    .form-container {
-        background-color: white;
-        padding: 30px;
-        border-radius: 15px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        width: 100%;
-        max-width: 600px;
-    }
-    h2 {
-        color: #333;
-        text-align: center;
-        margin-bottom: 25px;
-        border-bottom: 2px solid #f8abb2;
-        padding-bottom: 10px;
-    }
-    .form-group {
-        margin-bottom: 15px;
-    }
-    label {
-        display: block;
-        font-weight: bold;
-        margin-bottom: 5px;
-        color: #555;
-    }
-    input[type="text"], input[type="number"], select {
-        width: 100%;
-        padding: 10px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        box-sizing: border-box; /* 確保 padding 不會撐開寬度 */
-    }
+
     .image-preview {
-        width: 100%;
-        max-width: 200px;
-        height: auto;
-        margin-top: 10px;
-        border: 1px dashed #ccc;
+        max-width: 100%;
+        max-height: 250px;
         border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         display: block;
     }
+
+    .no-image-text {
+        color: #858796;
+        font-size: 0.9rem;
+    }
+
+    /* 按鈕容器 */
     .btn-container {
         display: flex;
         justify-content: space-between;
-        margin-top: 25px;
+        gap: 15px;
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #e3e6f0;
     }
-    .btn-submit {
-        background-color: #007bff;
-        color: white;
-        border: none;
-        padding: 10px 30px;
-        border-radius: 5px;
-        cursor: pointer;
+
+    /* 錯誤訊息 */
+    .error-text {
+        color: #e74a3b;
+        font-size: 0.85rem;
+        margin-top: 5px;
         font-weight: bold;
     }
-    .btn-cancel {
-        background-color: #6c757d;
-        color: white;
-        text-decoration: none;
-        padding: 10px 30px;
-        border-radius: 5px;
-        font-weight: bold;
-    }
-    .error { color: red; font-size: 0.8rem; margin-top: 5px; }
 </style>
-</head>
-<body>
 
-<div class="form-container">
-    <h2 th:text="${foodVO.foodId == null ? '新增餐點品項' : '修改餐點品項'}">表單</h2>
-
-    <form th:action="${foodVO.foodId == null ? '/food/insert' : '/food/update'}" 
-          method="post" th:object="${foodVO}" enctype="multipart/form-data">
-        
-        <input type="hidden" th:field="*{foodId}" />
-
-        <div class="form-group">
-            <label>餐點名稱：</label>
-            <input type="text" th:field="*{foodName}" placeholder="請輸入餐點名稱" />
-            <div class="error" th:if="${#fields.hasErrors('foodName')}" th:errors="*{foodName}"></div>
+<div class="food-form-wrapper">
+    <div class="form-card">
+        <div class="form-header">
+            <h2 th:text="${foodVO.foodId == null ? '➕ 新增餐點品項' : '📝 修改餐點品項'}">表單標題</h2>
         </div>
 
-        <div class="form-group">
-            <label>餐點種類：</label>
-            <select name="foodCategoryId">
-                <option th:each="cate : ${foodCateList}" 
-                        th:value="${cate.foodCategoryId}"
-                        th:text="${cate.categoryName}"
-                        th:selected="${foodVO.foodCate != null && cate.foodCategoryId == foodVO.foodCate.foodCategoryId}">
-                </option>
-            </select>
-        </div>
+        <div class="form-body">
+            <form th:action="${foodVO.foodId == null ? '/food/insert' : '/food/update'}" 
+                  method="post" th:object="${foodVO}" enctype="multipart/form-data">
+                
+                <input type="hidden" th:field="*{foodId}" />
 
-        <div class="form-group">
-            <label>原價：</label>
-            <input type="number" th:field="*{foodOriginalPrice}" step="1" min="0"/>
-            <div class="error" th:if="${#fields.hasErrors('foodOriginalPrice')}" th:errors="*{foodOriginalPrice}"></div>
-        </div>
+                <div class="form-group">
+                    <label>餐點名稱 <span class="text-danger">*</span></label>
+                    <input type="text" th:field="*{foodName}" class="form-control" placeholder="請輸入餐點名稱" />
+                    <div class="error-text" th:if="${#fields.hasErrors('foodName')}" th:errors="*{foodName}"></div>
+                </div>
 
-        <div class="form-group">
-            <label>網路售價：</label>
-            <input type="number" th:field="*{foodPrice}" step="1" min="0" />
-            <div class="error" th:if="${#fields.hasErrors('foodPrice')}" th:errors="*{foodPrice}"></div>
-        </div>
+                <div class="form-group">
+                    <label>餐點種類</label>
+                    <select name="foodCategoryId" class="form-control">
+                        <option th:each="cate : ${foodCateList}" 
+                                th:value="${cate.foodCategoryId}"
+                                th:text="${cate.categoryName}"
+                                th:selected="${foodVO.foodCate != null && cate.foodCategoryId == foodVO.foodCate.foodCategoryId}">
+                        </option>
+                    </select>
+                </div>
 
-        <div class="form-group">
-            <label>狀態：</label>
-            <select th:field="*{foodStatus}">
-                <option value="1">上架</option>
-                <option value="0">下架</option>
-            </select>
-        </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>原價</label>
+                            <div class="input-group">
+                                <input type="number" th:field="*{foodOriginalPrice}" class="form-control" step="1" min="0"/>
+                                <div class="input-group-append"><span class="input-group-text">元</span></div>
+                            </div>
+                            <div class="error-text" th:if="${#fields.hasErrors('foodOriginalPrice')}" th:errors="*{foodOriginalPrice}"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>網路售價 <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <input type="number" th:field="*{foodPrice}" class="form-control" step="1" min="0" />
+                                <div class="input-group-append"><span class="input-group-text">元</span></div>
+                            </div>
+                            <div class="error-text" th:if="${#fields.hasErrors('foodPrice')}" th:errors="*{foodPrice}"></div>
+                        </div>
+                    </div>
+                </div>
 
-        <div class="form-group">
-            <label>餐點圖片：</label>
-            <input type="file" name="imageFile" id="imageInput" onchange="previewImage(this)" />
-            
-            <div th:if="${foodVO.foodId != null && foodVO.foodImage != null}">
-                <p style="font-size: 0.8rem; color: #888;">目前圖片：</p>
-                <img th:src="@{/foodImageStreamer(foodId=${foodVO.foodId})}" class="image-preview" id="preview" />
-            </div>
-            <img th:if="${foodVO.foodId == null}" src="" class="image-preview" id="preview" style="display:none;" />
-        </div>
+                <div class="form-group">
+                    <label>上架狀態</label>
+                    <select th:field="*{foodStatus}" class="form-control">
+                        <option value="1">✅ 上架中</option>
+                        <option value="0">❌ 下架</option>
+                    </select>
+                </div>
 
-        <div class="btn-container">
-            <a th:href="@{/food/}" class="btn-cancel">取消回列表</a>
-            <button type="submit" class="btn-submit" th:text="${foodVO.foodId == null ? '確認新增' : '確認修改'}">送出</button>
+                <div class="form-group">
+                    <label>餐點圖片</label>
+                    <div class="custom-file mb-2">
+                        <input type="file" name="imageFile" class="custom-file-input" id="imageInput" onchange="previewImage(this)" accept="image/*">
+                        <label class="custom-file-label" for="imageInput">選擇檔案...</label>
+                    </div>
+                    
+                    <div class="image-preview-container">
+                        <div th:if="${foodVO.foodId != null && foodVO.foodImage != null}" id="currentImageGroup">
+                            <p class="small text-muted mb-1">目前圖片預覽：</p>
+                            <img th:src="@{/food/imageReader(foodId=${foodVO.foodId})}" class="image-preview" id="preview" />
+                        </div>
+                        
+                        <img th:if="${foodVO.foodId == null}" src="" class="image-preview" id="preview" style="display:none;" />
+                        <span th:if="${foodVO.foodId == null}" id="noImageText" class="no-image-text">尚未選擇圖片</span>
+                    </div>
+                </div>
+
+                <div class="btn-container">
+                    <a th:href="@{/food/}" class="btn btn-secondary px-4 shadow-sm">
+                        <i class="fas fa-arrow-left mr-1"></i> 返回列表
+                    </a>
+                    <button type="submit" class="btn btn-primary px-5 shadow-sm" th:text="${foodVO.foodId == null ? '確認新增' : '儲存修改'}">
+                        送出
+                    </button>
+                </div>
+            </form>
         </div>
-    </form>
+    </div>
 </div>
 
 <script>
-    // 圖片即時預覽功能
     function previewImage(input) {
         var preview = document.getElementById('preview');
+        var noImageText = document.getElementById('noImageText');
+        var fileName = input.files[0].name;
+        
+        // 更新 Bootstrap 自定義檔案標籤文字
+        var label = input.nextElementSibling;
+        label.innerText = fileName;
+
         if (input.files && input.files[0]) {
             var reader = new FileReader();
             reader.onload = function(e) {
                 preview.src = e.target.result;
                 preview.style.display = 'block';
+                if(noImageText) noImageText.style.display = 'none';
             }
             reader.readAsDataURL(input.files[0]);
         }
     }
 </script>
 
-</body>
-</html>
+</div>
