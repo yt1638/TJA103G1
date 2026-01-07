@@ -99,7 +99,7 @@
                 <input type="hidden" name="searchDate" th:value="${selectedDate}">
 
                 <select name="movieId" required>
-                    <option value="">選擇電影1</option>
+                    <option value="">選擇電影</option>
                     <option th:each="m : ${movieList}"
                             th:value="${m.movieId}"
                             th:text="${m.nameTw}">
