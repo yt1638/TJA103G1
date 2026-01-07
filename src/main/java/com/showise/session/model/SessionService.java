@@ -100,6 +100,12 @@ public class SessionService {
 		return repository.listByDate(start, end);
 	}
 	
+	public List<SessionVO> listByMovieAndDate(Integer movieId,LocalDate date){
+		Timestamp start = Timestamp.valueOf(date.atStartOfDay());
+		Timestamp end = Timestamp.valueOf(date.plusDays(1).atStartOfDay());
+		return repository.listByMovieAndDate(movieId, start, end);
+	}
+	
 	public List<SessionVO> listAll(){
 		return repository.findAll();
 	}

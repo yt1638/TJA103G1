@@ -17,8 +17,6 @@ import com.showise.food.model.FoodService;
 import com.showise.food.model.FoodVO;
 import com.showise.foodcategory.model.FoodCateService;
 import com.showise.foodcategory.model.FoodCategoryVO;
-import com.showise.movie.model.MovieVO;
-
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -37,7 +35,9 @@ public class FoodController {
 	public String getAll(Model model) {
 		model.addAttribute("foodList",foodService.getAll());
 		model.addAttribute("foodCateList",foodCateService.getAll());
-		return "back-end/food/listAll";
+		model.addAttribute("pageTitle","餐飲管理");
+		model.addAttribute("content","back-end/food/listAll :: content");
+		return "back-end/layout/admin-layout";
 	}
 	
 	@GetMapping("/getDetail")
@@ -53,7 +53,9 @@ public class FoodController {
 		FoodVO foodVO = new FoodVO();
 		model.addAttribute("foodVO",foodVO);
 		model.addAttribute("foodCateList",foodCateService.getAll());
-		return "back-end/food/save";
+		model.addAttribute("pageTitle","餐飲管理");
+		model.addAttribute("content","back-end/food/save :: content");
+		return "back-end/layout/admin-layout";
 	}
 	
 	@PostMapping("/insert")
@@ -61,7 +63,9 @@ public class FoodController {
 		
 		if(result.hasErrors()) {
 			model.addAttribute("foodCateList",foodCateService.getAll());
-			return "back-end/food/save";
+			model.addAttribute("pageTitle","餐飲管理");
+			model.addAttribute("content","back-end/food/save :: content");
+			return "back-end/layout/admin-layout";
 		}
 		
 		if(!image.isEmpty()) {
@@ -80,7 +84,9 @@ public class FoodController {
 	public String getOne_For_Update(@RequestParam(value = "foodId") Integer foodId,Model model) {
 		model.addAttribute("foodVO",foodService.getById(foodId));
 		model.addAttribute("foodCateList",foodCateService.getAll());
-		return "back-end/food/save";
+		model.addAttribute("pageTitle","餐飲管理");
+		model.addAttribute("content","back-end/food/save :: content");
+		return "back-end/layout/admin-layout";
 	}
 	
 	@PostMapping("/update")
@@ -88,7 +94,9 @@ public class FoodController {
 		
 		if(result.hasErrors()) {
 			model.addAttribute("foodCateList",foodCateService.getAll());
-			return "back-end/food/save";
+			model.addAttribute("pageTitle","餐飲管理");
+			model.addAttribute("content","back-end/food/save :: content");
+			return "back-end/layout/admin-layout";
 		} 
 		
 		if(image.isEmpty()) {
@@ -111,7 +119,9 @@ public class FoodController {
 		List<FoodVO> list = foodService.listByName(foodName);
 		model.addAttribute("foodList",list);
 		model.addAttribute("foodCateList",foodCateService.getAll());
-		return "back-end/food/listAll";
+		model.addAttribute("pageTitle","餐飲管理");
+		model.addAttribute("content","back-end/food/listAll :: content");
+		return "back-end/layout/admin-layout";
 	}
 	
 	@GetMapping("/listByStatus")
@@ -119,7 +129,9 @@ public class FoodController {
 		List<FoodVO> list = foodService.listByStatus(status);
 		model.addAttribute("foodList",list);
 		model.addAttribute("foodCateList",foodCateService.getAll());
-		return "back-end/food/listAll";
+		model.addAttribute("pageTitle","餐飲管理");
+		model.addAttribute("content","back-end/food/listAll :: content");
+		return "back-end/layout/admin-layout";
 	}
 	
 	@GetMapping("/listByCate")
@@ -127,7 +139,9 @@ public class FoodController {
 		List<FoodVO> list = foodService.listByCate(foodCategoryId);
 		model.addAttribute("foodCateList",foodCateService.getAll());
 		model.addAttribute("foodList",list);
-		return "back-end/food/listAll";
+		model.addAttribute("pageTitle","餐飲管理");
+		model.addAttribute("content","back-end/food/listAll :: content");
+		return "back-end/layout/admin-layout";
 	}
 	
 	@GetMapping("/imageReader")

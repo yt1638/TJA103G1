@@ -10,6 +10,7 @@ import java.util.Set;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.showise.eachmovietype.model.EachMovieTypeVO;
 import com.showise.notification.preference.model.NotificationPreferenceVO;
 import com.showise.notification.showstart.model.NotificationShowstartVO;
@@ -45,7 +46,7 @@ public class MovieVO implements Serializable{
 	
 	@Column(name="rating")
     private String rating;
-	
+	@JsonIgnore
 	@Column(name="image")  
     private byte[] image;
 	

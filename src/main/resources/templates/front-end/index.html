@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Showise 影城 | 首頁</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/all.min.css">
+<style>
+:root {
+	--main-gold: #d4af37;
+	--bg-dark: #121212;
+}
+
+body {
+	background-color: var(--bg-dark);
+	color: white;
+	font-family: "Microsoft JhengHei", sans-serif;
+}
+
+.navbar {
+	background-color: rgba(0, 0, 0, 0.9);
+	border-bottom: 2px solid var(--main-gold);
+}
+
+.nav-link {
+	color: white !important;
+	margin-left: 15px;
+}
+
+.nav-link:hover {
+	color: var(--main-gold) !important;
+}
+
+#heroBanner .carousel-item {
+	height: 500px;
+	background-position: center;
+	background-size: cover;
+}
+
+.section-title {
+	border-left: 5px solid var(--main-gold);
+	padding-left: 15px;
+	margin: 40px 0 20px;
+}
+
+.movie-card {
+	transition: transform 0.3s;
+	cursor: pointer;
+	background: #1e1e1e;
+	border: none;
+	height: 100%;
+}
+
+.card-title {
+	color: hotpink;
+}
+
+.movie-card:hover {
+	transform: scale(1.05);
+}
+
+.movie-img {
+	height: 350px;
+	object-fit: cover;
+}
+
+.form-select {
+	background-color: #333;
+	color: white;
+	border: 1px solid var(--main-gold);
+	width: auto;
+}
+
+.footer-map {
+	background: #1a1a1a;
+	padding: 40px 0;
+	margin-top: 60px;
+	text-align: center;
+	border-top: 1px solid #333;
+}
+
+.map-btn {
+	background-color: var(--main-gold);
+	color: black;
+	font-weight: bold;
+	border-radius: 30px;
+	padding: 10px 25px;
+	text-decoration: none;
+}
+/* 票房連結容器 */
+.box-office-section {
+	margin-top: 30px;
+	text-align: center;
+	padding: 20px;
+	background: rgba(212, 175, 55, 0.05); /* 極淡的金黃色背景 */
+	border-radius: 10px;
+	border: 1px dashed rgba(212, 175, 55, 0.3);
+}
+
+.box-office-link {
+	color: var(--main-gold);
+	text-decoration: none;
+	font-weight: bold;
+	font-size: 1.1rem;
+	transition: all 0.3s ease;
+	display: inline-flex;
+	align-items: center;
+	gap: 10px; /* 圖標與文字間距 */
+}
+
+.box-office-link:hover {
+	color: white;
+	text-shadow: 0 0 10px var(--main-gold);
+	transform: translateY(-2px);
+}
+
+.box-office-link i {
+	font-size: 1.2rem;
+}
+</style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg sticky-top">
+        <div class="container">
+            <a class="navbar-brand text-white fw-bold fs-3" th:href="@{/front/index}">SHOWISE <span style="color:var(--main-gold)">CINEMA</span></a>
+            <div class="ms-auto">
+                <a th:href="@{/order}" class="nav-link d-inline-block"><i class="fas fa-ticket-alt"></i> 立即訂票</a>
+                <a th:href="@{/login}" class="nav-link d-inline-block"><i class="fas fa-user"></i> 會員登入</a>
+            </div>
+        </div>
+    </nav>
+
+    <div id="heroBanner" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            <div th:each="movie, iterStat : ${ingMovie}" 
+                 th:class="${iterStat.first} ? 'carousel-item active' : 'carousel-item'"
+                 th:style="'background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url(' + @{/front/imageReader(movieId=${movie.movieId})} + ');'">
+                <div class="carousel-caption d-none d-md-block">
+                    <h2 class="display-4 fw-bold" th:text="${movie.nameTw}">電影名稱</h2>
+                    <p>強檔熱映中，絕佳視聽享受</p>
+                    <a th:href="@{/front/movieDetail(movieId=${movie.movieId})}" class="btn btn-warning btn-lg">查看詳情</a>
+                </div>
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#heroBanner" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#heroBanner" data-bs-slide="next">
+            <span class="carousel-control-next-icon"></span>
+        </button>
+    </div>
+
+    <div class="container">
+        <div class="d-flex align-items-center mt-5">
+            <h4 class="mb-0 me-3 fw-bold">篩選類別：</h4>
+            <select class="form-select" id="movieTypeSelector" onchange="filterMovies()">
+                <option value="0">全部電影</option>
+                <option th:each="type : ${typeList}" 
+                        th:value="${type.movieTypeId}" 
+                        th:text="${type.typeName}">動作片</option>
+            </select>
+        </div>
+
+        <h3 class="section-title">現正熱映 <small class="fs-6 text-secondary text-uppercase">Now Showing</small></h3>
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4" id="nowShowingContainer">
+            <div class="col" th:each="movie : ${ingMovie}">
+                <div class="card movie-card" th:onclick="'window.location.href=\'' + @{/front/movieDetail(movieId=${movie.movieId})} + '\''">
+                    <img th:src="@{/front/imageReader(movieId=${movie.movieId})}" class="card-img-top movie-img" th:alt="${movie.nameTw}">
+                    <div class="card-body text-center">
+                        <h5 class="card-title text-truncate" th:text="${movie.nameTw}">電影名稱</h5>
+                        <input type="hidden" th:value="${movie.movieId}">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h3 class="section-title">即將上映 <small class="fs-6 text-secondary text-uppercase">Coming Soon</small></h3>
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4" id="comingSoonContainer">
+            <div class="col" th:each="movie : ${comingMovie}">
+                <div class="card movie-card" th:onclick="'window.location.href=\'' + @{/front/movieDetail(movieId=${movie.movieId})} + '\''">
+                    <img th:src="@{/front/imageReader(movieId=${movie.movieId})}" class="card-img-top movie-img" th:alt="${movie.nameTw}">
+                    <div class="card-body text-center">
+                        <h5 class="card-title text-truncate" th:text="${movie.nameTw}">電影名稱</h5>
+                        <input type="hidden" th:value="${movie.movieId}">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>
+        <br>
+        <br>
+		<div class="box-office-section">
+			<a href="https://boxofficetw.tfai.org.tw/" target="_blank"
+				class="box-office-link"> <i class="fas fa-chart-line"></i> <span>全國電影票房統計查詢系統</span>
+				<i class="fas fa-external-link-alt fa-xs"></i>
+			</a>
+			<p class="text-secondary small mt-2">資料來源：國家電影及視聽文化中心</p>
+		</div>
+	</div>
+
+    <div class="footer-map">
+    <div class="container">
+        <h2 class="mb-4">影城位置</h2>
+        <div class="map-responsive mb-4">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3690.226622735599!2d120.38784559999998!3d22.3450703!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3471e57f368160b3%3A0x82a43f09c9b7aa1a!2z6b6N6J2m5rSe!5e0!3m2!1szh-TW!2stw!4v1767764551646!5m2!1szh-TW!2stw" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+        <p><i class="fas fa-location-dot"></i>929屏東縣琉球鄉(龍蝦洞)</p>
+    </div>
+</div>
+
+<style>
+    /* 讓地圖寬度隨螢幕縮放 */
+    .map-responsive {
+        overflow: hidden;
+        padding-bottom: 400px; /* 地圖高度 */
+        position: relative;
+        height: 0;
+    }
+    .map-responsive iframe {
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 100%;
+        position: absolute;
+        border-radius: 15px; /* 讓地圖邊角圓滑一點，更好看 */
+    }
+</style>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script th:inline="javascript">
+        function filterMovies() {
+            const typeId = document.getElementById('movieTypeSelector').value;
+            // Thymeleaf 取得 Context Path
+            const contextPath = /*[[@{/}]]*/ '/';
+            
+            if(typeId == "0") {
+                location.reload();
+                return;
+            }
+
+            fetch(`${contextPath}front/filter?movieTypeId=${typeId}`)
+                .then(response => response.json())
+                .then(data => {
+                    updateGrid('nowShowingContainer', data.ingMovie, contextPath);
+                    updateGrid('comingSoonContainer', data.comingMovie, contextPath);
+                });
+        }
+
+        function updateGrid(containerId, movies, contextPath) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+
+            if (!movies || movies.length === 0) {
+                container.innerHTML = '<div class="col-12 text-center py-5 text-secondary">此類別暫無電影</div>';
+                return;
+            }
+
+            movies.forEach(movie => {
+                // 動態生成 HTML，圖片依然指向 imageReader
+                container.innerHTML += `
+                    <div class="col">
+                        <div class="card movie-card" onclick="window.location.href='${contextPath}front/movieDetail?movieId=${movie.movieId}'">
+                            <img src="${contextPath}front/imageReader?movieId=${movie.movieId}" class="card-img-top movie-img" alt="${movie.nameTw}">
+                            <div class="card-body text-center">
+                                <h5 class="card-title text-truncate">${movie.nameTw}</h5>
+                                <input type="hidden" value="${movie.movieId}">
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+    </script>
+</body>
+</html>

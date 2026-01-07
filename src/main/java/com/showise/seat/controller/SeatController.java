@@ -28,7 +28,9 @@ public class SeatController {
     		model.addAttribute("seatList",seatService.listByCinema(cinemaId));
     		model.addAttribute("cinemaId",cinemaId);
     	}
-    	return "back-end/seat/manage";
+    	model.addAttribute("pageTitle","座位管理");
+		model.addAttribute("content","back-end/seat/manage :: content");
+    	return "back-end/layout/admin-layout";
     }
     
     @PostMapping("/updateStatus")

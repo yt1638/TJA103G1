@@ -1,276 +1,217 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-<meta charset="UTF-8">
-<title>餐飲管理 - 列表</title>
+<div th:fragment="content">
 <style>
-    /* 核心佈局 */
-    body {
-        font-family: "微軟正黑體", Arial, sans-serif;
-        background-color: #f4f7f6;
-        margin: 0;
-        padding: 20px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
+    /* 1. 基礎佈局優化 - 移除 body 強制對齊 */
+    .food-management-wrapper {
+        width: 100%;
+        padding-bottom: 30px;
     }
 
-    .main-container {
-        width: 95%;
-        max-width: 1200px;
-    }
-
-    /* 標題區塊 */
-    #table-1 {
+    /* 標題區塊 (沿用粉紅風格但優化邊距) */
+    .food-header-card {
         width: 100%;
         background-color: #f8abb2;
         margin-bottom: 20px;
         border-radius: 10px;
+        padding: 15px 20px;
         border: 1px solid #eccbcd;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
     }
 
-    #table-1 h3 {
+    .food-header-card h3 {
         color: #333;
-        margin: 15px;
-        letter-spacing: 2px;
-    }
-
-    /* 全部餐點按鈕 */
-    .btn-all {
-        background-color: #ffc1c1;
-        color: #333;
-        border: none;
-        padding: 8px 25px;
-        border-radius: 5px;
-        cursor: pointer;
+        margin: 0;
         font-weight: bold;
-        text-decoration: none;
-        display: inline-block;
-        transition: background 0.3s, transform 0.2s;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        margin-bottom: 20px;
+        letter-spacing: 1px;
     }
 
-    .btn-all:hover {
-        background-color: #ff9e9e;
-        transform: translateY(-2px);
-        color: #000;
-    }
-
-    /* 查詢與功能按鈕區塊 */
-    .search-bar {
+    /* 2. 查詢區塊 (改用 Bootstrap 的整合感) */
+    .food-search-bar {
         background-color: #ffffff;
         padding: 20px;
         border-radius: 10px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        margin-bottom: 30px;
+        box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+        margin-bottom: 25px;
         display: flex;
         align-items: center;
-        gap: 20px;
+        gap: 15px;
         flex-wrap: wrap;
     }
 
-    .search-group {
+    .food-search-group {
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 8px;
     }
 
-    .search-group label {
+    .food-search-group label {
         font-weight: bold;
-        color: #555;
+        color: #4e73df;
+        margin-bottom: 0;
         white-space: nowrap;
     }
 
-    /* 下拉選單與輸入框一致性設計 */
-    select, .input-search {
-        padding: 8px 12px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        outline: none;
-        min-width: 120px;
-        background-color: #fff;
-    }
-
-    .input-search {
-        width: 150px;
-        transition: border-color 0.3s;
-    }
-
-    .input-search:focus {
-        border-color: #007bff;
-    }
-
-    /* 按鈕樣式 */
-    .btn-query {
-        background-color: #007bff;
-        color: white;
-        border: none;
-        padding: 8px 20px;
-        border-radius: 5px;
-        cursor: pointer;
-        font-weight: bold;
-        transition: background 0.3s;
-    }
-
-    .btn-query:hover {
-        background-color: #0056b3;
-    }
-
-    .btn-add {
-        background-color: #ffc1c1;
-        color: #333;
-        border: none;
-        padding: 8px 20px;
-        border-radius: 5px;
-        cursor: pointer;
-        font-weight: bold;
-        margin-left: auto;
-        text-decoration: none;
-    }
-
-    /* 餐點卡片網格 */
+    /* 3. 餐點卡片網格佈局 */
     .food-grid {
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
+        /* 自動調整：最小 300px，最大平均分配 */
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
         gap: 25px;
     }
 
     .food-card {
-        background-color: #e0e0e0;
-        border-radius: 12px;
-        padding: 20px;
+        background-color: #ffffff;
+        border-radius: 15px;
+        padding: 0; /* 內部 padding 由內容撐開 */
         display: flex;
         flex-direction: column;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        border: 1px solid #e3e6f0;
+        overflow: hidden;
+        transition: transform 0.2s, box-shadow 0.2s;
     }
 
-    .food-image-placeholder {
-        background-color: white;
+    .food-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+    }
+
+    /* 圖片區域 */
+    .food-image-box {
         width: 100%;
-        height: 200px;
-        border-radius: 8px;
-        margin-bottom: 15px;
+        height: 220px;
+        background-color: #eaecf4;
         display: flex;
         justify-content: center;
         align-items: center;
         overflow: hidden;
+        border-bottom: 1px solid #eee;
     }
 
-    .food-image-placeholder img {
+    .food-image-box img {
         width: 100%;
         height: 100%;
         object-fit: cover;
     }
 
-    .food-info {
-        font-size: 1rem;
-        line-height: 1.8;
-        color: #333;
+    /* 文字資訊區 */
+    .food-body {
+        padding: 20px;
     }
 
-    .food-info b {
-        color: #000;
-    }
-
-    .edit-btn-container {
-        display: flex;
-        justify-content: flex-end;
-        margin-top: 15px;
-    }
-
-    .edit-btn {
-        background-color: #ffc1c1;
-        border: none;
-        padding: 6px 18px;
-        border-radius: 8px;
-        cursor: pointer;
-        text-decoration: none;
-        color: #000;
+    .food-name {
+        font-size: 1.2rem;
         font-weight: bold;
-        font-size: 0.9rem;
+        color: #333;
+        margin-bottom: 10px;
+        border-bottom: 2px solid #f8abb2;
+        padding-bottom: 5px;
     }
 
-    /* 響應式設計 */
-    @media (max-width: 900px) {
-        .food-grid { grid-template-columns: repeat(2, 1fr); }
+    .food-price-info {
+        font-size: 0.95rem;
+        line-height: 1.8;
     }
-    @media (max-width: 600px) {
-        .food-grid { grid-template-columns: 1fr; }
-        .search-bar { flex-direction: column; align-items: flex-start; }
-        .btn-add { margin-left: 0; }
+
+    .original-price {
+        text-decoration: line-through;
+        color: #858796;
+        font-size: 0.85rem;
+    }
+
+    .sale-price {
+        color: #e74a3b;
+        font-weight: bold;
+        font-size: 1.1rem;
+    }
+
+    /* 狀態與按鈕區 */
+    .food-footer {
+        padding: 15px 20px;
+        background-color: #f8f9fc;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-top: 1px solid #e3e6f0;
+    }
+
+    /* 修正 Bootstrap 按鈕在網格中的顯示 */
+    .btn-custom {
+        padding: 5px 15px;
+        font-weight: bold;
+        border-radius: 20px;
     }
 </style>
-</head>
-<body>
 
-    <div class="main-container">
-        <table id="table-1">
-            <tr>
-                <td><h3>餐飲總覽 - FoodList</h3></td>
-            </tr>
-        </table>
-        
-        <div style="text-align: left;">
-            <a th:href="@{/food/}" class="btn-all">全部餐點</a>
-        </div>
+<div class="food-management-wrapper">
+    <div class="food-header-card">
+        <h3>🎬 餐飲品項管理</h3>
+        <a th:href="@{/food/}" class="btn btn-light btn-sm font-weight-bold">
+            <i class="fas fa-list mr-1"></i> 全部餐點
+        </a>
+    </div>
 
-        <div class="search-bar">
-            <form method="get" th:action="@{/food/listByStatus}" class="search-group">
-                <label>狀態：</label>
-                <select name="status">
-                    <option value="1">上架</option>
-                    <option value="0">下架</option>
-                </select>
-                <button type="submit" class="btn-query">查詢</button>
-            </form>
+    <div class="food-search-bar">
+        <form method="get" th:action="@{/food/listByStatus}" class="food-search-group">
+            <label>狀態</label>
+            <select name="status" class="form-control form-control-sm">
+                <option value="1">上架</option>
+                <option value="0">下架</option>
+            </select>
+            <button type="submit" class="btn btn-primary btn-sm">查詢</button>
+        </form>
 
-			<form method="get" th:action="@{/food/listByCate}"
-				class="search-group">
-				<label>種類：</label> <select name="foodCategoryId">
-					<option th:each="cate : ${foodCateList}"
-						th:value="${cate.foodCategoryId}"
-						th:text="${cate.categoryName}"></option>
-				</select>
-				<button type="submit" class="btn-query">查詢</button>
-			</form>
+        <form method="get" th:action="@{/food/listByCate}" class="food-search-group">
+            <label>種類</label>
+            <select name="foodCategoryId" class="form-control form-control-sm">
+                <option th:each="cate : ${foodCateList}"
+                        th:value="${cate.foodCategoryId}"
+                        th:text="${cate.categoryName}"></option>
+            </select>
+            <button type="submit" class="btn btn-info btn-sm">查詢</button>
+        </form>
 
-			<form method="get" th:action="@{/food/listByName}" class="search-group">
-                <label>名稱：</label>
-                <input type="text" name="foodName" placeholder="輸入餐點名稱" class="input-search">
-                <button type="submit" class="btn-query">查詢</button>
-            </form>
+        <form method="get" th:action="@{/food/listByName}" class="food-search-group">
+            <label>名稱</label>
+            <input type="text" name="foodName" placeholder="關鍵字..." class="form-control form-control-sm" style="width:120px;">
+            <button type="submit" class="btn btn-secondary btn-sm">查詢</button>
+        </form>
 
-            <a th:href="@{/food/addFood}" class="btn-add">新增品項</a>
-        </div>
+        <a th:href="@{/food/addFood}" class="btn btn-danger btn-sm ml-auto">
+            <i class="fas fa-plus mr-1"></i> 新增品項
+        </a>
+    </div>
 
-        <div class="food-grid">
-            <div class="food-card" th:each="foodVO : ${foodList}">
-                <div class="food-image-placeholder">
-                    <th:block th:if="${foodVO.foodImage != null}">
-                        <img th:src="@{/food/imageReader(foodId=${foodVO.foodId})}" th:alt="${foodVO.foodName}">
-                    </th:block>
-                    <th:block th:unless="${foodVO.foodImage != null}">
-                        <span style="color:#bbb">無餐點圖片</span>
-                    </th:block>
+    <div class="food-grid">
+        <div class="food-card" th:each="foodVO : ${foodList}">
+            <div class="food-image-box">
+                <th:block th:if="${foodVO.foodImage != null}">
+                    <img th:src="@{/food/imageReader(foodId=${foodVO.foodId})}" th:alt="${foodVO.foodName}">
+                </th:block>
+                <th:block th:unless="${foodVO.foodImage != null}">
+                    <i class="fas fa-utensils fa-3x text-gray-300"></i>
+                </th:block>
+            </div>
+
+            <div class="food-body">
+                <div class="food-name" th:text="${foodVO.foodName}">餐點名稱</div>
+                <div class="food-price-info">
+                    <div><span class="text-gray-600">原價：</span> <span class="original-price">[[${foodVO.foodOriginalPrice}]] 元</span></div>
+                    <div><span class="text-gray-600">網路售價：</span> <span class="sale-price">[[${foodVO.foodPrice}]] 元</span></div>
                 </div>
+            </div>
 
-                <div class="food-info">
-                    <div><b>餐點名稱：</b> [[${foodVO.foodName}]]</div>
-                    <div><b>原價：</b> [[${foodVO.foodOriginalPrice}]] 元</div>
-                    <div><b>網路售價：</b> [[${foodVO.foodPrice}]] 元</div>
-                    <div><b>狀態：</b> 
-                        <span th:if="${foodVO.foodStatus == 1}">上架</span>
-                        <span th:unless="${foodVO.foodStatus == 1}" style="color:red">下架</span>
-                    </div>
+            <div class="food-footer">
+                <div>
+                    <span th:if="${foodVO.foodStatus == 1}" class="badge badge-success px-3 py-2">上架中</span>
+                    <span th:unless="${foodVO.foodStatus == 1}" class="badge badge-danger px-3 py-2">已下架</span>
                 </div>
-
-                <div class="edit-btn-container">
-                    <a th:href="@{/food/getOne_For_Update(foodId=${foodVO.foodId})}" class="edit-btn">編輯</a>
-                </div>
+                <a th:href="@{/food/getOne_For_Update(foodId=${foodVO.foodId})}" class="btn btn-outline-primary btn-sm btn-custom">
+                    <i class="fas fa-edit mr-1"></i> 編輯
+                </a>
             </div>
         </div>
     </div>
-
-</body>
-</html>
+</div>
+</div>

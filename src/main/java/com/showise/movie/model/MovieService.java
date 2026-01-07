@@ -51,4 +51,8 @@ public class MovieService {
 	public List<MovieVO> listByDate(LocalDate searchDate){
 		return repository.findByDate(searchDate);
 	}
+	
+	public List<MovieVO> listByStatusAndType(Integer status,Integer movieTypeId){
+		return repository.findByStatusAndType(status, movieTypeId);
+	}
 }

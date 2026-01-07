@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${movie.nameTw} + ' - 電影詳情'">電影詳情</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/all.min.css">
+    <style>
+        :root { --main-gold: #d4af37; --bg-dark: #121212; }
+        body { background-color: var(--bg-dark); color: white; font-family: "Microsoft JhengHei", sans-serif; }
+        .navbar { background-color: rgba(0,0,0,0.9); border-bottom: 2px solid var(--main-gold); }
+        .movie-poster { width: 100%; border-radius: 10px; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
+        .english-name { color: var(--main-gold); font-style: italic; font-weight: 300; }
+        .info-label { color: #aaa; font-weight: bold; margin-right: 10px; }
+        
+        /* 場次按鈕 */
+        .session-btn { margin: 5px; border: 1px solid var(--main-gold); color: white; transition: 0.3s; }
+        .session-btn:hover, .session-btn.active { background-color: var(--main-gold); color: black; }
+        
+        /* 預告片容器 */
+        .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; margin-top: 30px; }
+        .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 10px; }
+        
+        /* 日期卡片 */
+        .date-card { background: #1e1e1e; border: 1px solid #333; border-radius: 10px; padding: 15px; margin-bottom: 15px; }
+        .date-title { color: var(--main-gold); border-bottom: 1px solid #333; padding-bottom: 10px; margin-bottom: 15px; }
+
+        /* --- 座位預覽樣式 --- */
+        .seat-preview { width: 22px; height: 22px; margin: 3px; border-radius: 4px; display: inline-block; }
+        .seat-available { background-color: var(--main-gold); } /* 狀態 1 */
+        .seat-sold { background-color: #333; border: 1px solid #444; } /* 狀態 0 或 2 */
+        .seat-row { white-space: nowrap; display: flex; justify-content: center; }
+        .seat-demo { display: inline-block; width: 15px; height: 15px; border-radius: 3px; vertical-align: middle; }
+        .screen-divider { width: 80%; height: 4px; background: #555; margin: 10px auto 30px; border-radius: 50%; box-shadow: 0 2px 10px rgba(255,255,255,0.1); }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg sticky-top">
+        <div class="container">
+            <a class="navbar-brand text-white fw-bold fs-3" th:href="@{/front/index}">SHOWISE</a>
+            <div class="ms-auto">
+                <a th:href="@{/order}" class="btn btn-outline-warning me-2">立即訂票</a>
+                <a th:href="@{/login}" class="btn btn-warning">會員登入</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-3">
+                <img th:src="@{/front/imageReader(movieId=${movie.movieId})}" class="movie-poster" alt="電影海報">
+            </div>
+            <div class="col-md-4 px-4">
+                <h1 class="fw-bold" th:text="${movie.nameTw}"></h1>
+                <h4 class="english-name mb-4" th:text="${movie.nameEng}"></h4>
+                <p><span class="info-label">類型:</span> <span th:each="type : ${movie.eachMovieTypes}" th:text="${type.movieType.typeName} + ' '"></span></p>
+                <p><span class="info-label">導演:</span> <span th:text="${movie.director}"></span></p>
+                <p><span class="info-label">演員:</span> <span th:text="${movie.actor}"></span></p>
+                <p><span class="info-label">片長:</span> <span th:text="${movie.duration}"></span> 分鐘</p>
+            </div>
+            <div class="col-md-5 border-start border-secondary">
+                <h4 class="text-warning mb-3"><i class="fas fa-file-alt"></i> 電影簡介</h4>
+                <p style="line-height: 1.8; color: #ccc;" th:text="${movie.introduction}"></p>
+            </div>
+        </div>
+
+        <div class="row mt-5">
+            <div class="col-12">
+                <h3 class="text-white mb-4"><i class="fab fa-youtube text-danger"></i> 預告片觀賞</h3>
+                <div class="video-container">
+                    <iframe th:src="'https://www.youtube.com/embed/' + ${movie.trailer}" 
+                            title="YouTube video player" frameborder="0" allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-5 mb-5">
+    <div class="col-12">
+        <h3 class="text-white mb-4"><i class="fas fa-clock text-warning"></i> 選擇場次</h3>
+        <input type="hidden" id="movieId" name="movieId" th:value="${movie.movieId}">
+        
+        <div th:each="i : ${#numbers.sequence(0, 6)}" class="date-card">
+            <div class="date-title fw-bold fs-5">
+                <input type="hidden" name="date" th:value="${datelist[i]}">
+                <i class="far fa-calendar-alt me-2"></i> 
+                <span th:text="${datelist[i]}">日期</span>
+            </div>
+
+            <div class="session-list">
+                <div th:with="dailySessions=${__${'session' + i}__}">
+                    <div th:if="${not #lists.isEmpty(dailySessions)}">						
+                        <div th:each="sess : ${dailySessions}" style="display: inline-block" class="me-2 mb-2">
+                            <a href="javascript:void(0);" 
+                               class="btn session-btn" 
+                               th:data-session-id="${sess.sessionId}"
+                               th:text="${#dates.format(sess.startTime, 'HH:mm')}">時間</a>
+                        </div>
+                    </div>
+                    <div th:if="${#lists.isEmpty(dailySessions)}" class="text-secondary ps-2">當天無播放該電影</div>
+                </div>
+            </div>
+
+            <div class="seat-preview-wrapper mt-3" style="display: none; background: #252525; border-radius: 10px; padding: 20px;">
+                <div class="text-center mb-2"><small class="text-warning">銀幕方向</small></div>
+                <div class="screen-divider" style="width: 60%; height: 3px; background: #555; margin: 0 auto 15px;"></div>
+                
+                <div class="seat-grid-target text-center">
+                    </div>
+
+                <div class="text-center mt-3">
+                    <div class="mb-2" style="font-size: 0.8rem;">
+                        <span class="seat-demo seat-available"></span> 可選 &nbsp;
+                        <span class="seat-demo seat-sold"></span> 已售
+                    </div>
+                    <a class="confirm-btn btn btn-sm btn-warning fw-bold px-4" href="#">前往訂票</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script th:inline="javascript">
+    document.querySelectorAll('.session-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            // 1. 取得相關參數
+            const sessionId = this.getAttribute('data-session-id');
+            const movieCard = this.closest('.date-card'); // 找到當前按鈕所屬的日期卡片
+            const movieId = document.getElementById('movieId').value;
+            const dateValue = movieCard.querySelector('input[name="date"]').value;
+
+            // 2. 移除所有按鈕的 active 狀態，並把所有其他的預覽區隱藏
+            document.querySelectorAll('.session-btn').forEach(b => b.classList.remove('active', 'btn-warning'));
+            document.querySelectorAll('.seat-preview-wrapper').forEach(w => w.style.display = 'none');
+
+            // 3. 設定當前按鈕樣式
+            this.classList.add('active', 'btn-warning');
+
+            // 4. AJAX 抓取座位資料 (回傳 Map<String, String>)
+            fetch(`/front/getSessionStatus?sessionId=${sessionId}`)
+                .then(res => res.json())
+                .then(data => {
+                    // 找到當前卡片內的預覽容器與渲染目標
+                    const wrapper = movieCard.querySelector('.seat-preview-wrapper');
+                    const grid = movieCard.querySelector('.seat-grid-target');
+                    const confirmBtn = movieCard.querySelector('.confirm-btn');
+
+                    // 渲染座位圖
+                    renderPreviewToGrid(grid, data.allSeatStatus);
+                    
+                    // 更新按鈕連結
+                    confirmBtn.href = `/order/prepare?movieId=${movieId}&sessionId=${sessionId}&date=${encodeURIComponent(dateValue)}`;
+                    
+                    // 顯示該區域
+                    wrapper.style.display = 'block';
+                })
+                .catch(err => console.error("抓取失敗:", err));
+        });
+    });
+
+    function renderPreviewToGrid(container, statusStr) {
+        container.innerHTML = ''; // 清空
+        
+        // 渲染 5x15 結構
+        for (let row = 0; row < 5; row++) {
+            const rowDiv = document.createElement('div');
+            rowDiv.style.display = 'flex';
+            rowDiv.style.justifyContent = 'center';
+            
+            for (let col = 0; col < 15; col++) {
+                const status = statusStr.charAt(row * 15 + col);
+                const seat = document.createElement('div');
+                // 使用之前定義的樣式類別
+                seat.className = 'seat-preview ' + (status === '1' ? 'seat-available' : 'seat-sold');
+                // 預覽圖縮小一點點以免太擠
+                seat.style.width = '18px';
+                seat.style.height = '18px';
+                seat.style.margin = '2px';
+                rowDiv.appendChild(seat);
+            }
+            container.appendChild(rowDiv);
+        }
+    }
+    </script>
+</body>
+</html>

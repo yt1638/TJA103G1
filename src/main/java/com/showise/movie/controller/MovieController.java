@@ -37,14 +37,18 @@ public class MovieController {
 	public String listAll(Model model) {
 		model.addAttribute("movieList",movieSvc.findAllByOrderByMovieIdDesc());
 		model.addAttribute("typeList",mtSvc.listAll());
-		return "back-end/movie/listAll";
+		model.addAttribute("pageTitle","電影資料管理");
+		model.addAttribute("content","back-end/movie/listAll :: content");
+		return "back-end/layout/admin-layout";
 	}
 	
 	@GetMapping("/getDetail")
 	public String getDetail(@RequestParam(value = "movieId") Integer movieId,Model model) {
 		model.addAttribute("typeList",mtSvc.listAll());
 		model.addAttribute("movieVO",movieSvc.getById(movieId));
-		return "back-end/movie/getDetail";
+		model.addAttribute("pageTitle","電影資料管理");
+		model.addAttribute("content","back-end/movie/getDetail :: content");
+		return "back-end/layout/admin-layout";
 		
 	}
 	
@@ -53,7 +57,9 @@ public class MovieController {
 		MovieVO movieVO = new MovieVO();
 		model.addAttribute("movieVO",movieVO);
 		model.addAttribute("typeList",mtSvc.listAll());
-		return "back-end/movie/save";
+		model.addAttribute("pageTitle","電影資料管理");
+		model.addAttribute("content","back-end/movie/save :: content");
+		return "back-end/layout/admin-layout";
 	}
 	
 	@PostMapping("/insert")
@@ -62,7 +68,9 @@ public class MovieController {
 		
 		if(result.hasErrors()) {
 			model.addAttribute("typeList",mtSvc.listAll());
-			return "back-end/movie/save";
+			model.addAttribute("pageTitle","電影資料管理");
+			model.addAttribute("content","back-end/movie/save :: content");
+			return "back-end/layout/admin-layout";
 		}
 		
 		if(!image.isEmpty()) {
@@ -99,18 +107,22 @@ public class MovieController {
 	}
 	
 	@GetMapping("/getOne_For_Update")
-	public String getOne_For_Update(@RequestParam(value="movieId") Integer movieId,Model model) {
+	public String getOne_For_Update(@RequestParam("movieId") Integer movieId,Model model) {
 		MovieVO movieVO = movieSvc.getById(movieId);
 		model.addAttribute("movieVO",movieVO);
 		model.addAttribute("typeList",mtSvc.listAll());
-		return "back-end/movie/save";
+		model.addAttribute("pageTitle","電影資料管理");
+		model.addAttribute("content","back-end/movie/save :: content");
+		return "back-end/layout/admin-layout";
 	}
 	
 	@PostMapping("/update")
 	public String updateMovie(@Valid MovieVO movieVO,BindingResult result,@RequestParam(value = "imageFile",required = false) MultipartFile image,@RequestParam(value = "movieTypeIds",required = false) List<Integer> movieTypeIds,Model model) throws IOException {
 		if(result.hasErrors()) {
 			model.addAttribute("typeList",mtSvc.listAll());
-			return "back-end/movie/save";
+			model.addAttribute("pageTitle","電影資料管理");
+			model.addAttribute("content","back-end/movie/save :: content");
+			return "back-end/layout/admin-layout";
 		}
 		
 		if(!image.isEmpty()) {
@@ -139,13 +151,10 @@ public class MovieController {
 		List<MovieVO> list = movieSvc.listByMovieName(nameTw);
 		model.addAttribute("movieList",list);
 		model.addAttribute("typeList",mtSvc.listAll());
+		model.addAttribute("pageTitle","電影資料管理");
+		model.addAttribute("content","back-end/movie/listAll :: content");
 		
-		if(list.isEmpty()) {
-			model.addAttribute("notFindMsg","查無資料");
-			model.addAttribute("movieList",movieSvc.findAllByOrderByMovieIdDesc());
-		}
-		
-		return "back-end/movie/listAll";
+		return "back-end/layout/admin-layout";
 	}
 	
 	@GetMapping("/listByStatus")
@@ -153,13 +162,10 @@ public class MovieController {
 		List<MovieVO> list = movieSvc.listByStatus(status);
 		model.addAttribute("movieList",list);
 		model.addAttribute("typeList",mtSvc.listAll());
-		
-		if(list.isEmpty()) {
-			model.addAttribute("notFindMsg","查無資料");
-			model.addAttribute("movieList",movieSvc.findAllByOrderByMovieIdDesc());
-		}
-		
-		return "back-end/movie/listAll";
+		model.addAttribute("pageTitle","電影資料管理");
+		model.addAttribute("content","back-end/movie/listAll :: content");
+
+		return "back-end/layout/admin-layout";
 	}
 	
 	@GetMapping("/listByType")
@@ -167,13 +173,10 @@ public class MovieController {
 		List<MovieVO> list = movieSvc.listByType(movieTypeId);
 		model.addAttribute("movieList",list);
 		model.addAttribute("typeList",mtSvc.listAll());
+		model.addAttribute("pageTitle","電影資料管理");
+		model.addAttribute("content","back-end/movie/listAll :: content");
 		
-		if(list.isEmpty()) {
-			model.addAttribute("notFindMsg","查無資料");
-			model.addAttribute("movieList",movieSvc.findAllByOrderByMovieIdDesc());
-		}
-		
-		return "back-end/movie/listAll";
+		return "back-end/layout/admin-layout";
 	}
 	
 	

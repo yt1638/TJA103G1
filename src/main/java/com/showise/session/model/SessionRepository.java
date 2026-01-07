@@ -30,10 +30,13 @@ public interface SessionRepository extends JpaRepository<SessionVO,Integer>{
 		@Query("from SessionVO s join fetch s.movie join fetch s.cinema where s.movie.movieId = :movieId order by s.startTime ASC")
 		List<SessionVO> listByMovieId(@Param("movieId") Integer movieId);
 
-		@Query("from SessionVO s join fetch s.movie join fetch s.cinema where s.startTime >= :start AND s.startTime <= :end order by s.startTime ASC")
+		@Query("from SessionVO s join fetch s.movie join fetch s.cinema where s.startTime >= :start AND s.startTime <= :end order by s.cinema.cinemaId,s.startTime ASC")
 		List<SessionVO> listByDate(@Param("start") Timestamp start, @Param("end") Timestamp end);
         
 		@Query("from SessionVO s join fetch s.cinema where s.cinema.cinemaId = :cinemaId")
 		List<SessionVO> listByCinema(@Param("cinemaId") Integer cinemaId);
+		
+		@Query("from SessionVO s join fetch s.movie where s.movie.movieId = :movieId and s.startTime >= :start AND s.startTime <= :end order by s.startTime")
+		List<SessionVO> listByMovieAndDate(@Param("movieId") Integer movieId,@Param("start") Timestamp start,@Param("end") Timestamp end);
 
 }
