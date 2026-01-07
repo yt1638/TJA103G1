@@ -1,78 +1,5 @@
-<!DOCTYPE html>
-<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
-
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-
-    <title>喜好通知訂單</title>
-
-    <!-- Custom fonts for this template-->
-    <link href="/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-    <link
-        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
-        rel="stylesheet">
-
-    <!-- Custom styles for this template-->
-    <link href="/css/sb-admin-2.min.css" rel="stylesheet">
-
-    <link href="/vendor/fontawesome-free-7.1.0-web/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+<div th:fragment = "content">
     <style>
-        /* Topbar「後台系統」標題樣式（沿用上次） */
-        .topbar-title {
-            font-family: 'Baloo 2', 'Nunito', 'Microsoft JhengHei', sans-serif;
-            font-size: 30px;
-            font-weight: 600;
-            color: #6f98ff;
-            letter-spacing: 2px;
-            text-align: center;
-            flex: 1 1 auto;
-            display: inline-block;
-            background: #f3feff;
-            border: 2px solid #a6bbff;
-            padding: 6px 26px;
-            border-radius: 999px;
-            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
-            transition: all 0.25s ease;
-            max-width: 100%;
-            box-sizing: border-box;
-        }
-
-        .topbar-title:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.18);
-        }
-
-        @media (max-width: 767.98px) {
-            .topbar-title {
-                font-size: 22px;
-                padding: 4px 16px;
-                letter-spacing: 1px;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .sidebar .nav-link span {
-                font-size: 13px !important;
-                font-weight: 700;
-            }
-
-            .sidebar .nav-link i {
-                font-size: 13px !important;
-                margin-right: 6px;
-            }
-
-            .sidebar-brand-text {
-                font-size: 13px !important;
-            }
-        }
-
         /* 頁面標題 */
         .page-title {
             font-size: 24px;
@@ -191,161 +118,6 @@
             background-color: #111 !important;
         }
     </style>
-</head>
-
-<body id="page-top">
-
-<div id="wrapper">
-
-    <!-- Sidebar（沿用原本的樣式與項目） -->
-    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
-
-        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/index">
-            <div class="sidebar-brand-icon">
-                <i class="fa-solid fa-house fa-2x"></i>
-            </div>
-            <div class="sidebar-brand-text mr-3" style="font-size: 18px;">影智推 HOME</div>
-        </a>
-
-        <li class="nav-item">
-            <a class="nav-link" href="/index">
-                <span><i class="fa-solid fa-gauge"></i>Dashboard</span>
-            </a>
-        </li>
-
-        <hr class="sidebar-divider">
-
-        <li class="nav-item">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
-               aria-expanded="true" aria-controls="collapseTwo">
-                <span><i class="fas fa-clapperboard"></i> 電影管理</span>
-            </a>
-            <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                <div class="bg-white py-2 collapse-inner rounded">
-                    <a class="collapse-item" href="/buttons.html">電影資料管理</a>
-                    <a class="collapse-item" href="/cards.html">場次管理</a>
-                    <a class="collapse-item" href="/cards.html">座位管理</a>
-                </div>
-            </div>
-        </li>
-
-        <li class="nav-item">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
-               aria-expanded="true" aria-controls="collapseUtilities">
-                <span><i class="fa-solid fa-user"></i> 會員管理</span>
-            </a>
-            <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
-                 data-parent="#accordionSidebar">
-                <div class="bg-white py-2 collapse-inner rounded">
-                    <a class="collapse-item" href="/utilities-color.html">會員資料管理</a>
-                    <a class="collapse-item" href="/utilities-border.html">會員分級管理</a>
-                </div>
-            </div>
-        </li>
-
-        <hr class="sidebar-divider">
-
-        <li class="nav-item">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseFood"
-               aria-expanded="true" aria-controls="collapseFood">
-                <span><i class="fa-solid fa-burger"></i> 餐飲管理</span>
-            </a>
-
-            <div id="collapseFood" class="collapse" aria-labelledby="headingFood" data-parent="#accordionSidebar">
-                <div class="bg-white py-2 collapse-inner rounded">
-                    <a class="collapse-item">菜單概覽</a>
-                </div>
-            </div>
-        </li>
-
-        <li class="nav-item">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTicket"
-               aria-expanded="true" aria-controls="collapseTicket">
-                <span><i class="fa-solid fa-ticket"></i> 票種管理</span>
-            </a>
-
-            <div id="collapseTicket" class="collapse" aria-labelledby="headingTicket"
-                 data-parent="#accordionSidebar">
-                <div class="bg-white py-2 collapse-inner rounded">
-                    <a class="collapse-item">票券編輯</a>
-                </div>
-            </div>
-        </li>
-
-        <li class="nav-item">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#orderPages"
-               aria-expanded="true" aria-controls="orderPages">
-                <span><i class="fa-solid fa-list"></i> 訂單管理</span>
-            </a>
-
-            <div id="orderPages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-                <div class="bg-white py-2 collapse-inner rounded">
-                    <a class="collapse-item">會員訂單管理</a>
-                </div>
-            </div>
-        </li>
-
-        <!-- 通知管理 -->
-        <li class="nav-item active">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#notifyPages"
-               aria-expanded="true" aria-controls="notifyPages">
-                <span><i class="fa-regular fa-envelope-open"></i> 通知管理</span>
-            </a>
-            <div id="notifyPages" class="collapse show" aria-labelledby="headingPages"
-                 data-parent="#accordionSidebar">
-                <div class="bg-white py-2 collapse-inner rounded">
-                    <a class="collapse-item" th:href="@{/notification_showstart/select_page}">開演通知</a>
-                    <a class="collapse-item active" th:href="@{/notification_preference/select_page}">喜好通知</a>
-                </div>
-            </div>
-        </li>
-
-        <hr class="sidebar-divider d-none d-md-block">
-
-        <div class="text-center d-none d-md-inline">
-            <button class="rounded-circle border-0" id="sidebarToggle"></button>
-        </div>
-
-        <div class="sidebar-card d-none d-lg-flex">
-            <img class="sidebar-card-illustration mb-2" src="/img/undraw_rocket.svg" alt="...">
-        </div>
-
-    </ul>
-    <!-- End of Sidebar -->
-
-    <div id="content-wrapper" class="d-flex flex-column">
-        <div id="content">
-
-            <!-- Topbar -->
-            <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
-                <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
-                    <i class="fa fa-bars"></i>
-                </button>
-
-                <div class="topbar-title mx-auto">
-                    後台系統
-                </div>
-
-                <ul class="navbar-nav ml-auto">
-                    <li class="nav-item dropdown no-arrow">
-                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
-                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <span class="mr-2 d-none d-lg-inline text-gray-600 small">登錄帳號人</span>
-                            <img class="img-profile rounded-circle" src="/img/undraw_profile.svg">
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                             aria-labelledby="userDropdown">
-                            <a class="dropdown-item" href="#"><i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>個人資料</a>
-                            <a class="dropdown-item" href="#"><i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>設定</a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
-                                <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>登出
-                            </a>
-                        </div>
-                    </li>
-                </ul>
-            </nav>
-            <!-- End of Topbar -->
 
             <div class="container-fluid">
 
@@ -353,8 +125,8 @@
                     <span class="page-title">喜好通知查詢</span>
 
                     <a class="edit-showstart-btn"
-						   th:href="@{/notification_preference/update_notificationPreference_input}">
-						  開演通知編輯
+						   th:href="@{/message/update_notificationPreference_input}">
+						  喜好通知編輯
 					</a>
                 </div>
 
@@ -412,8 +184,8 @@
                                         <th>會員編號</th>
                                         <th>電影編號</th>
                                         <th>發送日期</th>
-                                        <th>發送內容</th>
                                         <th>發送狀態</th>
+                                        <th>發送內容</th>
                                     </tr>
                                     </thead>
 
@@ -421,7 +193,7 @@
 									  <th:block th:if="${notificationPreferenceListData != null and !#lists.isEmpty(notificationPreferenceListData)}">
 									    <tr th:each="noti : ${notificationPreferenceListData}">
 									      <td th:text="${noti.member.memberId}">會員編號</td>
-									      <td th:text="${noti.movie.movieId}">場次/電影編號</td>
+									      <td th:text="${noti.movie.movieId}">電影編號</td>
 									      <td th:text="${noti.notiPrefStime}">發送時間</td>
 									      <td th:text="${noti.notiPrefStat}">發送狀態</td>
 									      <td th:text="${noti.notiPrefScon}">發送內容</td>
@@ -444,48 +216,11 @@
 
             </div><!-- container-fluid -->
 
-        </div><!-- content -->
-    </div><!-- content-wrapper -->
-
-</div><!-- wrapper -->
 
 <a class="scroll-to-top rounded" href="#page-top">
     <i class="fas fa-angle-up"></i>
 </a>
 
-<!-- Logout Modal-->
-<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog"
-     aria-labelledby="exampleModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">確定要登出？</h5>
-                <button class="close" type="button" data-dismiss="modal"
-                        aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
-            </div>
-            <div class="modal-body">若要結束目前的登入狀態，請在下方選擇「登出」。</div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" type="button" data-dismiss="modal">取消</button>
-                <a class="btn btn-primary" href="/login.html">登出</a>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Bootstrap core JavaScript-->
-<script src="/vendor/jquery/jquery.min.js"></script>
-<script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-<!-- Core plugin JavaScript-->
-<script src="/vendor/jquery-easing/jquery.easing.min.js"></script>
-
-<!-- Custom scripts for all pages-->
-<script src="/js/sb-admin-2.min.js"></script>
-
-<script src="/vendor/fontawesome-free-7.1.0-web/js/all.min.js"></script>
 
 <!-- ✅ 至少填一個 + 數字驗證 -->
 <script>
@@ -521,13 +256,4 @@ function validateForm() {
 }
 </script>
 
-<footer class="sticky-footer bg-white">
-    <div class="container my-auto">
-        <div class="copyright text-center my-auto">
-            <span>版權所有 &copy; Showise</span>
-        </div>
-    </div>
-</footer>
-
-</body>
-</html>
+</div>

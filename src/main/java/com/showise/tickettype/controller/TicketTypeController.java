@@ -1,9 +1,11 @@
 package com.showise.tickettype.controller;
 
+import java.sql.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,59 +25,76 @@ public class TicketTypeController {
     @Autowired
     private TicketTypeService ticketTypeSvc;
 
+    private void prepareTicketEditModel(Model model) {
+        List<TicketTypeVO> list = ticketTypeSvc.getAll();
+        model.addAttribute("ticketTypeListData", list);
+
+        TicketTypeVO full = list.stream()
+                .filter(t -> "全票".equals(t.getTicketName()))
+                .findFirst()
+                .orElseGet(() -> {
+                    TicketTypeVO vo = new TicketTypeVO();
+                    vo.setTicketName("全票");
+                    return vo;
+                });
+
+        TicketTypeVO discount = list.stream()
+                .filter(t -> "優待票".equals(t.getTicketName()))
+                .findFirst()
+                .orElseGet(() -> {
+                    TicketTypeVO vo = new TicketTypeVO();
+                    vo.setTicketName("優待票");
+                    return vo;
+                });
+
+        model.addAttribute("fullTicket", full);
+        model.addAttribute("discountTicket", discount);
+    }
+
     @GetMapping("/select_page")
-    public String selectPage(ModelMap model) {
-        List<TicketTypeVO> list = ticketTypeSvc.getAll();
-        model.addAttribute("ticketTypeListData", list);
-        return "back-end/tickettype/select_page";
-    }
+    public String selectPage(Model model) {
 
-    @PostMapping("/getOne_For_Display")
-    public String getOne_For_Display(@RequestParam("ticketTypeId") Integer ticketTypeId,
-                                     ModelMap model) {
+        prepareTicketEditModel(model);
 
-        TicketTypeVO ticketTypeVO = ticketTypeSvc.getOneById(ticketTypeId);
-        model.addAttribute("ticketTypeVO", ticketTypeVO);   
+        model.addAttribute("pageTitle", "票券編輯");
+        model.addAttribute(
+            "content",
+            "back-end/tickettype/select_page :: content"
+        );
 
-        List<TicketTypeVO> list = ticketTypeSvc.getAll();
-        model.addAttribute("ticketTypeListData", list);
-
-        return "back-end/tickettype/select_page";
-    }
-
-    @GetMapping("/listAllTicketType")
-    public String listAllTicketType(ModelMap model) {
-        List<TicketTypeVO> list = ticketTypeSvc.getAll();
-        model.addAttribute("ticketTypeListData", list);
-        return "back-end/tickettype/listAllTicketType";
-    }
-
-    @PostMapping("/getOne_For_Update")
-    public String getOne_For_Update(@RequestParam("ticketTypeId") Integer ticketTypeId,
-                                    ModelMap model) {
-
-        TicketTypeVO ticketTypeVO = ticketTypeSvc.getOneById(ticketTypeId);
-        model.addAttribute("ticketTypeVO", ticketTypeVO);
-        return "back-end/tickettype/update_TicketType_input";
+        return "back-end/layout/admin-layout";
     }
 
     @PostMapping("/update")
     public String update(@Valid TicketTypeVO ticketTypeVO,
                          BindingResult result,
-                         ModelMap model) {
+                         Model model) {
 
         if (result.hasErrors()) {
-            return "back-end/tickettype/update_TicketType_input";
+            prepareTicketEditModel(model);
+
+            model.addAttribute("pageTitle", "票券編輯");
+            model.addAttribute(
+                "content",
+                "back-end/tickettype/select_page :: content"
+            );
+
+            return "back-end/layout/admin-layout";
         }
 
         ticketTypeSvc.updateTicket(ticketTypeVO);
-        return "redirect:/tickettype/listAllTicketType";
-    }
 
-    @GetMapping("/")
-    public String listAll(ModelMap model) {
-        List<TicketTypeVO> list = ticketTypeSvc.getAll();
-        model.addAttribute("ticketTypeListData", list);
-        return "back-end/tickettype/listAllTicketType";
+        return "redirect:/tickettype/select_page";
+    }
+    @Autowired
+    private TicketTypeService ticketTypeService;
+
+    @PostMapping("/tickettype/update")
+    public String updateTicketType(TicketTypeVO ticketTypeVO) {
+
+        ticketTypeService.update(ticketTypeVO);
+
+        return "redirect:/tickettype/edit";  
     }
 }
+
