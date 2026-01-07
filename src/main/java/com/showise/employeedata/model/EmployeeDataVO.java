@@ -1,7 +1,6 @@
 package com.showise.employeedata.model;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.time.LocalDate;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -12,6 +11,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "employee_data")
@@ -20,34 +22,41 @@ public class EmployeeDataVO implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) 
-    @Column(name = "employee_id")                            
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "employee_id")
     private Integer empId;
 
+    @NotBlank(message = "請輸入員工姓名")
     @Column(name = "employee_name")
     private String empName;
 
+    @NotBlank(message = "請輸入員工帳號")
     @Column(name = "employee_account")
     private String empAccount;
 
+    @NotBlank(message = "請輸入員工密碼")
     @Column(name = "employee_password")
     private String empPassword;
 
+    @NotBlank(message = "請輸入員工信箱")
+    @Email(message = "信箱格式不正確")
     @Column(name = "employee_email")
     private String empEmail;
 
+    @NotNull(message = "請輸入員工狀態")
     @Column(name = "employee_status")
     private Short empStatus;
 
-    @Column(name = "employee_create_time")
+    @NotNull(message = "請選擇到職日期")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @Column(name = "employee_create_time")
     private LocalDate empCreateTime;
 
+    @NotNull(message = "請輸入員工權限")
     @Column(name = "employee_permissions")
     private Short empPermissions;
 
-    public EmployeeDataVO() {
-    }
+    public EmployeeDataVO() {}
 
     public Integer getEmpId() {
         return empId;

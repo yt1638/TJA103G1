@@ -7,7 +7,6 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,9 +14,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.showise.member.model.MemberService;
+import com.showise.member.model.MemberVO;
+import com.showise.message.model.MailService;
+import com.showise.movie.model.MovieVO;
 import com.showise.notification.preference.model.NotificationPreferenceService;
 import com.showise.notification.preference.model.NotificationPreferenceVO;
-import com.showise.notification.showstart.model.NotificationShowstartVO;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -29,6 +31,14 @@ public class NotificationPreferenceController {
     @Autowired
     private NotificationPreferenceService notificationPreferenceSvc;
 
+    // ✅ 比照附件：寄信用同一套 MailService（showstart controller 有用）:contentReference[oaicite:3]{index=3}
+    @Autowired
+    private MailService mailService;
+
+    // ✅ 下拉選單 memberList
+    @Autowired
+    private MemberService memberSvc;
+
     private String renderAdminLayout(Model model, String pageTitle, String contentFragment) {
         model.addAttribute("pageTitle", pageTitle);
         model.addAttribute("content", contentFragment);
@@ -37,12 +47,23 @@ public class NotificationPreferenceController {
 
     @GetMapping("/update_notificationPreference_input")
     public String updateNotificationPreferenceInput(Model model) {
-        model.addAttribute("notificationPreferenceVO", new NotificationPreferenceVO());
+
+        // ✅ 重要：避免 th:field="*{member.memberId}" / "*{movie.movieId}" 時 NullPointer
+        NotificationPreferenceVO vo = new NotificationPreferenceVO();
+        vo.setMember(new MemberVO());
+        vo.setMovie(new MovieVO());
+
+         vo.setNotiPrefScon("親愛的用戶您好：\n此封訊息為依據您的喜好，所發送推薦電影...");
+
+        model.addAttribute("notificationPreferenceVO", vo);
+
+        // ✅ 下拉選單（跟附件一樣在 input 頁就丟 memberList）:contentReference[oaicite:4]{index=4}
+        model.addAttribute("memberList", memberSvc.getAll());
 
         return renderAdminLayout(
                 model,
                 "通知管理",
-                "back-end/notification_preference/update_notificationPreference_input :: content"
+                "back-end/notification_preference/update_notificationPreference_input"
         );
     }
 
@@ -54,6 +75,7 @@ public class NotificationPreferenceController {
 
         if (result.hasErrors()) {
             model.addAttribute("notificationPreferenceVO", notificationPreferenceVO);
+            model.addAttribute("memberList", memberSvc.getAll());
             return renderAdminLayout(
                     model,
                     "通知管理",
@@ -64,33 +86,65 @@ public class NotificationPreferenceController {
         notificationPreferenceSvc.addNotificationPreference(notificationPreferenceVO);
         redirectAttributes.addFlashAttribute("success", "- (新增成功)");
 
+        // ✅ redirect 不要加 :: content
         return "redirect:/notification_preference/listAllNotificationPreference";
-    }
-
-    @PostMapping("/getOne_For_Update")
-    public String getOne_For_Update(@RequestParam("notiPrefNo") Integer notiPrefNo,
-                                    Model model) {
-
-        NotificationPreferenceVO notificationPreferenceVO =
-                notificationPreferenceSvc.getOneNotificationPreference(notiPrefNo);
-
-        model.addAttribute("notificationPreferenceVO", notificationPreferenceVO);
-
-        return renderAdminLayout(
-                model,
-                "通知管理",
-                "back-end/notification_preference/update_notificationPreference_input :: content"
-        );
     }
 
     @PostMapping("/update")
     public String update(@Valid NotificationPreferenceVO notificationPreferenceVO,
                          BindingResult result,
-                         RedirectAttributes redirectAttributes,
+                         @RequestParam(required = false) String mode,
+                         @RequestParam(name = "toEmail", required = false) String toEmail,
+                         @RequestParam(name = "notiPrefScon", required = false) String content,
+                         @RequestParam(name = "advanceDays", required = false) String advanceDays,
+                         RedirectAttributes ra,
                          Model model) {
 
+        if ("sendNow".equals(mode)) {
+
+            if (toEmail == null || toEmail.isBlank()) {
+                ra.addFlashAttribute("error", "請先選擇會員信箱");
+                return "redirect:/notification_preference/update_notificationPreference_input";
+            }
+            if (content == null || content.isBlank()) {
+                ra.addFlashAttribute("error", "訊息內容不可空白");
+                return "redirect:/notification_preference/update_notificationPreference_input";
+            }
+
+            try {
+                mailService.sendTextMail(toEmail, "喜好通知", content);
+                ra.addFlashAttribute("success", "已寄出到：" + toEmail);
+            } catch (Exception e) {
+                e.printStackTrace();
+                ra.addFlashAttribute("error", "寄信失敗：" + e.getMessage());
+            }
+
+            return "redirect:/notification_preference/update_notificationPreference_input";
+        }
+
+        if ("schedule".equals(mode)) {
+
+            if (advanceDays == null || advanceDays.isBlank()) {
+                ra.addFlashAttribute("error", "請先選擇天數");
+                return "redirect:/notification_preference/update_notificationPreference_input";
+            }
+            if (!advanceDays.matches("\\d+")) {
+                ra.addFlashAttribute("error", "天數必須為數字");
+                return "redirect:/notification_preference/update_notificationPreference_input";
+            }
+            if (content == null || content.isBlank()) {
+                ra.addFlashAttribute("error", "訊息內容不可空白");
+                return "redirect:/notification_preference/update_notificationPreference_input";
+            }
+
+            ra.addFlashAttribute("success", "已設定預先發送時間：" + advanceDays + " 天");
+            return "redirect:/notification_preference/update_notificationPreference_input";
+        }
+
+        // ✅ 一般修改 DB
         if (result.hasErrors()) {
             model.addAttribute("notificationPreferenceVO", notificationPreferenceVO);
+            model.addAttribute("memberList", memberSvc.getAll());
             return renderAdminLayout(
                     model,
                     "通知管理",
@@ -99,7 +153,7 @@ public class NotificationPreferenceController {
         }
 
         notificationPreferenceSvc.updateNotificationPreference(notificationPreferenceVO);
-        redirectAttributes.addFlashAttribute("success", "- (修改成功)");
+        ra.addFlashAttribute("success", "- (修改成功)");
 
         return "redirect:/notification_preference/listAllNotificationPreference";
     }
@@ -112,20 +166,19 @@ public class NotificationPreferenceController {
         return renderAdminLayout(
                 model,
                 "通知管理",
-                "back-end/notification_preference/listAllNotificationPreference :: content"
+                "back-end/notification_preference/listAllNotificationPreference"
         );
     }
 
     @GetMapping("/select_page")
     public String selectPage(Model model) {
-    	List<NotificationPreferenceVO> list = notificationPreferenceSvc.getAll();
+        List<NotificationPreferenceVO> list = notificationPreferenceSvc.getAll();
         model.addAttribute("notificationPreferenceListData", list);
-//        model.addAttribute("notificationPreferenceListData", Collections.emptyList());
 
         return renderAdminLayout(
                 model,
                 "通知管理",
-                "back-end/notification_preference/select_page :: content"
+                "back-end/notification_preference/select_page"
         );
     }
 
@@ -149,7 +202,7 @@ public class NotificationPreferenceController {
             return renderAdminLayout(
                     model,
                     "通知管理",
-                    "back-end/notification_preference/select_page :: content"
+                    "back-end/notification_preference/select_page"
             );
         };
 
@@ -185,7 +238,7 @@ public class NotificationPreferenceController {
         return renderAdminLayout(
                 model,
                 "通知管理",
-                "back-end/notification_preference/select_page :: content"
+                "back-end/notification_preference/select_page"
         );
     }
 
@@ -200,4 +253,5 @@ public class NotificationPreferenceController {
     private boolean isDigits(String value) {
         return value != null && value.matches("\\d+");
     }
+    
 }

@@ -83,7 +83,22 @@ public class EmployeeDataController {
                          RedirectAttributes redirectAttributes,
                          Model model) {
 
-        if (result != null && result.hasErrors()) {
+        // ① 先做「重複檢查」：把錯誤綁回欄位（會對應你 thymeleaf 的 th:errors）
+        if (empSvc.existsEmpName(employeeDataVO.getEmpName())) {
+            result.rejectValue("empName", "duplicate", "員工姓名已存在，請更換");
+        }
+        if (empSvc.existsEmpAccount(employeeDataVO.getEmpAccount())) {
+            result.rejectValue("empAccount", "duplicate", "員工帳號已存在，請更換");
+        }
+        if (empSvc.existsEmpPassword(employeeDataVO.getEmpPassword())) {
+            result.rejectValue("empPassword", "duplicate", "員工密碼已被使用，請更換");
+        }
+        if (empSvc.existsEmpEmail(employeeDataVO.getEmpEmail())) {
+            result.rejectValue("empEmail", "duplicate", "員工信箱已存在，請更換");
+        }
+
+        // ② 任何錯誤（包含 @Valid + duplicate）→ 回新增頁
+        if (result.hasErrors()) {
             model.addAttribute("employeeDataVO", employeeDataVO);
             return renderAdminLayout(
                     model,
@@ -92,11 +107,24 @@ public class EmployeeDataController {
             );
         }
 
-        empSvc.addEmp(employeeDataVO);
-        redirectAttributes.addFlashAttribute("success", "- (新增成功)");
+        // ③ 真正寫入
+        try {
+            empSvc.addEmp(employeeDataVO);
+        } catch (org.springframework.dao.DataIntegrityViolationException e) {
+            // 資料庫 UNIQUE 最後防線（併發/漏網）
+            result.reject("duplicate", "資料已存在（欄位重複），請檢查後再送出");
+            model.addAttribute("employeeDataVO", employeeDataVO);
+            return renderAdminLayout(
+                    model,
+                    "新增員工",
+                    "back-end/employee_data/addEmployeeData :: content"
+            );
+        }
 
+        redirectAttributes.addFlashAttribute("success", "- (新增成功)");
         return "redirect:/employee_data/listAllEmployeeData";
     }
+
 
     @PostMapping("/getOne_For_Update")
     public String getOne_For_Update(@RequestParam("empId") Integer empId, Model model) {
@@ -117,7 +145,22 @@ public class EmployeeDataController {
                          RedirectAttributes redirectAttributes,
                          Model model) {
 
-        if (result != null && result.hasErrors()) {
+        Integer empId = employeeDataVO.getEmpId();
+
+        if (empSvc.existsEmpNameExcludeId(employeeDataVO.getEmpName(), empId)) {
+            result.rejectValue("empName", "duplicate", "員工姓名已存在，請更換");
+        }
+        if (empSvc.existsEmpAccountExcludeId(employeeDataVO.getEmpAccount(), empId)) {
+            result.rejectValue("empAccount", "duplicate", "員工帳號已存在，請更換");
+        }
+        if (empSvc.existsEmpPasswordExcludeId(employeeDataVO.getEmpPassword(), empId)) {
+            result.rejectValue("empPassword", "duplicate", "員工密碼已被使用，請更換");
+        }
+        if (empSvc.existsEmpEmailExcludeId(employeeDataVO.getEmpEmail(), empId)) {
+            result.rejectValue("empEmail", "duplicate", "員工信箱已存在，請更換");
+        }
+
+        if (result.hasErrors()) {
             model.addAttribute("employeeDataVO", employeeDataVO);
             return renderAdminLayout(
                     model,
@@ -126,7 +169,17 @@ public class EmployeeDataController {
             );
         }
 
-        empSvc.updateEmp(employeeDataVO);
+        try {
+            empSvc.updateEmp(employeeDataVO);
+        } catch (org.springframework.dao.DataIntegrityViolationException e) {
+            result.reject("duplicate", "資料已存在（欄位重複），請檢查後再送出");
+            model.addAttribute("employeeDataVO", employeeDataVO);
+            return renderAdminLayout(
+                    model,
+                    "修改員工",
+                    "back-end/employee_data/update_employee_data_input :: content"
+            );
+        }
 
         redirectAttributes.addFlashAttribute("success", "- (修改成功)");
         redirectAttributes.addFlashAttribute("employeeDataVO",
@@ -134,6 +187,7 @@ public class EmployeeDataController {
 
         return "redirect:/employee_data/select_page";
     }
+
 
     @GetMapping("/listAllEmployeeData")
     public String listAllEmployeeData(Model model) {
@@ -201,5 +255,9 @@ public class EmployeeDataController {
                 "back-end/employee_data/listAllEmployeeData :: content"
         );
     }
+    
+    
+    
+    
 
 }

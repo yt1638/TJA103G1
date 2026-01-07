@@ -18,4 +18,17 @@ public interface EmployeeDataRepository extends JpaRepository<EmployeeDataVO, In
 
 	@Query(value = "from EmployeeDataVO where empId=?1 and empName like?2 and empCreateTime=?3 order by empId")
 	List<EmployeeDataVO> findByOthers(int empId , String empName , LocalDate empCreateTime);
+	
+	
+
+	    boolean existsByEmpName(String empName);
+	    boolean existsByEmpAccount(String empAccount);
+	    boolean existsByEmpPassword(String empPassword);
+	    boolean existsByEmpEmail(String empEmail);
+
+	    boolean existsByEmpNameAndEmpIdNot(String empName, Integer empId);
+	    boolean existsByEmpAccountAndEmpIdNot(String empAccount, Integer empId);
+	    boolean existsByEmpPasswordAndEmpIdNot(String empPassword, Integer empId);
+	    boolean existsByEmpEmailAndEmpIdNot(String empEmail, Integer empId);
+
 }
