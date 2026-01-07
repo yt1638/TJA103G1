@@ -1,0 +1,115 @@
+<div th:fragment="content">
+
+  <title>喜好通知資料修改 - update_notificationPreference_input.html</title>
+
+  <style type="text/css">
+    button { padding: 5px; }
+
+    form { display: table; }
+    form div { display: table-row; }
+
+    label, input, span, select {
+      display: table-cell;
+      margin: 5px;
+      text-align: left;
+    }
+
+    input[type=text], input[type=password], select, textarea {
+      width: 200px;
+      margin: 5px;
+    }
+
+    form div div { display: table-cell; }
+
+    .center {
+      margin-left: auto;
+      margin-right: auto;
+    }
+  </style>
+
+  <nav class="navbar navbar-expand-md navbar-dark bg-success fixed-top justify-content-center">
+    <div align="center">
+      <h2>喜好通知資料修改 - update_notificationPreference_input.html</h2>
+      <h3>
+        <a class="navbar-brand" th:href="@{/notification_preference/select_page}">回查詢頁
+        </a>
+      </h3>
+    </div>
+  </nav>
+
+  <div align="center" style="margin-top: 90px;">
+    <h3><b>所有欄位皆為必填欄位</b></h3>
+
+    <form th:action="@{/notification_preference/update}"
+          method="post"
+          th:object="${notificationPreferenceVO}">
+
+      <div>
+        <label>電影編號:</label>
+        <input type="text" th:field="*{movie}"
+               onclick="hideContent('movie.errors');" /><br/>
+        <span th:if="${#fields.hasErrors('movie')}"
+              th:errors="*{movie}"
+              class="error"
+              id="movie.errors"></span>
+      </div>
+
+      <div>
+        <label>會員編號:</label>
+        <input type="text" th:field="*{member}"
+               onclick="hideContent('member.errors');" /><br/>
+        <span th:if="${#fields.hasErrors('member')}"
+              th:errors="*{member}"
+              class="error"
+              id="member.errors"></span>
+      </div>
+
+      <div>
+        <label>發送內容:</label>
+        <input type="text" th:field="*{notiPrefScon}"
+               onclick="hideContent('notiPrefScon.errors');" /><br/>
+        <span th:if="${#fields.hasErrors('notiPrefScon')}"
+              th:errors="*{notiPrefScon}"
+              class="error"
+              id="notiPrefScon.errors"></span>
+      </div>
+
+      <div>
+        <label>發送日期:</label>
+        <input type="date" th:field="*{notiPrefStime}"
+               onclick="hideContent('notiPrefStime.errors');" /><br/>
+        <span th:if="${#fields.hasErrors('notiPrefStime')}"
+              th:errors="*{notiPrefStime}"
+              class="error"
+              id="notiPrefStime.errors"></span>
+      </div>
+
+      <div>
+        <label>發送狀態:</label>
+        <input type="text" th:field="*{notiPrefStat}"
+               onclick="hideContent('notiPrefStat.errors');" /><br/>
+        <span th:if="${#fields.hasErrors('notiPrefStat')}"
+              th:errors="*{notiPrefStat}"
+              class="error"
+              id="notiPrefStat.errors"></span>
+      </div>
+
+      <div>
+        <div></div>
+        <div>
+          <button type="submit" id="submit">送出修改</button>
+        </div>
+        <div></div>
+      </div>
+
+    </form>
+  </div>
+
+  <script type="text/javascript">
+    function hideContent(d) {
+      const el = document.getElementById(d);
+      if (el) el.style.display = "none";
+    }
+  </script>
+
+</div>
