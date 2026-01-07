@@ -1,152 +1,271 @@
-
-
-
-
-
-
-
-
-
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>員工管理 - select_page.html</title>
-
-<th:block th:insert="~{/back-end/employee_data/included-fragment}"></th:block>
-
-<style type="text/css">
-
-	button {
-		padding: 5px;
-	}
-	form {
-		display: table;
-	}
-	form div {
-		display: table-row;
-	}
-	label, input, span, select {
-		display: table-cell;
-		margin: 2px;
-		text-align: left;		
-	}
-	input[type=text], input[type=password], select, textarea {
-		width: 200px;
-		margin: 2px;
-	}
-	form div div {
-		display: table-cell;
-	}
-	.center {
-        margin-left: auto;
-        margin-right: auto;
+<div th:fragment="content">
+  <style>
+    .page-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: #1f3c88;
+      border-bottom: 2px solid #1f3c88;
+      padding-bottom: 4px;
+      margin-bottom: 18px;
+      display: inline-block;
     }
-    span {
-		display: inline-block;
-		width: 150px;
-		text-align: left;
-		font-weight: bold;
+
+    .error-msg {
+      color: red;
+      font-weight: 700;
+      margin-top: 10px;
+      line-height: 1.6;
+    }
+
+    .search-card {
+      background: #f8f9fc;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 18px 20px;
+    }
+
+    .form-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .form-row label {
+      margin: 0;
+      font-weight: 700;
+      color: #000;
+      white-space: nowrap;
+    }
+
+    .form-row input,
+    .form-row select {
+      width: 150px;     
+  	  min-width: unset;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-left: auto;
+    }
+
+    .detail-card {
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 16px;
+      background: #fff;
+    }
+    table td, table th {
+  	white-space: normal;      
+  	word-break: break-word;  
 	}
-	div.a {
-        display: inline-block;
-        width: 50%;
-        height: auto;
-        padding: 5px;
-        border: 0px solid blue;    
-        background-color: white; 
-    }
-    div.b {
-        position: absolute; 
-        bottom: 1%; 
-        right: 2%; 
-        width: 45%;
-        padding: 5px; 
-        border: 1px solid blue;
-    }
-</style>
-</head>
-<body>
-
-<nav class="navbar navbar-expand-md navbar-dark bg-success fixed-top justify-content-center">
-		 <div align="center"> <h2>員工管理 - select_page.html</h2>
-		 <h3><a class="navbar-brand" th:href="@{/}"><img th:src="@{/images/back1.gif}">回index.html</a></h3></div>
-</nav>
-
-	<h4><span>資料查詢:</span></h4>
-	<!-- 錯誤表列 -->
-	<div class="errorblock" th:utext="${errorMessage}">${errorMessage}</div><br>
-	<div class="a">
-	  <ul>
-		<li><h5><a href='listAllEmployeeData'>List</a> all EmployeeData. <br><br></h5></li>
-
-		<li>
-			<form method="post" th:action="@{getOne_For_Display}">
-				輸入員工編號:
-				<input type="text" name="empId" th:value="${param.empId}" > 
-				<input type="submit" value="送出"> (輸入如1)
-			</form><br>
-		</li>
-
-		
-		
-		
-		<li><form method="post" th:action="@{getOne_For_Display}">
-				選擇員工編號:
-				<select name="empId">
-				     <option th:each="EmployeeDataVO : ${employeeDataListData}" th:value="${employeeDataVO.empId}" th:text="${employeeDataVO.empId}" />
-			    </select>
-				<input type="submit" value="送出">
-			</form><br>
-		</li>
-
-		
-		
-		
-		<li><form method="post" th:action="@{getOne_For_Display}">
-				選擇員工名稱:
-				<select name="empId">
-				     <option th:each="employeeDataVO : ${employeeDataListData}" th:value="${employeeDataVO.empId}" th:text="${employeeDataVO.empName}" />
-			    </select>
-				<input type="submit" value="送出">
-			</form><br>
-		</li>
-		
-		
-		
-		
-<!--  複合查詢-以下欄位-可隨意增減 -->
-  
-  <li>   
-    <form method="post" th:action="@{listEmployeeDatas_ByCompositeQuery}">
-        <font color=blue>複合查詢:</font><br>
-        輸入員工編號: 
-        <input type="text" name="empId" value="1"><br>
-           
-        輸入員工名稱: 
-        <input type="text" name="empName" value="King"><br>
-       
-        輸入到職日期:
-	    <input name="empCreateTime" type="date">
-	    
-        <input type="submit" value="送出">
-               
-     
-     </form>
-  </li>
-</ul>	
+	.result-table table {
+  	font-size: 14px;
+	}
 	
-      <h4><span>員工管理</span></h4>
-	  <ul>
-		  <li><h5><a th:href="@{/employee_data/addEmployeeData}">Add</a> a new EmployeeData.</h5></li>
-	  </ul>
-	</div>
-    
-	<div class="b" th:if="${employeeDataVO != null}">
-	    <div th:insert="~{back-end/employee_data/listOne_employee_data :: listOne_employee_data-div}"></div>
-	</div>
+	.result-table th,
+	.result-table td {
+	 white-space: normal;
+	 word-break: break-word;
+	}
+	
+		
+  </style>
 
+  <div class="container-fluid">
 
-</body>
-</html>
+    <!-- 標題列 + 右上按鈕 -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <span class="page-title">員工管理</span>
+
+      <div class="actions">
+        <a class="btn btn-outline-primary" th:href="@{/employee_data/select_page}">Home</a>
+        <a class="btn btn-outline-secondary" th:href="@{/employee_data/listAllEmployeeData}">List All</a>
+        <a class="btn btn-dark" th:href="@{/employee_data/addEmployeeData}">新增員工</a>
+      </div>
+    </div>
+
+    <!-- 後端錯誤訊息 -->
+    <div class="error-msg" th:if="${errorMessage}" th:utext="${errorMessage}"></div>
+    <!-- 前端驗證錯誤 -->
+    <div id="clientError" class="error-msg"></div>
+
+    <div class="row">
+      <!-- 左側：查詢區 -->
+      <div class="col-lg-6 mb-3">
+        <div class="search-card">
+          <h5 class="mb-3" style="font-weight:800;">資料查詢</h5>
+
+          <!-- 1) 依員工編號查詢（輸入） -->
+          <form class="mb-3"
+                method="post"
+                th:action="@{/employee_data/getOne_For_Display}"
+                onsubmit="return validateEmpIdInputForm(this);">
+            <div class="form-row">
+              <label>輸入員工編號：</label>
+              <input type="text"
+                     class="form-control"
+                     name="empId"
+                     th:value="${param.empId}"
+                     placeholder="例如 1">
+              <button type="submit" class="btn btn-primary">送出</button>
+            </div>
+          </form>
+
+          <!-- 2) 依員工編號查詢（下拉） -->
+          <form class="mb-3"
+                method="post"
+                th:action="@{/employee_data/getOne_For_Display}"
+                onsubmit="return validateEmpIdSelectForm(this);">
+            <div class="form-row">
+              <label>選擇員工編號：</label>
+              <select class="form-control" name="empId">
+                <option value="" selected>請選擇</option>
+                <option th:each="employeeDataVO : ${employeeDataListData}"
+                        th:value="${employeeDataVO.empId}"
+                        th:text="${employeeDataVO.empId}">
+                </option>
+              </select>
+              <button type="submit" class="btn btn-primary">送出</button>
+            </div>
+          </form>
+
+          <!-- 3) 依員工姓名查詢（下拉）（送出的是 empId） -->
+          <form class="mb-3"
+                method="post"
+                th:action="@{/employee_data/getOne_For_Display}"
+                onsubmit="return validateEmpIdSelectForm(this);">
+            <div class="form-row">
+              <label>選擇員工名稱：</label>
+              <select class="form-control" name="empId">
+                <option value="" selected>請選擇</option>
+                <option th:each="employeeDataVO : ${employeeDataListData}"
+                        th:value="${employeeDataVO.empId}"
+                        th:text="${employeeDataVO.empName}">
+                </option>
+              </select>
+              <button type="submit" class="btn btn-primary">送出</button>
+            </div>
+          </form>
+
+          <!-- 4) 複合查詢（至少一個條件 + 格式檢查） -->
+          <form method="post"
+                th:action="@{/employee_data/listEmployeeDatas_ByCompositeQuery}"
+                onsubmit="return validateCompositeForm(this);">
+            <div class="mb-2" style="font-weight:800;color:#1f3c88;">複合查詢</div>
+
+            <div class="form-row">
+              <label>員工編號：</label>
+              <input type="text" class="form-control" name="empId" placeholder="可不填（數字）">
+            </div>
+
+            <div class="form-row">
+              <label>員工名稱：</label>
+              <input type="text" class="form-control" name="empName" placeholder="可不填（英文）">
+            </div>
+
+            <div class="form-row">
+              <label>到職日期：</label>
+              <input type="date" class="form-control" name="empCreateTime">
+              <button type="submit" class="btn btn-dark">送出</button>
+            </div>
+          </form>
+
+        </div>
+      </div>
+
+      <!-- 右側：查到的單筆詳情 -->
+      <div class="col-lg-6 mb-3"
+           th:if="${employeeDataVO != null and employeeDataVO.empId != null}">
+        <div class="detail-card result-table">
+		  <div th:insert="~{back-end/employee_data/listOne_employee_data :: listOne_employee_data-div}"></div>
+		</div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // ============ 共用：顯示/清除錯誤 ============
+    function showErrors(errors) {
+      const div = document.getElementById("clientError");
+      div.innerHTML = errors.join("<br>");
+    }
+
+    function clearErrors() {
+      document.getElementById("clientError").innerHTML = "";
+    }
+
+    // ============ 規則 ============
+    const reDigits   = /^\d+$/;            // 只能數字
+    const reAlphaNum = /^[A-Za-z0-9]+$/;   // 英文或英文數字（不可空白/符號）
+    // 如果你要「只能英文」→ 改成： const reAlphaNum = /^[A-Za-z]+$/;
+
+    // 1) 文字輸入 empId 查詢：不可空白 + 必須數字
+    function validateEmpIdInputForm(form) {
+      clearErrors();
+      const empId = (form.querySelector("[name='empId']").value || "").trim();
+
+      let errors = [];
+      if (!empId) errors.push("員工編號不可空白");
+      else if (!reDigits.test(empId)) errors.push("員工編號需填入數字");
+
+      if (errors.length) {
+        showErrors(errors);
+        return false;
+      }
+      return true;
+    }
+
+    // 2/3) 下拉 empId 查詢：必須選擇（不可空白）
+    function validateEmpIdSelectForm(form) {
+      clearErrors();
+      const empId = (form.querySelector("[name='empId']").value || "").trim();
+
+      let errors = [];
+      if (!empId) errors.push("請先選擇一個員工");
+
+      if (errors.length) {
+        showErrors(errors);
+        return false;
+      }
+      return true;
+    }
+
+    // 4) 複合查詢：至少填一個 + 格式檢查
+    function validateCompositeForm(form) {
+      clearErrors();
+
+      const empId        = (form.querySelector("[name='empId']").value || "").trim();
+      const empName      = (form.querySelector("[name='empName']").value || "").trim();
+      const empCreateTime= (form.querySelector("[name='empCreateTime']").value || "").trim();
+
+      let errors = [];
+
+      // 至少一個條件
+      if (!empId && !empName && !empCreateTime) {
+        errors.push("請至少輸入一個查詢條件（員工編號 / 員工名稱 / 到職日期）");
+      }
+
+      // empId：數字
+      if (empId && !reDigits.test(empId)) {
+        errors.push("員工編號需填入數字");
+      }
+
+      // empName：英文或英文數字
+      if (empName && !reAlphaNum.test(empName)) {
+        errors.push("員工名稱需填入英文或英文數字（不可含空白與符號）");
+      }
+
+      if (errors.length) {
+        showErrors(errors);
+        return false;
+      }
+      return true;
+    }
+  </script>
+</div>

@@ -17,6 +17,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.showise.notification.preference.model.NotificationPreferenceService;
 import com.showise.notification.preference.model.NotificationPreferenceVO;
+import com.showise.notification.showstart.model.NotificationShowstartVO;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -28,19 +29,16 @@ public class NotificationPreferenceController {
     @Autowired
     private NotificationPreferenceService notificationPreferenceSvc;
 
-    // ===== 共用：統一回 admin-layout（避免漏設 content 造成 index2 類問題） =====
     private String renderAdminLayout(Model model, String pageTitle, String contentFragment) {
         model.addAttribute("pageTitle", pageTitle);
         model.addAttribute("content", contentFragment);
         return "back-end/layout/admin-layout";
     }
 
-    // 新增頁面（你原方法名稱是 update_input，但其實內容是 new VO，這裡先不改路由避免你前端連結壞掉）
     @GetMapping("/update_notificationPreference_input")
     public String updateNotificationPreferenceInput(Model model) {
         model.addAttribute("notificationPreferenceVO", new NotificationPreferenceVO());
 
-        // ✅ 走 layout
         return renderAdminLayout(
                 model,
                 "通知管理",
@@ -55,7 +53,6 @@ public class NotificationPreferenceController {
                          Model model) {
 
         if (result.hasErrors()) {
-            // ✅ 錯誤時回表單同頁（layout）
             model.addAttribute("notificationPreferenceVO", notificationPreferenceVO);
             return renderAdminLayout(
                     model,
@@ -67,7 +64,6 @@ public class NotificationPreferenceController {
         notificationPreferenceSvc.addNotificationPreference(notificationPreferenceVO);
         redirectAttributes.addFlashAttribute("success", "- (新增成功)");
 
-        // ✅ 用 redirect 避免重送
         return "redirect:/notification_preference/listAllNotificationPreference";
     }
 
@@ -80,7 +76,6 @@ public class NotificationPreferenceController {
 
         model.addAttribute("notificationPreferenceVO", notificationPreferenceVO);
 
-        // ✅ 走 layout
         return renderAdminLayout(
                 model,
                 "通知管理",
@@ -106,7 +101,6 @@ public class NotificationPreferenceController {
         notificationPreferenceSvc.updateNotificationPreference(notificationPreferenceVO);
         redirectAttributes.addFlashAttribute("success", "- (修改成功)");
 
-        // ✅ 建議 redirect 回列表（最乾淨）
         return "redirect:/notification_preference/listAllNotificationPreference";
     }
 
@@ -115,7 +109,6 @@ public class NotificationPreferenceController {
         List<NotificationPreferenceVO> list = notificationPreferenceSvc.getAll();
         model.addAttribute("notificationPreferenceListData", list);
 
-        // ✅ 走 layout
         return renderAdminLayout(
                 model,
                 "通知管理",
@@ -125,9 +118,10 @@ public class NotificationPreferenceController {
 
     @GetMapping("/select_page")
     public String selectPage(Model model) {
-        model.addAttribute("notificationPreferenceListData", Collections.emptyList());
+    	List<NotificationPreferenceVO> list = notificationPreferenceSvc.getAll();
+        model.addAttribute("notificationPreferenceListData", list);
+//        model.addAttribute("notificationPreferenceListData", Collections.emptyList());
 
-        // ✅ 走 layout
         return renderAdminLayout(
                 model,
                 "通知管理",
@@ -135,9 +129,6 @@ public class NotificationPreferenceController {
         );
     }
 
-    // ⚠️ 這個 mapping "/notification_preference/" 很容易跟首頁混淆
-    // 你 log 有顯示 WelcomePage: index。建議不要在這裡 return "index"
-    // 如果你真的要導回首頁，建議 redirect:/index 或 redirect:/ (由 welcome page 接)
     @GetMapping("/")
     public String home() {
         return "redirect:/";
@@ -152,10 +143,8 @@ public class NotificationPreferenceController {
         String movieIdStr  = getFirstTrimmed(parameterMap, "movieId");
         String stimeStr    = getFirstTrimmed(parameterMap, "notiPrefStime");
 
-        // ✅ 共用：遇到錯誤時，要回 select_page 且顯示錯誤訊息 + 維持畫面
         java.util.function.Function<String, String> backToSelectPage = (String errorMsg) -> {
             model.addAttribute("errorMessage", errorMsg);
-            // 你想預設空白(查無資料)就給空集合；想顯示全部就改成 getAll()
             model.addAttribute("notificationPreferenceListData", Collections.emptyList());
             return renderAdminLayout(
                     model,
@@ -193,7 +182,6 @@ public class NotificationPreferenceController {
 
         model.addAttribute("notificationPreferenceListData", list);
 
-        // ✅ 查詢結果也回同一個 select_page（layout）
         return renderAdminLayout(
                 model,
                 "通知管理",

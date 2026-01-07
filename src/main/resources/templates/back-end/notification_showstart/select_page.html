@@ -79,6 +79,26 @@
 	    color: #000;
 	    font-weight: 500;
 	}
+	.table thead th,
+	.table tbody td {
+	  text-align: center;
+	  vertical-align: middle;
+	}
+	.edit-preference-btn {
+            background-color: #000;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+    }
+	.edit-preference-btn:hover {
+            background-color: #333;
+            transform: translateY(-1px);
+    }
     
   </style>
 
@@ -86,9 +106,10 @@
 
     <div class="page-title-bar d-flex justify-content-between align-items-center mb-3">
       <span class="page-title">開演通知查詢</span>
+      
 
-      <a class="btn btn-dark"
-         th:href="@{/notification_showstart/update_notificationShowstart_input}">
+      <a class="edit-preference-btn"
+         th:href="@{/message/update_notificationShowstart_input}">
         開演通知編輯
       </a>
     </div>
@@ -149,20 +170,22 @@
             <table class="table table-bordered mb-0">
               <thead>
                 <tr>
-                  <th>通知編號</th>
                   <th>會員編號</th>
                   <th>場次編號</th>
-                  <th>通知時間</th>
+                  <th>通知日期</th>
+                  <th>發送狀態</th>
+                  <th>發送內容</th>
                 </tr>
               </thead>
 
               <tbody>
                 <th:block th:if="${notificationShowstartVOListData != null and !#lists.isEmpty(notificationShowstartVOListData)}">
                   <tr th:each="noti : ${notificationShowstartVOListData}">
-                    <td th:text="${noti.notiShowstNo}">通知編號</td>
                     <td th:text="${noti.member.memberId}">會員編號</td>
                     <td th:text="${noti.session.sessionId}">場次編號</td>
-                    <td th:text="${noti.notiShowstStime}">通知時間</td>
+                    <td th:text="${noti.notiShowstStime}">通知日期</td>
+                    <td th:text="${noti.notiShowstStat}">發送狀態</td>
+                    <td th:text="${noti.notiShowstScon}">發送內容</td>
                   </tr>
                 </th:block>
 
