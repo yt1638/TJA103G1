@@ -4,87 +4,94 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import org.hibernate.SessionFactory;
 
-
-
-@Service("emplyeeDataService")
+@Service("employeeDataService") // 你原本 emplyeeDataService 拼錯，建議一起修
 public class EmployeeDataService {
 
-	@Autowired
-	EmployeeDataRepository repository;
-	
-	@Autowired
+    @Autowired
+    private EmployeeDataRepository repository;
+
+    @Autowired
     private SessionFactory sessionFactory;
 
-	public void addEmp(EmployeeDataVO empVO) {
-		repository.save(empVO);
-	}
+    public EmployeeDataVO login(String account, String password) {
+        if (account == null || password == null) return null;
+        account = account.trim();
+        password = password.trim();
+        if (account.isEmpty() || password.isEmpty()) return null;
 
-	public void updateEmp(EmployeeDataVO empVO) {
-		repository.save(empVO);
-	}
+        return repository.findByEmpAccountAndEmpPassword(account, password);
+    }
 
-	public void deleteEmp(Integer empId) {
-		if (repository.existsById(empId))
-			repository.deleteByEmpno(empId);
-	}
 
-	public EmployeeDataVO getOneEmp(Integer empId) {
-		Optional<EmployeeDataVO> optional = repository.findById(empId);
-		return optional.orElse(null); 
-	}
 
-	public List<EmployeeDataVO> getAll() {
-		return repository.findAll();
-	}
+    public void addEmp(EmployeeDataVO empVO) {
+        repository.save(empVO);
+    }
 
-	public List<EmployeeDataVO> getAll(Map<String, String[]> map) {
-		return HibernateUtil_CompositeQuery_employee_data.getAllC(map,sessionFactory.openSession());
-	}
-	
-	 @Autowired
-	    private EmployeeDataRepository repo;
+    public void updateEmp(EmployeeDataVO empVO) {
+        repository.save(empVO);
+    }
 
-	    public boolean existsEmpName(String empName) {
-	        return empName != null && repo.existsByEmpName(empName.trim());
-	    }
+    public void deleteEmp(Integer empId) {
+        if (repository.existsById(empId)) {
+            repository.deleteByEmpno(empId);
+        }
+    }
 
-	    public boolean existsEmpAccount(String empAccount) {
-	        return empAccount != null && repo.existsByEmpAccount(empAccount.trim());
-	    }
+    public EmployeeDataVO getOneEmp(Integer empId) {
+        Optional<EmployeeDataVO> optional = repository.findById(empId);
+        return optional.orElse(null);
+    }
 
-	    public boolean existsEmpPassword(String empPassword) {
-	        return empPassword != null && repo.existsByEmpPassword(empPassword.trim());
-	    }
+    public List<EmployeeDataVO> getAll() {
+        return repository.findAll();
+    }
 
-	    public boolean existsEmpEmail(String empEmail) {
-	        return empEmail != null && repo.existsByEmpEmail(empEmail.trim());
-	    }
+    public List<EmployeeDataVO> getAll(Map<String, String[]> map) {
+        return HibernateUtil_CompositeQuery_employee_data.getAllC(map, sessionFactory.openSession());
+    }
 
-	    public boolean existsEmpNameExcludeId(String empName, Integer empId) {
-	        if (empName == null || empId == null) return false;
-	        return repo.existsByEmpNameAndEmpIdNot(empName.trim(), empId);
-	    }
+    // ✅ 下面 exists 系列全部改用同一個 repository
+    public boolean existsEmpName(String empName) {
+        return empName != null && repository.existsByEmpName(empName.trim());
+    }
 
-	    public boolean existsEmpAccountExcludeId(String empAccount, Integer empId) {
-	        if (empAccount == null || empId == null) return false;
-	        return repo.existsByEmpAccountAndEmpIdNot(empAccount.trim(), empId);
-	    }
+    public boolean existsEmpAccount(String empAccount) {
+        return empAccount != null && repository.existsByEmpAccount(empAccount.trim());
+    }
 
-	    public boolean existsEmpPasswordExcludeId(String empPassword, Integer empId) {
-	        if (empPassword == null || empId == null) return false;
-	        return repo.existsByEmpPasswordAndEmpIdNot(empPassword.trim(), empId);
-	    }
+    public boolean existsEmpPassword(String empPassword) {
+        return empPassword != null && repository.existsByEmpPassword(empPassword.trim());
+    }
 
-	    public boolean existsEmpEmailExcludeId(String empEmail, Integer empId) {
-	        if (empEmail == null || empId == null) return false;
-	        return repo.existsByEmpEmailAndEmpIdNot(empEmail.trim(), empId);
-	    }
+    public boolean existsEmpEmail(String empEmail) {
+        return empEmail != null && repository.existsByEmpEmail(empEmail.trim());
+    }
 
-	}
+    public boolean existsEmpNameExcludeId(String empName, Integer empId) {
+        if (empName == null || empId == null) return false;
+        return repository.existsByEmpNameAndEmpIdNot(empName.trim(), empId);
+    }
 
+    public boolean existsEmpAccountExcludeId(String empAccount, Integer empId) {
+        if (empAccount == null || empId == null) return false;
+        return repository.existsByEmpAccountAndEmpIdNot(empAccount.trim(), empId);
+    }
+
+    public boolean existsEmpPasswordExcludeId(String empPassword, Integer empId) {
+        if (empPassword == null || empId == null) return false;
+        return repository.existsByEmpPasswordAndEmpIdNot(empPassword.trim(), empId);
+    }
+
+    public boolean existsEmpEmailExcludeId(String empEmail, Integer empId) {
+        if (empEmail == null || empId == null) return false;
+        return repository.existsByEmpEmailAndEmpIdNot(empEmail.trim(), empId);
+        
+    }
+    
+}

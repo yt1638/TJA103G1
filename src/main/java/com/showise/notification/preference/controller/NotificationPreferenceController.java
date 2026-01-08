@@ -31,11 +31,9 @@ public class NotificationPreferenceController {
     @Autowired
     private NotificationPreferenceService notificationPreferenceSvc;
 
-    // ✅ 比照附件：寄信用同一套 MailService（showstart controller 有用）:contentReference[oaicite:3]{index=3}
     @Autowired
     private MailService mailService;
 
-    // ✅ 下拉選單 memberList
     @Autowired
     private MemberService memberSvc;
 
