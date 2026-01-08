@@ -54,26 +54,6 @@
             border: none !important;
             box-shadow: none !important;
         }
-        
-        /* ===== 顯示密碼眼睛 ===== */
-		.password-wrapper {
-		    position: relative;
-		}
-		
-		.toggle-password {
-		    position: absolute;
-		    right: 14px;
-		    top: 50%;
-		    transform: translateY(-50%);
-		    cursor: pointer;
-		    color: #999;
-		    font-size: 18px;
-		}
-		
-		.toggle-password:hover {
-		    color: #333;
-		}
-        
     </style>
 </head>
 
@@ -98,8 +78,8 @@
                                         </h1>
                                     </div>
 
-                                    <!-- ✅ 改成真的送出到 /login -->
-                                    <form class="user" th:action="@{/login}" method="post">
+                                    <!-- ✅ 改成真的送出到 /admin/login -->
+                                    <form class="user" th:action="@{/admin/login}" method="post">
 
                                         <!-- ✅ 查無資料提醒 -->
                                         <div class="alert alert-danger py-2 mb-3"
@@ -109,23 +89,18 @@
 
                                         <div class="form-group">
                                             <input type="text"
-											       name="account"
-											       class="form-control form-control-user input-icon-user"
-											       placeholder="請輸入帳號"
-											       required>
-
+                                                   name="account"
+                                                   class="form-control form-control-user input-icon-user"
+                                                   placeholder="請輸入帳號"
+                                                   th:value="${account}">
                                         </div>
 
-                                            <div class="form-group password-wrapper">
-											    <input type="password"
-												       id="passwordInput"
-												       name="password"
-												       class="form-control form-control-user input-icon-lock"
-												       placeholder="請輸入密碼">
-											
-											    <i class="fas fa-eye toggle-password" id="togglePassword"></i>
-											</div>
-
+                                        <div class="form-group">
+                                            <input type="password"
+                                                   name="password"
+                                                   class="form-control form-control-user input-icon-lock"
+                                                   placeholder="請輸入密碼">
+                                        </div>
 
                                         <!-- ✅ a 改成 submit -->
                                         <button type="submit"
@@ -159,20 +134,6 @@
 <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="/vendor/jquery-easing/jquery.easing.min.js"></script>
 <script src="/js/sb-admin-2.min.js"></script>
-
-<script>
-    const togglePassword = document.getElementById("togglePassword");
-    const passwordInput = document.getElementById("passwordInput");
-
-    togglePassword.addEventListener("click", function () {
-        const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
-        passwordInput.setAttribute("type", type);
-
-        // 切換眼睛圖示
-        this.classList.toggle("fa-eye");
-        this.classList.toggle("fa-eye-slash");
-    });
-</script>
 
 </body>
 </html>

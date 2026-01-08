@@ -128,7 +128,7 @@ public class NotificationShowstartController {
 			return "redirect:/notification_showstart/update_notificationShowstart_input";
 		}
 
-		// ✅ 一般修改 DB（原本的）
+		//  一般修改 DB（原本的）
 		if (result.hasErrors()) {
 			model.addAttribute("notificationShowstartVO", notificationShowstartVO);
 			return renderAdminLayout(model, "開演通知管理",
