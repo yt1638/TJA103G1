@@ -77,17 +77,18 @@
       gap:12px;
       flex-wrap:wrap;
     }
-    .schedule-row select{
-      min-width:220px; /* 比照附件 */
-      height:44px;
-      border:1px solid #cfcfcf;
-      border-radius:6px;
-      padding:0 12px;
-      background:#fff;
-      font-size:16px;
-      color:#4b5563;
-      font-weight:700;
-    }
+    .schedule-row select,
+	.schedule-row input{
+	  min-width:220px;   /* 跟會員信箱一樣寬 */
+	  height:44px;
+	  border:1px solid #cfcfcf;
+	  border-radius:6px;
+	  padding:0 12px;
+	  background:#fff;
+	  font-size:16px;
+	  color:#4b5563;
+	  font-weight:700;
+	}
     .unit{
       font-weight:900;
       color:#7a7a7a;
@@ -146,10 +147,8 @@
           th:object="${notificationPreferenceVO}">
 
       <!-- hidden 欄位：仍會送出給後端（依你 VO 結構調整） -->
-      <input type="hidden" th:field="*{movie.movieId}">
+      <input type="hidden" th:field="*{member.memberId}" id="memberIdHidden">
       <input type="hidden" th:field="*{member.memberId}">
-      <input type="hidden" th:field="*{notiPrefStime}">
-      <input type="hidden" th:field="*{notiPrefStat}">
 
       <!-- 灰色標籤 + 右上立即發送 -->
       <div class="d-flex align-items-center justify-content-between" style="gap:12px;">
@@ -205,16 +204,24 @@
 
           <div class="schedule-row">
             <!-- ✅ 跟附件一致用 toEmail（你後端要接這個參數） -->
-            <select name="toEmail">
-              <option value="">請選擇會員信箱</option>
-              <option th:each="m : ${memberList}"
-                      th:value="${m.email}"
-                      th:text="${m.email}">
-              </option>
-            </select>
+            <select name="toEmail" id="toEmailSelect" onchange="syncMemberId()">
+			  <option value="">請選擇會員信箱</option>
+			  <option th:each="m : ${memberList}"
+			          th:value="${m.email}"
+			          th:text="${m.email}"
+			          th:attr="data-memberid=${m.memberId}">
+			  </option>
+			</select>
+			
+			<input type="number"
+			       name="movieId"
+			       placeholder="請輸入電影編號"
+			       min="1"
+			       required>
 
             <!-- ✅ 比照附件：右欄確認也走 sendNow（最穩） -->
-            <button class="btn-black-sm" type="submit" name="mode" value="sendNow">確認</button>
+            <button class="btn-black-sm" type="button" onclick="syncMemberId(); alert('已選擇時間，若要立即寄送請按右上「立即發送」，若要排程請在左欄選小時後按左欄「確認」。');">
+            確認</button>
           </div>
         </div>
 
@@ -223,9 +230,20 @@
   </div>
 
   <script>
-    function hideContent(id){
-      const el = document.getElementById(id);
-      if(el) el.style.display = "none";
-    }
-  </script>
+  function syncMemberId(){
+    const sel = document.getElementById("toEmailSelect");
+    const opt = sel.options[sel.selectedIndex];
+    const memberId = opt.getAttribute("data-memberid") || "";
+    document.getElementById("memberIdHidden").value = memberId;
+  }
+
+  // 頁面初次載入時如果已有選擇，也同步一次
+  document.addEventListener("DOMContentLoaded", syncMemberId);
+
+  function hideContent(id){
+    const el = document.getElementById(id);
+    if(el) el.style.display = "none";
+  }
+</script>
+
 </div>

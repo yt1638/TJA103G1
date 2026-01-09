@@ -3,6 +3,7 @@ package com.showise.notification.preference.controller;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.time.LocalDate;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,6 +18,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.showise.member.model.MemberService;
 import com.showise.member.model.MemberVO;
 import com.showise.message.model.MailService;
+import com.showise.movie.model.MovieService;
 import com.showise.movie.model.MovieVO;
 import com.showise.notification.preference.model.NotificationPreferenceService;
 import com.showise.notification.preference.model.NotificationPreferenceVO;
@@ -36,6 +38,13 @@ public class NotificationPreferenceController {
 
     @Autowired
     private MemberService memberSvc;
+    
+    @Autowired
+    private com.showise.movie.model.MovieRepository movieRepo;
+
+    // ✅ 新增：用 movieId 查 DB 取得 MovieVO
+    @Autowired
+    private MovieService movieSvc;
 
     private String renderAdminLayout(Model model, String pageTitle, String contentFragment) {
         model.addAttribute("pageTitle", pageTitle);
@@ -46,16 +55,18 @@ public class NotificationPreferenceController {
     @GetMapping("/update_notificationPreference_input")
     public String updateNotificationPreferenceInput(Model model) {
 
-        // ✅ 重要：避免 th:field="*{member.memberId}" / "*{movie.movieId}" 時 NullPointer
+        // ✅ 避免 th:field="*{member.memberId}" 時 NullPointer
         NotificationPreferenceVO vo = new NotificationPreferenceVO();
         vo.setMember(new MemberVO());
+
+        // ✅ 不再靠 th:field="*{movie.movieId}"，所以 movie 可不設（但設了也無妨）
         vo.setMovie(new MovieVO());
 
-         vo.setNotiPrefScon("親愛的用戶您好：\n此封訊息為依據您的喜好，所發送推薦電影...");
+        vo.setNotiPrefScon("親愛的用戶您好：\n此封訊息為依據您的喜好，所發送推薦電影...");
 
         model.addAttribute("notificationPreferenceVO", vo);
 
-        // ✅ 下拉選單（跟附件一樣在 input 頁就丟 memberList）:contentReference[oaicite:4]{index=4}
+        // ✅ 會員下拉
         model.addAttribute("memberList", memberSvc.getAll());
 
         return renderAdminLayout(
@@ -84,7 +95,6 @@ public class NotificationPreferenceController {
         notificationPreferenceSvc.addNotificationPreference(notificationPreferenceVO);
         redirectAttributes.addFlashAttribute("success", "- (新增成功)");
 
-        // ✅ redirect 不要加 :: content
         return "redirect:/notification_preference/listAllNotificationPreference";
     }
 
@@ -95,9 +105,33 @@ public class NotificationPreferenceController {
                          @RequestParam(name = "toEmail", required = false) String toEmail,
                          @RequestParam(name = "notiPrefScon", required = false) String content,
                          @RequestParam(name = "advanceDays", required = false) String advanceDays,
+                         // ✅ 新增：前端用 name="movieId" 送上來
+                         @RequestParam(name = "movieId", required = false) String movieIdStr,
                          RedirectAttributes ra,
                          Model model) {
 
+        // content 若沒帶，用 VO 補
+        if (content == null && notificationPreferenceVO != null) {
+            content = notificationPreferenceVO.getNotiPrefScon();
+        }
+
+        // ========= 共用檢查：movieId =========
+        Integer movieId = null;
+        if (movieIdStr == null || movieIdStr.isBlank() || !movieIdStr.matches("\\d+")) {
+            ra.addFlashAttribute("error", "請輸入正確的 movie_id（數字）");
+            return "redirect:/notification_preference/update_notificationPreference_input";
+        } else {
+            movieId = Integer.valueOf(movieIdStr.trim());
+        }
+
+        // ✅ 用 movieId 查 DB，確定電影存在
+        MovieVO movieFromDb = movieRepo.findById(movieId).orElse(null);
+        if (movieFromDb == null) {
+            ra.addFlashAttribute("error", "找不到 movie_id = " + movieId + " 的電影");
+            return "redirect:/notification_preference/update_notificationPreference_input";
+        }
+
+        // ========= 1) 立即發送 =========
         if ("sendNow".equals(mode)) {
 
             if (toEmail == null || toEmail.isBlank()) {
@@ -109,51 +143,74 @@ public class NotificationPreferenceController {
                 return "redirect:/notification_preference/update_notificationPreference_input";
             }
 
+            MemberVO member = findMemberByEmail(toEmail);
+            if (member == null) {
+                ra.addFlashAttribute("error", "找不到此信箱對應的會員：" + toEmail);
+                return "redirect:/notification_preference/update_notificationPreference_input";
+            }
+
+            // 組 VO 存 DB
+            NotificationPreferenceVO vo = new NotificationPreferenceVO();
+            vo.setMember(member);
+            vo.setMovie(movieFromDb);
+            vo.setNotiPrefScon(content);
+
+            // 立即寄：你 VO 是 @FutureOrPresent，所以用今天 OK
+            vo.setNotiPrefStime(java.time.LocalDate.now());
+            vo.setNotiPrefStat((short) 0); // 已寄送
+            notificationPreferenceSvc.addNotificationPreference(vo);
+
             try {
                 mailService.sendTextMail(toEmail, "喜好通知", content);
-                ra.addFlashAttribute("success", "已寄出到：" + toEmail);
+                ra.addFlashAttribute("success", "已寄出並新增一筆通知紀錄：" + toEmail + "（movie_id=" + movieId + "）");
             } catch (Exception e) {
-                e.printStackTrace();
                 ra.addFlashAttribute("error", "寄信失敗：" + e.getMessage());
             }
 
             return "redirect:/notification_preference/update_notificationPreference_input";
         }
 
+        // ========= 2) 排程寄送 =========
         if ("schedule".equals(mode)) {
 
-            if (advanceDays == null || advanceDays.isBlank()) {
-                ra.addFlashAttribute("error", "請先選擇天數");
-                return "redirect:/notification_preference/update_notificationPreference_input";
-            }
-            if (!advanceDays.matches("\\d+")) {
-                ra.addFlashAttribute("error", "天數必須為數字");
+            if (toEmail == null || toEmail.isBlank()) {
+                ra.addFlashAttribute("error", "請先選擇會員信箱");
                 return "redirect:/notification_preference/update_notificationPreference_input";
             }
             if (content == null || content.isBlank()) {
                 ra.addFlashAttribute("error", "訊息內容不可空白");
                 return "redirect:/notification_preference/update_notificationPreference_input";
             }
+            if (advanceDays == null || advanceDays.isBlank() || !advanceDays.matches("\\d+")) {
+                ra.addFlashAttribute("error", "請選擇正確的提前天數");
+                return "redirect:/notification_preference/update_notificationPreference_input";
+            }
 
-            ra.addFlashAttribute("success", "已設定預先發送時間：" + advanceDays + " 天");
+            int days = Integer.parseInt(advanceDays);
+
+            MemberVO member = findMemberByEmail(toEmail);
+            if (member == null) {
+                ra.addFlashAttribute("error", "找不到此信箱對應的會員：" + toEmail);
+                return "redirect:/notification_preference/update_notificationPreference_input";
+            }
+
+            NotificationPreferenceVO vo = new NotificationPreferenceVO();
+            vo.setMember(member);
+            vo.setMovie(movieFromDb);
+            vo.setNotiPrefScon(content);
+
+            // 排程寄送日 = 今天 + days
+            vo.setNotiPrefStime(java.time.LocalDate.now().plusDays(days));
+            vo.setNotiPrefStat((short) 0); // 0=待寄
+
+            notificationPreferenceSvc.addNotificationPreference(vo);
+
+            ra.addFlashAttribute("success", "已建立排程：將於 " + days + " 天後寄出（movie_id=" + movieId + "）");
             return "redirect:/notification_preference/update_notificationPreference_input";
         }
 
-        // ✅ 一般修改 DB
-        if (result.hasErrors()) {
-            model.addAttribute("notificationPreferenceVO", notificationPreferenceVO);
-            model.addAttribute("memberList", memberSvc.getAll());
-            return renderAdminLayout(
-                    model,
-                    "通知管理",
-                    "back-end/notification_preference/update_notificationPreference_input :: content"
-            );
-        }
-
-        notificationPreferenceSvc.updateNotificationPreference(notificationPreferenceVO);
-        ra.addFlashAttribute("success", "- (修改成功)");
-
-        return "redirect:/notification_preference/listAllNotificationPreference";
+        ra.addFlashAttribute("error", "mode 不正確或未帶入");
+        return "redirect:/notification_preference/update_notificationPreference_input";
     }
 
     @GetMapping("/listAllNotificationPreference")
@@ -228,8 +285,10 @@ public class NotificationPreferenceController {
             }
         }
 
+        LocalDate today = LocalDate.now();
+
         List<NotificationPreferenceVO> list =
-                notificationPreferenceSvc.compositeQuery(memberId, movieId, sendDate);
+                notificationPreferenceSvc.findPendingBySendDate(today);
 
         model.addAttribute("notificationPreferenceListData", list);
 
@@ -251,5 +310,10 @@ public class NotificationPreferenceController {
     private boolean isDigits(String value) {
         return value != null && value.matches("\\d+");
     }
-    
+
+    private MemberVO findMemberByEmail(String email) {
+        return memberSvc.getAll().stream()
+            .filter(m -> email != null && email.equalsIgnoreCase(m.getEmail()))
+            .findFirst().orElse(null);
+    }
 }

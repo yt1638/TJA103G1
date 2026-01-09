@@ -34,7 +34,7 @@
       border:1px solid #d9d9d9;
       border-radius:5px;
       background:#fff;
-      padding: 0;
+      padding:0;
     }
     .msg-textarea{
       width:100%;
@@ -61,11 +61,7 @@
       display:flex;
       gap:40px;
     }
-
-    .schedule-col{
-      flex:1 1 0;
-    }
-
+    .schedule-col{ flex:1 1 0; }
     .schedule-title{
       font-weight:700;
       color:#7a7a7a;
@@ -78,7 +74,8 @@
       gap:12px;
       flex-wrap:wrap;
     }
-    .schedule-row select{
+    .schedule-row select,
+    .schedule-row input{
       min-width:220px;
       height:44px;
       border:1px solid #cfcfcf;
@@ -88,11 +85,14 @@
       font-size:16px;
       color:#4b5563;
       font-weight:700;
+      box-sizing:border-box;
+      outline:none;
     }
     .unit{
       font-weight:900;
       color:#7a7a7a;
       font-size:18px;
+      white-space:nowrap;
     }
 
     .error{
@@ -110,26 +110,34 @@
       border-radius:4px;
       font-weight:700;
       font-size:14px;
+      height:44px;
+      white-space:nowrap;
     }
     .btn-black-sm:hover{ filter:brightness(.95); }
 
-    /* 顯示後端 flash 訊息 */
     .flash{
-      max-width: 900px;
-      margin: 10px 0 0;
-      padding: 12px 14px;
-      border-radius: 8px;
-      font-weight: 800;
+      width:100%;
+      margin: 10px 0 14px;
+      padding: 14px 18px;
+      border-radius: 10px;
+      font-weight: 900;
+      font-size: 18px;
+      box-sizing: border-box;
+      max-width:900px;
     }
     .flash-ok{
       background:#e9fff0;
-      border:1px solid #b7f0c7;
-      color:#146c2e;
+      border:1px solid #9fe0b6;
+      color:#0f7a35;
     }
     .flash-err{
       background:#fff0f0;
       border:1px solid #f3bcbc;
       color:#a40000;
+    }
+
+    @media (max-width: 992px){
+      .schedule-box{ flex-direction:column; }
     }
   </style>
 
@@ -137,33 +145,39 @@
 
     <div class="page-title">開演通知編輯</div>
 
-    <!-- ✅ 後端 RedirectAttributes / flash message 顯示 -->
     <div th:if="${success}" class="flash flash-ok" th:text="${success}"></div>
     <div th:if="${error}"   class="flash flash-err" th:text="${error}"></div>
 
     <form id="editForm"
           th:action="@{/notification_showstart/update}"
           method="post"
-          th:object="${notificationShowstartVO}">
+          th:object="${notificationShowstartVO}"
+          onsubmit="syncMemberAndSession();">
 
-      <!-- hidden 欄位：仍會送出給後端 -->
-      <input type="hidden" th:field="*{member.memberId}">
-      <input type="hidden" th:field="*{session.sessionId}">
+      <!-- VO hidden -->
+      <input type="hidden" th:field="*{member.memberId}" id="memberIdHidden">
+      <input type="hidden" th:field="*{session.sessionId}" id="sessionIdHidden">
       <input type="hidden" th:field="*{notiShowstStime}">
       <input type="hidden" th:field="*{notiShowstStat}">
 
-      <!-- 灰色標籤 + 右上立即發送 -->
+      <!-- Controller @RequestParam 用 -->
+      <input type="hidden" name="memberId" id="memberIdParam">
+      <input type="hidden" name="sessionId" id="sessionIdParam">
+
+      <!-- 標籤 + 右上立即發送（只有這顆會 sendNow） -->
       <div class="d-flex align-items-center justify-content-between" style="gap:12px;">
         <div class="tag-title">
           <span>開演通知:</span>
           <i class="fas fa-pen"></i>
         </div>
 
-        <!-- ✅ 立即發送：用 mode=sendNow，後端在 /update 依 mode 判斷寄信 -->
-        <button class="btn-black" type="submit" name="mode" value="sendNow">立即發送</button>
+        <button class="btn-black" type="submit" name="mode" value="sendNow"
+                onclick="syncMemberAndSession()">
+          立即發送
+        </button>
       </div>
 
-      <!-- 訊息內容（保持 th:field 才能綁定 VO + 表單驗證） -->
+      <!-- 訊息內容 -->
       <div class="msg-box">
         <textarea class="msg-textarea"
                   th:field="*{notiShowstScon}"
@@ -176,50 +190,63 @@
             class="error"
             id="notiShowstScon.errors"></span>
 
+      <!-- 灰色左右兩欄 -->
       <div class="schedule-box">
 
-        <!-- 左欄：預先發送時間 -->
+        <!-- 左欄：排程（✅ 這顆確認要 submit + schedule） -->
         <div class="schedule-col">
           <div class="schedule-title">設定預先發送時間:</div>
 
           <div class="schedule-row">
-            <select name="advanceHours">
-              <option value="" selected>請選擇時間</option>
+            <select name="advanceHours" id="advanceHoursSelect" onchange="syncMemberAndSession()">
+              <option value="" selected>請選擇小時數</option>
               <option value="1">1</option>
               <option value="2">2</option>
-              <option value="3">3</option>
               <option value="6">6</option>
-              <option value="12">12</option>
               <option value="24">24</option>
             </select>
 
-            <span class="unit">時</span>
+            <span class="unit">小時</span>
 
-            <!-- ✅ 若你後端有做 schedule 分支，就用 mode=schedule -->
-            <button class="btn-black-sm" type="submit" name="mode" value="schedule">確認</button>
+            <button class="btn-black-sm" type="submit" name="mode" value="schedule"
+                    onclick="syncMemberAndSession()">
+              確認
+            </button>
+          </div>
+
+          <div style="margin-top:8px; font-size:13px; font-weight:800; color:#7a7a7a;">
+            ※ 這是「開演前 N 小時寄出」。例如開演 2026-01-22 02:00，選 1 小時代表 2026-01-22 01:00 寄出。
           </div>
         </div>
 
-        <!-- 右欄：選擇會員信箱 -->
+        <!-- 右欄：選會員 + 場次（✅ 右欄確認不送出，避免誤寄） -->
         <div class="schedule-col">
-          <div class="schedule-title">選擇會員信箱:</div>
+          <div class="schedule-title">選擇會員信箱：</div>
 
           <div class="schedule-row">
-            <select name="toEmail">
+            <select id="memberSelect" onchange="syncMemberAndSession()">
               <option value="">請選擇會員信箱</option>
               <option th:each="m : ${memberList}"
-                      th:value="${m.email}"
+                      th:value="${m.memberId}"
                       th:text="${m.email}">
               </option>
             </select>
 
-            <!-- ✅ 這顆按鈕也要觸發寄信：統一用 mode=sendNow（最不會踩雷） -->
-            <button class="btn-black-sm" type="submit" name="mode" value="sendNow">確認</button>
+            <input type="number"
+                   id="sessionIdInput"
+                   placeholder="請輸入場次編號"
+                   min="1"
+                   oninput="syncMemberAndSession()"
+                   onkeydown="if(event.key==='Enter'){ event.preventDefault(); }">
+
+            <button class="btn-black-sm" type="button"
+                    onclick="syncMemberAndSession(); alert('已選擇會員/場次。若要排程請在左欄選小時後按左欄「確認」。若要立即寄送請按右上「立即發送」。');">
+              確認
+            </button>
           </div>
         </div>
 
       </div>
-
     </form>
   </div>
 
@@ -228,5 +255,23 @@
       const el = document.getElementById(id);
       if(el) el.style.display = "none";
     }
+
+    function syncMemberAndSession(){
+      const memberId = document.getElementById("memberSelect")?.value || "";
+      const sessionId = document.getElementById("sessionIdInput")?.value || "";
+
+      const memberHidden = document.getElementById("memberIdHidden");
+      const sessionHidden = document.getElementById("sessionIdHidden");
+      if(memberHidden) memberHidden.value = memberId;
+      if(sessionHidden) sessionHidden.value = sessionId;
+
+      const memberParam = document.getElementById("memberIdParam");
+      const sessionParam = document.getElementById("sessionIdParam");
+      if(memberParam) memberParam.value = memberId;
+      if(sessionParam) sessionParam.value = sessionId;
+    }
+
+    document.addEventListener("DOMContentLoaded", syncMemberAndSession);
   </script>
+
 </div>
