@@ -1,7 +1,7 @@
 package com.showise.notification.showstart.model;
 
 import java.io.Serializable;
-import java.sql.Date;
+import java.sql.Timestamp;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -17,7 +17,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -46,11 +45,14 @@ public class NotificationShowstartVO implements Serializable {
     @Column(name = "noti_ShowstSCON", nullable = false)
     private String notiShowstScon;
 
-    @NotNull(message = "通知日期: 請勿空白")
-    @Future(message = "日期必須是在今日(不含)之後")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    /**
+     * ✅ 改為 Timestamp（含時分秒），才能支援「提前 X 小時」排程
+     * 注意：原本的 @Future + yyyy-MM-dd 只適合 Date(只有日期)，這裡改掉避免驗證/格式不一致
+     */
+    @NotNull(message = "通知時間: 請勿空白")
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") // 若你的表單只傳 yyyy-MM-dd，可改成 yyyy-MM-dd 或直接拿掉這行
     @Column(name = "noti_showstSTIME", nullable = false)
-    private Date notiShowstStime;
+    private Timestamp notiShowstStime;
 
     @NotNull(message = "通知狀態: 請勿空白")
     @Column(name = "noti_showstSTAT", nullable = false)
@@ -59,6 +61,7 @@ public class NotificationShowstartVO implements Serializable {
     public Integer getNotiShowstNo() {
         return notiShowstNo;
     }
+
     public void setNotiShowstNo(Integer notiShowstNo) {
         this.notiShowstNo = notiShowstNo;
     }
@@ -66,6 +69,7 @@ public class NotificationShowstartVO implements Serializable {
     public MemberVO getMember() {
         return member;
     }
+
     public void setMember(MemberVO member) {
         this.member = member;
     }
@@ -73,6 +77,7 @@ public class NotificationShowstartVO implements Serializable {
     public SessionVO getSession() {
         return session;
     }
+
     public void setSession(SessionVO session) {
         this.session = session;
     }
@@ -80,20 +85,23 @@ public class NotificationShowstartVO implements Serializable {
     public String getNotiShowstScon() {
         return notiShowstScon;
     }
+
     public void setNotiShowstScon(String notiShowstScon) {
         this.notiShowstScon = notiShowstScon;
     }
 
-    public Date getNotiShowstStime() {
+    public Timestamp getNotiShowstStime() {
         return notiShowstStime;
     }
-    public void setNotiShowstStime(Date notiShowstStime) {
+
+    public void setNotiShowstStime(Timestamp notiShowstStime) {
         this.notiShowstStime = notiShowstStime;
     }
 
     public Short getNotiShowstStat() {
         return notiShowstStat;
     }
+
     public void setNotiShowstStat(Short notiShowstStat) {
         this.notiShowstStat = notiShowstStat;
     }
