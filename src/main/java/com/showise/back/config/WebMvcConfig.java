@@ -18,10 +18,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(employeePermissionInterceptor)
-                // ✅ 只攔「員工管理」相關路徑（你要擋的功能都加在這）
                 .addPathPatterns("/employee_data/**")
 
-                // ✅ (可選) 這些不擋（通常不需要，但你可保留）
                 .excludePathPatterns(
                         "/admin/login",
                         "/admin/logout",

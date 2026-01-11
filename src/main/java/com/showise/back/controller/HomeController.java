@@ -20,13 +20,11 @@ public class HomeController {
     @Autowired
     private EmployeeDataService employeeService;
 
-    // ✅ 顯示登入頁
     @GetMapping("/admin/login")
     public String loginPage() {
-        return "back-end/login"; // 確認對到 templates/back-end/login.html
+        return "back-end/login"; 
     }
 
-    // ✅ 登入
     @PostMapping("/admin/login")
     public String login(@RequestParam String account,
                         @RequestParam String password,
@@ -41,13 +39,26 @@ public class HomeController {
             return "redirect:/admin/login";
         }
 
+        Short status = null;
+        Object statusObj = readProp(emp, "empStatus"); // 先用常見命名
+        if (statusObj == null) statusObj = readProp(emp, "employeeStatus"); // 再試另一種
+
+        if (statusObj instanceof Number) {
+            status = ((Number) statusObj).shortValue();
+        } else if (statusObj != null) {
+            try { status = Short.parseShort(statusObj.toString()); } catch (Exception ignore) {}
+        }
+
+        if (status != null && status == 1) {
+            ra.addFlashAttribute("errorMsg", "此帳號已停用，不可登入");
+            ra.addFlashAttribute("account", account);
+            return "redirect:/admin/login";
+        }
         session.setAttribute("loginEmployee", emp);
 
-        // ✅ 安全寫法：這兩個 getter 若你 VO 沒有，也可以同樣用 BeanWrapper 取（但通常都有）
         session.setAttribute("empId", readProp(emp, "empId"));
         session.setAttribute("empName", readProp(emp, "empName"));
 
-        // ✅ 權限：不再呼叫 getEmployeePermissions()，避免你現在的編譯錯誤
         int perm = readPerm(emp);  // 0/1
         session.setAttribute("empPerm", perm);
 
@@ -74,11 +85,8 @@ public class HomeController {
         return "redirect:/admin/login";
     }
 
-    // =======================
-    // helpers
-    // =======================
 
-    /** 讀 VO 屬性（不確定 getter 名稱時很有用） */
+    /** 讀 VO 屬性（不確定 getter 命名時很有用） */
     private Object readProp(Object bean, String propName) {
         try {
             BeanWrapperImpl bw = new BeanWrapperImpl(bean);
@@ -105,6 +113,6 @@ public class HomeController {
             if (v instanceof Number) return ((Number) v).intValue();
             try { return Integer.parseInt(v.toString()); } catch (Exception ignore) {}
         }
-        return 0; // 讀不到就當作沒權限
+        return 0;
     }
 }

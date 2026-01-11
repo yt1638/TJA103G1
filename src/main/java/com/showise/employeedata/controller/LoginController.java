@@ -19,8 +19,9 @@ public class LoginController {
     }
 
     @GetMapping("/login")
-    public String loginPage() {
-        return "login";
+    public String loginPage(Model model) {
+        model.addAttribute("pageTitle", "後台登入");
+        return "back-end/login";
     }
 
     @PostMapping("/login")
@@ -35,18 +36,24 @@ public class LoginController {
         if (emp == null) {
             model.addAttribute("errorMsg", "查無資料，請確認帳號或密碼");
             model.addAttribute("account", account);
-            return "login";
+            model.addAttribute("pageTitle", "後台登入");
+            return "back-end/login";
         }
 
-        // ⚠️ 帳號未啟用
-        if (emp.getEmpStatus() != null && emp.getEmpStatus() == 1) {
+        // ✅ 你的規則：employee_status = 1 不可登入（未啟用/停用）
+        Short status = emp.getEmpStatus();
+        if (status == null || status == 1) {
             model.addAttribute("errorMsg", "此帳號尚未啟用");
             model.addAttribute("account", account);
-            return "login";
+            model.addAttribute("pageTitle", "後台登入");
+            return "back-end/login";
         }
 
-        // ✅ 可登入
         session.setAttribute("loginEmp", emp);
+        session.setAttribute("empName", emp.getEmpName());
+
+        session.setAttribute("empPerm", emp.getEmpPermissions());
+
         return "redirect:/index";
     }
 
@@ -56,4 +63,3 @@ public class LoginController {
         return "redirect:/login";
     }
 }
-
