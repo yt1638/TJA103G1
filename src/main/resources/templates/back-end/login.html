@@ -47,12 +47,33 @@
             background-size: 22px;
             background-position: 10px center;
             padding-left: 45px !important;
+            padding-right: 45px !important;
         }
 
         .outer-card {
             background: transparent !important;
             border: none !important;
             box-shadow: none !important;
+        }
+
+        /* ===== 👁 眼睛 icon ===== */
+        .pwd-wrapper {
+            position: relative;
+        }
+
+        .pwd-wrapper .toggle-eye {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #6c757d;
+            font-size: 18px;
+            z-index: 5;
+        }
+
+        .pwd-wrapper .toggle-eye:hover {
+            color: #3a5af9;
         }
     </style>
 </head>
@@ -78,31 +99,44 @@
                                         </h1>
                                     </div>
 
-                                    <!-- ✅ 改成真的送出到 /admin/login -->
-                                    <form class="user" th:action="@{/admin/login}" method="post">
+                                    <!-- ✅ 登入表單（加 onsubmit 驗證） -->
+                                    <form class="user"
+                                          th:action="@{/admin/login}"
+                                          method="post"
+                                          onsubmit="return validateLogin();">
 
-                                        <!-- ✅ 查無資料提醒 -->
+                                        <!-- 🔴 後端錯誤訊息（帳密錯） -->
                                         <div class="alert alert-danger py-2 mb-3"
                                              th:if="${errorMsg}"
                                              th:text="${errorMsg}">
                                         </div>
 
+                                        <!-- 🔴 前端錯誤訊息（空值） -->
+                                        <div id="clientError"
+                                             class="alert alert-danger py-2 mb-3"
+                                             style="display:none;">
+                                        </div>
+
                                         <div class="form-group">
                                             <input type="text"
+                                                   id="account"
                                                    name="account"
                                                    class="form-control form-control-user input-icon-user"
                                                    placeholder="請輸入帳號"
                                                    th:value="${account}">
                                         </div>
 
-                                        <div class="form-group">
+                                        <!-- ✅ 密碼 + 👁 -->
+                                        <div class="form-group pwd-wrapper">
                                             <input type="password"
+                                                   id="password"
                                                    name="password"
                                                    class="form-control form-control-user input-icon-lock"
                                                    placeholder="請輸入密碼">
+
+                                            <i id="togglePwd" class="fas fa-eye toggle-eye"></i>
                                         </div>
 
-                                        <!-- ✅ a 改成 submit -->
                                         <button type="submit"
                                                 class="btn btn-primary btn-user btn-block btn-movie">
                                             登錄
@@ -134,6 +168,45 @@
 <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="/vendor/jquery-easing/jquery.easing.min.js"></script>
 <script src="/js/sb-admin-2.min.js"></script>
+
+<!-- ✅ 👁 切換密碼顯示 -->
+<script>
+    const pwdInput = document.getElementById("password");
+    const toggleIcon = document.getElementById("togglePwd");
+
+    toggleIcon.addEventListener("click", function () {
+        const isPwd = pwdInput.type === "password";
+        pwdInput.type = isPwd ? "text" : "password";
+        this.classList.toggle("fa-eye");
+        this.classList.toggle("fa-eye-slash");
+    });
+
+    // ✅ 空值驗證
+    function validateLogin() {
+        const acc = document.getElementById("account").value.trim();
+        const pwd = document.getElementById("password").value.trim();
+        const errDiv = document.getElementById("clientError");
+
+        let msg = "";
+
+        if (!acc && !pwd) {
+            msg = "請輸入帳號與密碼";
+        } else if (!acc) {
+            msg = "請輸入帳號";
+        } else if (!pwd) {
+            msg = "請輸入密碼";
+        }
+
+        if (msg) {
+            errDiv.innerText = msg;
+            errDiv.style.display = "block";
+            return false; // ❌ 不送出表單
+        }
+
+        errDiv.style.display = "none";
+        return true; // ✅ 送出表單
+    }
+</script>
 
 </body>
 </html>

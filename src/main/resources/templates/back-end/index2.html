@@ -5,6 +5,33 @@
         📊 後台儀表板
     </h2>
 
+    <!-- ✅ 只有權限=1 才顯示：員工權限卡片 / 入口 -->
+    <div class="row" th:if="${session.empPerm == 1}">
+        <div class="col-xl-12 mb-4">
+            <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                            員工權限
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                            你目前擁有管理員權限
+                        </div>
+                        <div class="text-gray-600 mt-1" style="font-size: 14px;">
+                            可進入員工權限管理功能
+                        </div>
+                    </div>
+
+                    <!-- 這裡的路徑請換成你「員工權限管理」真正的 mapping -->
+                    <a class="btn btn-danger"
+                       th:href="@{/employee_data/select_page}">
+                        前往管理
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- ===== 統計卡片 ===== -->
     <div class="row">
 
