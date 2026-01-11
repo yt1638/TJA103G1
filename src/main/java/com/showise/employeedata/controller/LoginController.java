@@ -40,7 +40,7 @@ public class LoginController {
             return "back-end/login";
         }
 
-        // ✅ 你的規則：employee_status = 1 不可登入（未啟用/停用）
+        // employee_status = 1 不可登入（未啟用/停用）
         Short status = emp.getEmpStatus();
         if (status == null || status == 1) {
             model.addAttribute("errorMsg", "此帳號尚未啟用");
