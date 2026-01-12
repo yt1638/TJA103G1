@@ -29,6 +29,8 @@ public class OrderController {
 	
 	@GetMapping("/")
 	public String orderSearch(Model model) {
+		model.addAttribute("content", "back-end/order/orderSearch :: content");
+	    model.addAttribute("pageTitle", "訂單管理");
 		return "back-end/layout/admin-layout";
 	}
 
