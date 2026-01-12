@@ -85,6 +85,8 @@ public class OrderController {
 		
 		Map<String, String[]> map = req.getParameterMap();
 		List<OrderVO> list = orderSvc.getAll(map);
+		model.addAttribute("content", "back-end/order/orderSearch :: content");
+	    model.addAttribute("pageTitle", "訂單管理");
 		model.addAttribute("orderListData", list); 
 		return "back-end/layout/admin-layout";
 	}
@@ -108,8 +110,10 @@ public class OrderController {
 	    model.addAttribute("ticketSummary", ticketSummary);
 	    model.addAttribute("ticketTotal", ticketTotal);
 	    model.addAttribute("foodTotal", foodTotal);
+	    model.addAttribute("content", "back-end/order/orderDetail :: content");
+	    model.addAttribute("pageTitle", "訂單詳情");
 
-	    return "back-end/order/orderDetail";
+	    return "back-end/layout/admin-layout";
 	}
 	
 	
