@@ -64,7 +64,7 @@ public class FrontMemberController {
 		
 		if (loginMember == null) {
 			return "redirect:/loginAndRegister/memberLogin";
-		}
+		} 
 		
 		model.addAttribute("loginMember", loginMember);	// 因為Thymeleaf預設是從Model取資料，而現在資料是在session中，因此將session中的資料存到model
 		return "front-end/member/mainMemberPage";

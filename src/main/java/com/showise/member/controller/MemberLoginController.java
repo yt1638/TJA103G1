@@ -48,7 +48,13 @@ public class MemberLoginController {
 	
 	
 	@GetMapping("memberLogin")
-	public String memberLogin() {
+	public String memberLogin(HttpSession session) {
+		MemberVO loginMember = (MemberVO) session.getAttribute("loginMember");
+		
+		if(loginMember != null) {
+			return "redirect:/member/mainMemberPage";
+		}
+		
 		return "front-end/loginAndRegister/memberLogin";
 	}
 	
