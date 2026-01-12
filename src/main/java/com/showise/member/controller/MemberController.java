@@ -44,7 +44,9 @@ public class MemberController {
 	public String selectPage(ModelMap model) {
 	    List<MemberVO> list = memberService.getAll();
 	    model.addAttribute("memberListData", list);
-	    return "back-end/bmember/select_page";
+	    model.addAttribute("pageTitle","會員管理");
+		model.addAttribute("content","back-end/bmember/select_page :: content");
+		return "back-end/layout/admin-layout";
 	}
 
 	
@@ -54,14 +56,18 @@ public class MemberController {
 		MemberPreferTypeVO memberPreferType = new MemberPreferTypeVO();
 		model.addAttribute("memberVO", member);
 		model.addAttribute("memberPreferTypeVO", memberPreferType);
-		return "back-end/bmember/addMember";
+		model.addAttribute("pageTitle","新增會員資料");
+		model.addAttribute("content","back-end/bmember/addMember :: content");
+		return "back-end/layout/admin-layout";
 	}
 	
 	@GetMapping("listAllMember")
 	public String listAllMember(ModelMap model) {
 		List<MemberVO> list = memberService.getAll();
 	    model.addAttribute("memberListData", list);
-	    return "back-end/bmember/listAllMember";
+	    model.addAttribute("pageTitle","所有會員資料");
+		model.addAttribute("content","back-end/bmember/listAllMember :: content");
+		return "back-end/layout/admin-layout";
 	}
 
 	
@@ -75,7 +81,9 @@ public class MemberController {
 		//******************1.接收請求參數，輸入格式的錯誤處理	******************
 		if(result.hasErrors()) {
 			model.addAttribute("selectedStyleIds", styleIds);
-			return "back-end/bmember/addMember";
+			model.addAttribute("pageTitle","新增會員資料");
+			model.addAttribute("content","back-end/bmember/addMember :: content");
+			return "back-end/layout/admin-layout";
 		}
 		
 		// 檢驗email是否被註冊/新增過
@@ -84,8 +92,7 @@ public class MemberController {
 	        // rejectValue會直接綁定到th:errors，不用自己加errorMessage。
 	        // email: 欄位名稱(field) | member.email.exists: 錯誤代碼(error code) |最後是 defaultMessage
 	               	
-	            
-	        
+
 	        model.addAttribute("selectedStyleIds", styleIds);
 	        return "back-end/bmember/addMember";
 	    }
@@ -123,7 +130,9 @@ public class MemberController {
 		
 		model.addAttribute("memberVO", member);
 		model.addAttribute("selectTypeIds", selectTypeIds);
-		return "back-end/bmember/update_member_insert";	
+		model.addAttribute("pageTitle","修改會員資料");
+		model.addAttribute("content","back-end/bmember/update_member_insert :: content");
+		return "back-end/layout/admin-layout";
 	}
 	
 	
@@ -141,10 +150,12 @@ public class MemberController {
 	    }
 	    
 		if(result.hasErrors()) {
-			 model.addAttribute("memberVO", member);
-			 model.addAttribute("memberClassListData", memberClassService.getAll());
-			 model.addAttribute("selectTypeIds", styleIds);
-			return "back-end/bmember/update_member_insert";
+			model.addAttribute("memberVO", member);
+			model.addAttribute("memberClassListData", memberClassService.getAll());
+			model.addAttribute("selectTypeIds", styleIds);
+			model.addAttribute("pageTitle","更新會員資料");
+			model.addAttribute("content","back-end/bmember/update_member_insert :: content");
+			return "back-end/layout/admin-layout";
 		}
 		
 		//******************2.開始修改資料********************************	

@@ -1,22 +1,10 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>後台系統–修改會員資料</title>
-
-<link rel="stylesheet" href="">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link
-	href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=LXGW+WenKai+Mono+TC&display=swap"
-	rel="stylesheet">
+<div th:fragment="content">
 <style>
 
 .memberContent {
-    margin: 8% auto;
+    margin: 2%;
     padding: 30px 40px;
-    max-width: 700px;
+    width: 800px;
     background-color: #ffffff;
     border-radius: 15px;
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
@@ -43,7 +31,9 @@ form span {
     margin-top: 5px;
     font-weight: 500;
 }
-
+a {
+	font-size: 18px;
+}
 
 input[type="text"],
 select {
@@ -193,5 +183,4 @@ input[type="submit"]:hover {
 	<script>
 		
 	</script>
-</body>
-</html>
+</div>

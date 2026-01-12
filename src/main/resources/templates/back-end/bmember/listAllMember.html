@@ -1,88 +1,81 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>後台系統–會員資料一覽表</title>
-
-<link rel="stylesheet" href="">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link
-	href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=LXGW+WenKai+Mono+TC&display=swap"
-	rel="stylesheet">
-<script src="https://code.jquery.com/jquery-3.5.1.js"></script>                                    <!-- jquery datatables 用 -->
-<script	src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>              <!-- jquery datatables 用 -->
-
-<style>
-
+<div th:fragment="content">
+	<style>
 .memberListContent {
-    margin: 5% 8%;
-    padding: 30px 40px;
-    max-width: 1400px;
-/*     background-color: #ffffff; */
-/*     border-radius: 15px; */
-/*     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15); */
+	margin:2%;
+	padding: 30px 40px;
+	width: 1100px;
+	overflow: auto;
+	overflow-x: auto !important;
 }
 
+/* 標題 */
 .memberListH2 {
-    font-size: 36px;
-    font-family: "Dancing Script", cursive;
-    color: #4682b4;
-    margin-bottom: 20px;
-    text-align: left;
+	font-size: 36px;
+	font-family: "Dancing Script", cursive;
+	color: #4682b4;
+	margin-bottom: 20px;
+}
+
+a {
+	font-size: 18px;
 }
 
 a.back-link {
-    display: inline-block;
-    margin-bottom: 20px;
-    color: #ffffff;
-    background: #4a90e2;
-    padding: 8px 16px;
-    border-radius: 8px;
-    text-decoration: none;
-    font-weight: 500;
-    transition: 0.3s;
+	display: inline-block;
+	margin-bottom: 20px;
+	color: #ffffff;
+	background: #4a90e2;
+	padding: 8px 16px;
+	border-radius: 8px;
+	text-decoration: none;
+	font-weight: 500;
+	transition: 0.3s;
 }
 
 a.back-link:hover {
-    background: #357abd;
+	background: #357abd;
 }
 
-table.dataTable {
-    width: 100% !important;
-    border-collapse: separate !important;
-    border-spacing: 0 10px;
+table {
+	width: 100%;
+	border-collapse: separate;
+	border-spacing: 0 10px;
 }
 
-table.dataTable thead th {
-    background-color: #4a90e2;
-    color: #ffffff;
-    font-weight: 600;
-    padding: 12px;
-    border: none;
-    border-radius: 8px 8px 0 0;
-    white-space:nowrap;
+table th {
+	background-color: #4a90e2;
+	color: #ffffff;
+	font-weight: 600;
+	padding: 12px;
+	border: none;
+	border-radius: 8px 8px 0 0;
+	text-align: center;
+	white-space: nowrap;
 }
 
-table.dataTable tbody td {
-    background-color: #fdfdfd;
-    padding: 10px;
-    border-bottom: 1px solid #e0e0e0;
-    border-radius: 4px;
-    white-space:nowrap;
+table td {
+	background-color: #fdfdfd;
+	padding: 10px;
+	border-bottom: 1px solid #e0e0e0;
+	border-radius: 4px;
+	text-align: center;
+	white-space: nowrap;
 }
 
 table tr:hover td {
-    background-color: #f1f7ff;
+	background-color: #f1f7ff;
 }
 
+.mark {
+	color: red;
+}
 input[type="submit"] {
+    font-size: 14px;
     background-color: #ff6b6b;
+    padding: 6px 16px;
+    border-radius: 8px;
     border: none;
-    padding: 6px 14px;
     color: #fff;
-    border-radius: 6px;
     cursor: pointer;
     transition: 0.3s;
 }
@@ -90,118 +83,107 @@ input[type="submit"] {
 input[type="submit"]:hover {
     background-color: #e14c4c;
 }
-
-.dataTables_wrapper .dataTables_paginate .paginate_button {
-    background: #4a90e2;
-    color: #fff !important;
-    border-radius: 6px;
-    padding: 2px 10px;
-    margin: 2px;
-}
-
-.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
-    background: #357abd;
-    color: #fff !important;
-}
-
-.dataTables_wrapper .dataTables_length select,
-.dataTables_wrapper .dataTables_filter input {
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    padding: 4px 8px;
-}
-
 </style>
 
-</head>
-<body>
-	<div class="content memberListContent">
-		<h2 class="memberListH2">會員資料一覽表</h2>
-		<h3>
-			<a th:href="@{/bmember/select_page}">回後台會員主頁</a>
-		</h3>
-		<p th:if="${success}" th:text="${success}"></p>	
-		<table id="allMemberTable">
-			<thead>
-				<tr>
-					<th>會員編號</th>
-					<th>會員等級</th>
-					<th>帳號(信箱)</th>
-					<th>密碼</th>
-					<th>姓名</th>
-					<th>電話</th>
-					<th>生日</th>
-					<th>帳號狀態</th>
-					<th>註冊時間</th>
-					<th>累積消費金額</th>
-					<th>喜好電影類型</th>
-					<th>修改</th>
-				</tr>
-			</thead>
-			<tbody>
-				<th:block th:each="memberVO : ${memberListData}">
-				<tr>
-					<td th:text="${memberVO.memberId}"></td>
-					<td th:text="${memberVO.memberClass.memberClassId} + ' (' + ${memberVO.memberClass.memberName} + ')'"></td>
-					<td th:text="${memberVO.email}"></td>
-					<td th:text="${memberVO.password}"></td>
-					<td th:text="${memberVO.name}"></td>
-					<td th:text="${memberVO.phone}"></td>
-					<td th:text="${memberVO.birthdate}"></td>
-					<td th:text="${memberVO.status==0? '啟用' : '停用'}"></td>
-					<td th:text="${#dates.format(memberVO.createTime, 'yyyy-MM-dd HH:mm')}"></td>
-					<td th:text="${memberVO.accConsumption}"></td>
-					<td>
-						  <span th:if="${#lists.isEmpty(memberVO.memberPreferType)}">無</span>
-						  <span th:each="type, stat : ${memberVO.memberPreferType}">
-						    <span th:text="${type.movieType.typeName}"></span>
-						    <span th:if="${!stat.last}">、</span>
-						  </span>
-					</td>
-					
-					<td>
-						<form th:action="@{/bmember/getOne_For_Update}" method="post">
-							<input type="submit" value="修改">
-							<input type="hidden" name="memberId" th:value="${memberVO.memberId}">
-						</form>
-					</td>
-				</tr>
-				</th:block>
-			</tbody>	
-		</table>
+	</head>
+	<body>
+		<div class="content memberListContent">
+			<h2 class="memberListH2">會員資料一覽表</h2>
+			<h3>
+				<a th:href="@{/bmember/select_page}">回後台會員主頁</a>
+			</h3>
+			<p th:if="${success}" th:text="${success}"></p>
+			<table id="allMemberTable">
+				<thead>
+					<tr>
+						<th>會員編號</th>
+						<th>會員等級</th>
+						<th>帳號(信箱)</th>
+						<th>密碼</th>
+						<th>姓名</th>
+						<th>電話</th>
+						<th>生日</th>
+						<th>帳號狀態</th>
+						<th>註冊時間</th>
+						<th>累積消費金額</th>
+						<th>喜好電影類型</th>
+						<th>修改</th>
+					</tr>
+				</thead>
+				<tbody>
+					<th:block th:each="memberVO : ${memberListData}">
+						<tr>
+							<td th:text="${memberVO.memberId}"></td>
+							<td
+								th:text="${memberVO.memberClass.memberClassId} + ' (' + ${memberVO.memberClass.memberName} + ')'"></td>
+							<td th:text="${memberVO.email}"></td>
+							<td th:text="${memberVO.password}"></td>
+							<td th:text="${memberVO.name}"></td>
+							<td th:text="${memberVO.phone}"></td>
+							<td th:text="${memberVO.birthdate}"></td>
+							<td th:text="${memberVO.status==0? '啟用' : '停用'}"></td>
+							<td
+								th:text="${#dates.format(memberVO.createTime, 'yyyy-MM-dd HH:mm')}"></td>
+							<td th:text="${memberVO.accConsumption}"></td>
+							<td><span
+								th:if="${#lists.isEmpty(memberVO.memberPreferType)}">無</span> <span
+								th:each="type, stat : ${memberVO.memberPreferType}"> <span
+									th:text="${type.movieType.typeName}"></span> <span
+									th:if="${!stat.last}">、</span>
+							</span></td>
 
-	</div>
+							<td>
+								<form th:action="@{/bmember/getOne_For_Update}" method="post">
+									<input type="submit" value="修改"> <input type="hidden"
+										name="memberId" th:value="${memberVO.memberId}">
+								</form>
+							</td>
+						</tr>
+					</th:block>
+				</tbody>
+			</table>
 
-	<script>
-		$(document).ready(function() {
-			$('#allMemberTable').DataTable({
-				"lengthMenu": [3 ,5, 10, 20, 50, 100],
-				"searching": false,  //搜尋功能, 預設是開啟
-			    "paging": true,     //分頁功能, 預設是開啟
-			    "ordering": true,   //排序功能, 預設是開啟
-			    "language": {
-			        "processing": "處理中...",
-			        "loadingRecords": "載入中...",
-			        "lengthMenu": "顯示 _MENU_ 筆結果",
-			        "zeroRecords": "沒有符合的結果",
-			        "info": "顯示第 _START_ 至 _END_ 筆結果，共<font color=red> _TOTAL_ </font>筆",
-			        "infoEmpty": "顯示第 0 至 0 筆結果，共 0 筆",
-			        "infoFiltered": "(從 _MAX_ 筆結果中過濾)",
-			        "infoPostFix": "",
-			        "search": "搜尋:",
-			        "paginate": {
-			            "first": "第一頁",
-			            "previous": "上一頁",
-			            "next": "下一頁",
-			            "last": "最後一頁"
-			        },
-			        "aria": {
-			            "sortAscending":  ": 升冪排列",
-			            "sortDescending": ": 降冪排列"
-			        }
-			    }
-			});
-		});
-	</script>
-</body>
-</html>
+		</div>
+		<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+		<!-- jquery datatables 用 -->
+		<script
+			src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
+		<!-- jquery datatables 用 -->
+		<script>
+			$(document)
+					.ready(
+							function() {
+								$('#allMemberTable')
+										.DataTable(
+												{
+													"scrollX" : true,
+													"lengthMenu" : [ 3, 5, 10,
+															20, 50, 100 ],
+													"searching" : false, //搜尋功能, 預設是開啟
+													"paging" : true, //分頁功能, 預設是開啟
+													"ordering" : true, //排序功能, 預設是開啟
+													"language" : {
+														"processing" : "處理中...",
+														"loadingRecords" : "載入中...",
+														"lengthMenu" : "顯示 _MENU_ 筆結果",
+														"zeroRecords" : "沒有符合的結果",
+														"info" : "顯示第 _START_ 至 _END_ 筆結果，共<font color=red> _TOTAL_ </font>筆",
+														"infoEmpty" : "顯示第 0 至 0 筆結果，共 0 筆",
+														"infoFiltered" : "(從 _MAX_ 筆結果中過濾)",
+														"infoPostFix" : "",
+														"search" : "搜尋:",
+														"paginate" : {
+															"first" : "第一頁",
+															"previous" : "上一頁",
+															"next" : "下一頁",
+															"last" : "最後一頁"
+														},
+														"aria" : {
+															"sortAscending" : ": 升冪排列",
+															"sortDescending" : ": 降冪排列"
+														}
+													}
+												});
+							});
+		</script>
+</div>

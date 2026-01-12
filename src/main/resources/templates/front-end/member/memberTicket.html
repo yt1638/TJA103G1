@@ -103,7 +103,7 @@
 
 
 				<div class="orderDetails" th:if="${order == null}">
-				    <h5>目前沒有任何票券，快去選一部電影，立即訂票吧!  <a href="/movie/list" >前往電影列表</a></h5>
+				    <h5>目前沒有任何票券，快去選一部電影，立即訂票吧!  <a th:href="@{/order/order}" >前往電影列表</a></h5>
 				</div>
 				
                 <div class="card ticketCard" th:if="${order != null}">

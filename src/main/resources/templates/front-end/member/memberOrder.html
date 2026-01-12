@@ -95,7 +95,7 @@
                 <hr>
                 
                 <div class="orderDetails" th:if="${order == null}">
-				    <h5>目前沒有任何訂單，快去挑一部喜歡的電影吧!  <a href="/movie/list" >前往電影列表</a></h5>
+				    <h5>目前沒有任何訂單，快去挑一部喜歡的電影吧!  <a th:href="@{/index}" >前往電影列表</a></h5>
 				</div>
                 
                 <div class="orderDetails" th:if="${order != null}">
