@@ -289,7 +289,16 @@ public class OrderPageController {
 		 return "redirect:/order"; //重新發送 Get/order請求
 	 }
     if (draft.getMovieId() == null || draft.getDate() == null || draft.getSessionId() == null) {
-      return "redirect:/order";
+    	String msg;
+    	if (draft.getMovieId() == null) {
+            msg = "請先選擇電影";
+        } else if (draft.getDate() == null) {
+            msg = "請先選擇日期";
+        } else {
+            msg = "請先選擇場次";
+        }
+        ra.addFlashAttribute("errorMessage", msg);
+    	return "redirect:/order";
     }
     
 
