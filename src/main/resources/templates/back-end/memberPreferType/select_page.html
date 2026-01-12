@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>後台系統–會員喜好電影類型</title>
+
+<link rel="stylesheet" href="">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link
+	href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=LXGW+WenKai+Mono+TC&display=swap"
+	rel="stylesheet">
+<style>
+.memberContent {
+	width: 60%;
+	height: 70%;
+	margin: 20vh auto;
+	border: 3px solid #7d7575;
+	border-radius: 20px;
+	padding: 30px 50px;
+	box-shadow: 5px 5px 30px rgba(0, 0, 0, 0.3);
+	background-color: white;
+}
+
+.memberH2 {
+	font-size: 32px;
+	font-family: "Dancing Script", "LXGW WenKai Mono TC", sans-serif;
+	background: linear-gradient(0deg, rgba(255, 242, 129, 0.772) 0%,
+		rgb(255, 0, 0) 100%);
+	-webkit-background-clip: text;
+	-moz-background-clip: text;
+	background-clip: text;
+	color: transparent;
+	margin: 10px auto 30px;
+}
+
+li {
+	display: flex;
+	align-items: center;
+	list-style: none;
+	font-size: 18px;
+	margin: 3px 0;
+}
+
+li::before {
+	content: "■";
+	margin-right: 8px;
+	font-size: 20px;
+}
+
+li p {
+	margin: 0 10px 0 0;
+	white-space: nowrap;
+}
+
+li form {
+	display: flex;
+	align-items: center;
+	margin: 10px;
+}
+
+li input, select {
+	font-size: 16px;
+}
+
+li input[type="submit"] {
+	margin-left: 10px;
+	font-size: 14px;
+	background-color: rgb(255, 205, 140);
+	padding: 5px 15px;
+	border-radius: 15px;
+	border: none;
+}
+
+input[type="submit"]:hover {
+	background-color: rgb(255, 153, 51);
+	cursor: pointer;
+}
+
+.error{
+	border-radius: 10px;
+	background-color: rgba(251, 230, 211, 0.546);
+	padding: 5px 20px;
+}
+
+.errorP{
+	color: red;
+}
+
+</style>
+
+</head>
+<body>
+	<div class="content memberContent">
+		<h2 class="memberH2">查詢會員喜好電影類型資料</h2>
+		<div class="error" th:if="${errorMessage}">
+			<p class="errorP" th:utext="${errorMessage}"></p>
+		</div>
+		
+		<ul>
+			<li><a th:href="@{/memberPreferType/listAllMemberPreferType}">會員喜好電影類型資料一覽表</a></li>
+			<li>
+				<p>輸入「會員喜好電影類型」編號:</p>
+				<form th:action="@{/memberPreferType/getOneByPreferTypeId}" method="post">
+					<input type="text" name="memberPreferTypeId" id="memberPreferTypeId" th:value=${param.memberPreferTypeId}>
+					<input type="submit" value="查詢">
+				</form>
+			</li>
+			<li>
+				<p>輸入「會員」編號:</p>
+				<form th:action="@{/memberPreferType/getOneByMemberId}" method="post">
+					<input type="text" name="memberId" id="memberId" th:value=${param.memberId}> 
+					<input type="submit" value="查詢">
+				</form>
+			</li>
+			<li>
+				<form th:action="@{/memberPreferType/getOneByMovieTypeId}" method="post">
+					<label>
+						<p>選擇「電影類型」:  
+							<select name="movieTypeId" id="movieTypeId">
+								<option th:each="movieTypeVO : ${movieTypeListData}" th:value="${movieTypeVO.movieTypeId}" th:text="${movieTypeVO.typeName}"></option>
+							</select>
+							<input type="submit" value="查詢">
+						</p>
+					</label>
+				</form>
+			</li>
+		</ul>
+		<br>
+		<h3>新增「會員喜好電影類型」資料</h3>
+		<ul>
+			<li><a th:href="@{/memberPreferType/addMemberPreferType}">新增一筆會員喜好資料</a></li>
+		</ul>
+	</div>
+
+	<script>
+		
+	</script>
+</body>
+</html>

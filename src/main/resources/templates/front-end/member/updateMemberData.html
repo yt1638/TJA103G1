@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>會員系統–會員資料</title>
+        
+        <link rel="stylesheet" th:href="@{/css/member/member.css}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+        <link
+            href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=LXGW+WenKai+Mono+TC&display=swap"
+            rel="stylesheet">
+        <style>
+            .btn{
+                display: block;
+                width: 30%;
+                margin: 20px;
+                text-align: center;
+            }
+            .editBtn{
+                background-color: rgb(80, 74, 163);
+                color: white;
+                font-weight: bold;
+                border: none;
+            }
+            .editBtn:hover{
+                background-color: rgb(60, 54, 143);
+                color: white;
+            }
+            .memberData{
+            	width: 300px;
+            }
+            .errorMsg {
+				font-size: 14px !important;
+				color: red;
+				border-radius: 10px;
+				background-color: rgba(251, 230, 211, 0.546);
+				padding: 5px 20px;
+				margin: 3px;
+			}
+			
+        </style>
+
+    </head>
+    <body>
+        <div th:replace="fragments/memberTopNav :: topNav"></div>
+        
+        <div class="inner">
+            <div th:replace="fragments/memberLeftNav :: sideNav"></div>
+            <div class="content memberContent">
+                <h2 class="contentTitle">會員資料</h2>
+                <hr>
+                <form class="memberInfo" th:action="@{/member/edit}" method="post" th:object="${loginMember}">
+                    
+                    <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="text-danger errorMsg"></div>
+                    <div th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}" class="text-danger errorMsg"></div>
+                    <input type="hidden" th:field="*{memberId}">
+                    <input type="hidden" th:field="*{password}">
+                    <input type="hidden" th:field="*{status}">
+                    <input type="hidden" th:field="*{accConsumption}">
+                    <h5> 姓名:<input type="text" class="memberData name" th:field="*{name}"></h5>
+                    <h5> 電話:<input type="text" class="memberData phone" th:field="*{phone}"></h5>
+                    <h5> 電子郵件:<input type="email" class="memberData email" th:field="*{email}" readonly>(不可修改)</h5>
+                    <h5> 生日:<input type="date" class="memberData birthdate" th:field="*{birthdate}" readonly>(不可修改)</h5>
+                    
+                    <input type="submit" class="btn btn-warning editBtn" value="確認">
+                	
+                </form>
+            </div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+            
+    </body>
+</html>

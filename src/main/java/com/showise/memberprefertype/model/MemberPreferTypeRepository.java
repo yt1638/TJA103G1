@@ -1,9 +1,19 @@
 package com.showise.memberprefertype.model;
 
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.showise.member.model.MemberVO;
 
 public interface MemberPreferTypeRepository extends JpaRepository<MemberPreferTypeVO, Integer>{
 
-//	@Query(value = "from MemberPreferType where memberPreferTypeId=?1 and member.memberId =?2 order by memberPreferTypeId")
-//	List<MemberPreferTypeVO> findByOthers(int memberPreferTypeId, MemberVO member);
+	// 依照會員編號查詢
+	List<MemberPreferTypeVO> findByMember_MemberId(Integer memberId);
+	
+	// 依照電影類型編號查詢
+	List<MemberPreferTypeVO> findByMovieType_MovieTypeId(Integer movieTypeId);
+	
+	// 刪除某會員全部喜好
+	void deleteByMember(MemberVO member);
+	
 }

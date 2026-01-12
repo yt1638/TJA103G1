@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>後台系統–會員</title>
+
+<link rel="stylesheet" href="">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link
+	href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=LXGW+WenKai+Mono+TC&display=swap"
+	rel="stylesheet">
+<style>
+.memberContent {
+    margin: 8% auto;
+    padding: 30px 40px;
+    max-width: 800px;
+    background-color: #ffffff; 
+    border-radius: 15px; 
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15); 
+}
+
+.memberH2 {
+    font-size: 36px;
+    font-family: "Dancing Script", cursive;
+   	color: #4682b4;
+    text-align: left;
+    margin-bottom: 25px;
+}
+
+h3 {
+    margin-top: 30px;
+    color: #333;
+}
+
+.error{
+    border-radius: 10px;
+    background-color: rgba(251, 230, 211, 0.546);
+    padding: 10px 20px;
+    margin-bottom: 15px;
+}
+
+.errorP{
+    color: red;
+    margin: 0;
+    font-weight: 500;
+}
+
+ul {
+    list-style-type: disc; 
+    list-style-position: outside; 
+    padding-left: 40px; 
+}
+
+li {
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+    flex-wrap: wrap;
+    
+}
+
+li p {
+    margin: 0 10px 0 0;
+    white-space: nowrap;
+    font-weight: 500;
+}
+
+li a {
+    color: #4a90e2;
+    text-decoration: none;
+    font-weight: 500;
+    transition: 0.3s;
+    font-size: 18px;
+}
+
+li a:hover {
+    color: #357abd;
+}
+
+form {
+    display: flex;
+    align-items: center;
+    margin: 5px 0;
+    flex-wrap: wrap;
+}
+
+input[type="text"], select {
+    font-size: 16px;
+    padding: 6px 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    margin-right: 10px;
+    min-width: 150px;
+}
+
+input[type="submit"] {
+    font-size: 14px;
+    background-color: #ff6b6b;
+    padding: 6px 16px;
+    border-radius: 8px;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+input[type="submit"]:hover {
+    background-color: #e14c4c;
+}
+</style>
+
+</head>
+<body>
+	<div class="content memberContent">
+		<h2 class="memberH2">查詢會員資料</h2>
+		<div class="error" th:if="${errorMessage}">
+		    <p class="errorP" th:utext="${errorMessage}"></p>
+		</div>
+		<ul>
+			<li><a th:href="@{/bmember/listAllMember}">會員資料一覽表</a></li>
+			<li>
+				<p>輸入會員編號:</p>
+				<form th:action="@{getOne_For_Display}" method="post">
+					<input type="text" name="memberId" id="memberIdInput" th:value=${param.memberId}> 
+					<input type="submit" value="查詢">
+				</form>
+			</li>
+			<li>
+				<p>選擇會員編號:</p>
+				<form th:action="@{getOne_For_Display}" method="post">
+					<select name="memberId" id="memberIdChoose">
+						<option th:each="memberVO : ${memberListData}" th:value="${memberVO.memberId}" th:text="${memberVO.memberId}"></option>
+					</select> 
+					<input type="submit" value="查詢">
+				</form>
+			</li>
+			<li>
+				<p>選擇會員姓名:</p>
+				<form th:action="@{/bmember/getOne_For_Display}" method="post">
+					<select name="memberId" id="memberName">
+						<option th:each="memberVO : ${memberListData}" th:value="${memberVO.memberId}" th:text="${memberVO.name}"></option>
+					</select> 
+					<input type="submit" value="查詢">
+				</form>
+			</li>
+			<li>
+			    <p>搜尋會員名稱:</p>
+			    <form th:action="@{/bmember/searchByName}" method="post">
+			        <input type="text" name="keyword" placeholder="輸入會員名稱" th:value="${param.keyword}">
+			        <input type="submit" value="搜尋">
+			    </form>
+			</li>
+			
+		</ul>
+		<br>
+		<h3>新增會員資料</h3>
+		<ul>
+			<li><a th:href="@{/bmember/addMember}">新增一筆會員資料</a></li>
+		</ul>
+	</div>
+
+	<script>
+		
+	</script>
+</body>
+</html>

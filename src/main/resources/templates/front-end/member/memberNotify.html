@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+ <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>會員系統–我的通知</title>
+        
+        <link rel="stylesheet" th:href="@{/css/member/member.css}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+        <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=LXGW+WenKai+Mono+TC&display=swap"
+              rel="stylesheet">
+        <style>
+        	.notifyP{
+        		font-weight: 600;
+        	}
+        	
+        	.order-pagination {
+			    margin-top: 10px;
+			    padding-top: 0px;
+			    border-top: 1px dashed #ddd;
+			    padding-left: 12px;
+			    justify-content: flex-start;
+    			margin-left: 12px;
+			}
+
+			.btn-page {
+			    border-radius: 20px;
+			    padding: 6px 14px;
+			    font-size: 0.9rem;
+			    color: #5a5a5a;
+			    border: 1px solid #cfcfe8;
+			    background-color: #fff;
+			    transition: all 0.2s ease;
+			}
+			
+			
+			.btn-page:hover:not(.disabled) {
+			    background-color: #f0f1ff;
+			    color: #3f3d99;
+			    border-color: #3f3d99;
+			}
+			
+			
+			.btn-page.disabled {
+			    color: #aaa;
+			    background-color: #f3f3f3;
+			    border-color: #ddd;
+			
+			    opacity: 1;               
+			    cursor: not-allowed;      
+			    pointer-events: none;     
+			
+			    box-shadow: inset 0 1px 2px rgba(0,0,0,0.08); 
+			}
+			
+			
+			.btn-page.disabled:hover {
+			    background-color: #f3f3f3;
+			    color: #aaa;
+			    border-color: #ddd;
+			}
+
+			
+			.page-info {
+			    font-size: 0.95rem;
+			    color: #777;
+			}
+			.page-info strong {
+			    color: #3f3d99;
+			}
+        </style>
+
+    </head>
+    <body>
+        <div th:replace="fragments/memberTopNav :: topNav"></div>
+        
+        <div class="inner">
+            <div th:replace="fragments/memberLeftNav :: sideNav"></div>
+            <div class="content notificationContent">
+                <h2 class="contentTitle">我的通知</h2>
+                <hr>
+                <div class="orderDetails" th:if="${!hasData}">
+				    <h5>目前沒有任何通知</h5>
+				</div>
+                <div th:if="${hasData and order != null}">
+                	<p class="notifyP">
+	                    親愛的會員您好：<br> 
+	                    您所訂購的電影票 — <strong class="mName"><span th:text="${order.session.movie.nameTw}" class="order ordermName" style="color: blue"></span></strong>，
+	                    即將於<strong class="mDate"><span th:text="${#dates.format(order.session.startTime, 'yyyy-MM-dd HH:mm')}" class="order ordermDate" style="color: blue"></span></strong>開演。<br>
+	                    提醒您，請於開演前至「自助機台」或「取票櫃台」掃描「取票條碼」，換取實體票券（包含電影票與餐飲券）。<br>
+	                    若有加購餐飲的貴賓，再請持餐飲券至餐飲櫃台取餐。<br>
+	                    最後感謝您一直以來的支持，Showise電影院敬祝您觀影愉快！
+	                </p>
+                
+                
+	                <div class="order-pagination d-flex align-items-center gap-2 mt-4">
+					
+					    <a class="btn btn-page"
+					       th:href="@{/member/memberNotify(page=0)}"
+					       th:classappend="${currentPage == 0} ? ' disabled' : ''">
+					       第一筆
+					    </a>
+					
+					    <a class="btn btn-page"
+					       th:href="@{/member/memberNotify(page=${currentPage - 1})}"
+					       th:classappend="${currentPage == 0} ? ' disabled' : ''">
+					       上一筆
+					    </a>
+					
+					    <span class="page-info mx-3">
+					        第 <strong th:text="${currentPage + 1}"></strong>
+					        / <strong th:text="${totalPages > 0 ? totalPages : 1}"></strong>
+					    </span>
+					
+					    <a class="btn btn-page"
+					       th:href="@{/member/memberNotify(page=${currentPage + 1})}"
+					       th:classappend="${currentPage + 1 >= totalPages} ? ' disabled' : ''">
+					        下一筆
+					    </a>
+					
+					    <a class="btn btn-page"
+					       th:href="@{/member/memberNotify(page=${totalPages - 1})}"
+					       th:classappend="${currentPage + 1 >= totalPages} ? ' disabled' : ''">
+					        最後一筆
+					    </a>
+					</div>
+				</div>
+            </div>
+  	
+        </div>
+
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+        
+            
+    </body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>後台系統–單筆會員喜好資料</title>
+
+<link rel="stylesheet" href="">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link
+	href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=LXGW+WenKai+Mono+TC&display=swap"
+	rel="stylesheet">
+<style>
+.memberListContent {
+	width: 60%;
+	height: 60%;
+	margin: 20vh auto 2vh;
+	border: 3px solid #7d7575;
+	border-radius: 20px;
+	padding: 20px 50px;
+	box-shadow: 5px 5px 30px rgba(0, 0, 0, 0.3);
+	background-color: white;
+}
+
+.memberH2 {
+	font-size: 32px;
+	font-family: "Dancing Script", "LXGW WenKai Mono TC", sans-serif;
+	background: linear-gradient(0deg, rgba(255, 242, 129, 0.772) 0%,
+		rgb(255, 0, 0) 100%);
+	-webkit-background-clip: text;
+	-moz-background-clip: text;
+	background-clip: text;
+	color: transparent;
+	margin: 10px auto 30px;
+}
+
+.mark {
+	color: red;
+}
+
+table, th, td {
+	border: 1px solid black;
+	border-collapse: collapse; /* 合併相鄰的邊框 */
+	text-align: center;
+	padding: 8px;
+}
+</style>
+
+</head>
+<body>
+	<div class="content memberContent memberListContent">
+		<h2 class="memberH2">單筆會員喜好資料表</h2>
+		<h3>
+			<a th:href="@{/memberPreferType/select_page}">回會員喜好主頁</a>
+			<span th:text="${success}"></span>
+		</h3>
+		<table>
+			<thead>
+				<tr>
+					<th>會員喜好電影類型編號</th>
+					<th>會員編號(姓名)</th>
+					<th>電影類型編號(名稱)</th>
+				</tr>
+			</thead>
+			<tbody>
+			
+			<!-- 多筆資料 -->
+            <tr th:if="${memberPreferTypeVOList != null}" th:each="memberPreferTypeVO : ${memberPreferTypeVOList}">
+                <td th:text="${memberPreferTypeVO.memberPreferTypeId}">ID</td>
+                <td th:text="${memberPreferTypeVO.member != null ? memberPreferTypeVO.member.memberId + ' (' + memberPreferTypeVO.member.name + ')' : '無會員'}"></td>
+                <td th:text="${memberPreferTypeVO.movieType != null ? memberPreferTypeVO.movieType.movieTypeId + ' (' + memberPreferTypeVO.movieType.typeName + ')' : '無電影類型'}"></td>
+            </tr>
+            
+            <!-- 單筆資料 -->
+            <tr th:if="${memberPreferTypeVO != null and memberPreferTypeVOList == null}">
+	            <td th:text="${memberPreferTypeVO.memberPreferTypeId}"></td>
+	
+	            <td th:text="${memberPreferTypeVO.member != null 
+	                ? memberPreferTypeVO.member.memberId + ' (' + memberPreferTypeVO.member.name + ')' 
+	                : '無會員'}"></td>
+	
+	            <td th:text="${memberPreferTypeVO.movieType != null 
+	                ? memberPreferTypeVO.movieType.movieTypeId + ' (' + memberPreferTypeVO.movieType.typeName + ')' 
+	                : '無電影類型'}"></td>
+	        </tr>
+            
+            <!-- 查無資料 -->
+             <tr th:if="${memberPreferTypeVO == null 
+                    and (memberPreferTypeVOList == null or #lists.isEmpty(memberPreferTypeVOList))}">
+	            <td colspan="3" class="no-data">查無資料</td>
+	        </tr>
+        </tbody>
+		</table>
+
+	</div>
+
+	<script>
+		
+	</script>
+</body>
+</html>

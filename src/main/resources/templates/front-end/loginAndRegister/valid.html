@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>帳號驗證</title>
+        
+        <link rel="stylesheet" th:href="@{/css/member/member.css}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+        <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=LXGW+WenKai+Mono+TC&display=swap"
+              rel="stylesheet">
+        <style>
+            .validBody{
+                background: linear-gradient(0deg, rgb(84, 84, 83) 0%, rgb(75, 79, 107) 16%, rgb(50, 45, 118) 65%) no-repeat center center fixed;
+            }
+            .progress{
+                width: 250px;
+                height: 20px;
+                font-size: 14px;
+                font-weight: 500;
+                margin-left: 13vw;
+                margin-bottom: 20px;
+            }
+            .validContent{
+                position: static;
+                margin: 15vh auto;
+                width: 35%;
+                padding: 30px;
+                border-radius: 15px;
+                border: 2px solid rgb(243, 242, 242);
+                box-shadow: 10px 10px 10px rgba(234, 232, 232, 0.705);
+            }
+            .loginLogo{
+                display: block;
+                margin: 0 auto;
+                width: 150px;
+                height: auto;
+                margin-bottom: 20px;
+            }
+            .contentTitle{
+                text-align: center;
+                font-weight: bold;
+                font-family: "LXGW WenKai Mono TC", sans-serif;
+            }
+            .formInfo{
+                display: block;
+                margin: 40px auto;
+                text-align: left;
+            }
+            .formInfo p{
+                font-size: 18px;
+                margin: 25px;
+                font-weight: bold;
+            }
+            .validP{
+                margin: 10px;
+                text-align: left;
+                font-size: 18px;
+                font-weight: bold;
+            }
+            .sendValid{
+                text-align: left;
+                font-weight: bold;
+                font-size: 16px !important;
+                color: rgb(80, 74, 163);
+                cursor: pointer;
+            }
+            .btn{
+                display: block;
+                width: 45%;
+                margin: 15px auto 5px;
+                text-align: center;
+            }
+            .validInputP{
+            	width: 200px;
+            	margin: 20px auto !important;
+            	text-align: center;
+            }
+            .validInput{
+            	display: block;
+            	width: 200px;
+            	margin: 10px auto 20px;
+            }
+            .validBtn{
+                background-color: rgb(80, 74, 163);
+                color: white;
+                font-weight: bold;
+                border: none;
+            }
+            .validBtn:hover{
+                background-color: rgb(60, 54, 143);
+                color: white;
+            }
+            .errorP {
+	            color: red;
+	            font-weight: bold;
+	        }
+	        .successP {
+	            color: green;
+	            font-weight: bold;
+	        }
+	        
+        </style>
+
+    </head>
+    <body class="validBody">
+
+	<div class="content validContent">
+	    <div class="progress" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
+	        <div class="progress-bar bg-success" style="width: 50%"></div>
+	        會員註冊進度 50%
+	    </div>
+	    <h2 class="contentTitle">帳號驗證</h2>
+	    <hr>
+		
+	    <!-- 輸入驗證碼 -->
+	    <form class="formInfo validInfo" th:action="@{/loginAndRegister/check}" method="post">
+	        <p class="validInputP">請輸入驗證碼：</p>
+	        <input type="text" class="validInput" name="authCode" placeholder="請輸入驗證碼">
+	        <input type="submit" value="驗證" class="btn validBtn">
+	    </form>
+
+		<!-- 發送驗證碼 -->
+	    <form th:action="@{/loginAndRegister/send}" method="post">
+	        <input type="submit" value="重新發送驗證碼" class="btn validBtn sendBtn">
+	    </form>
+			
+	    <!-- 顯示錯誤或成功訊息 -->
+	    <div th:if="${errorMessage}" class="text-center">
+	        <p class="errorP" th:text="${errorMessage}"></p>
+	    </div>
+	    <div th:if="${success}" class="text-center">
+	        <p class="successP" th:text="${success}"></p>
+	    </div>
+	</div>
+	
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+	<script>
+	    // 點擊發送驗證碼時顯示提示
+	    let sendBtn = document.querySelector('.sendBtn');
+	    if(sendBtn){
+	        sendBtn.addEventListener("click", () => {
+	            alert("驗證碼已發送至您的信箱，請至信箱確認後輸入驗證碼");
+	        });
+	    }
+	</script>
+	</body>
+	</html>

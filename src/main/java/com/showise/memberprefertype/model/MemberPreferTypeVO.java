@@ -7,6 +7,7 @@ import com.showise.movietype.model.MovieTypeVO;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -28,14 +29,14 @@ public class MemberPreferTypeVO implements Serializable{
 	
 	
 //	關聯
-//	電影編號
-	@ManyToOne
+//	電影類別編號
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "movie_type_id", referencedColumnName = "movie_type_id")
 	private MovieTypeVO movieType;
 	
 	
 //	會員編號
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "member_id", referencedColumnName = "member_id")
 	private MemberVO member;
 	

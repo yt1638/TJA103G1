@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>後台系統–新增會員喜好資料</title>
+
+<link rel="stylesheet" href="">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link
+	href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=LXGW+WenKai+Mono+TC&display=swap"
+	rel="stylesheet">
+<style>
+.memberContent {
+	width: 50%;
+	height: 70%;
+	margin: 20vh auto;
+	border: 3px solid #7d7575;
+	border-radius: 20px;
+	padding: 30px 50px;
+	box-shadow: 5px 5px 30px rgba(0, 0, 0, 0.3);
+	background-color: white;
+}
+
+.memberH2 {
+	font-size: 32px;
+	font-family: "Dancing Script", "LXGW WenKai Mono TC", sans-serif;
+	background: linear-gradient(0deg, rgba(255, 242, 129, 0.772) 0%,
+		rgb(255, 0, 0) 100%);
+	-webkit-background-clip: text;
+	-moz-background-clip: text;
+	background-clip: text;
+	color: transparent;
+	margin: 10px auto 30px;
+}
+
+p, input {
+	font-size: 18px;
+	margin: 8px 0;
+}
+
+input[type="submit"] {
+	font-size: 16px;
+	margin-top: 10px;
+	background-color: rgb(255, 205, 140);
+	padding: 5px 15px;
+	border-radius: 15px;
+	border: none;
+}
+
+input[type="submit"]:hover {
+	background-color: rgb(255, 153, 51);
+	cursor: pointer;
+}
+
+.errorMsg{
+     font-size: 14px !important;	
+     color: red;
+     border-radius: 10px;
+	background-color: rgba(251, 230, 211, 0.546);
+	padding: 5px 20px; 
+}
+
+</style>
+
+</head>
+<body>
+	<div class="content memberContent">
+		<h2 class="memberH2">新增會員喜好資料</h2>
+		<h3>
+			<a th:href="@{/memberPreferType/select_page}">回會員喜好主頁</a>
+		</h3>
+		<form th:action="@{/memberPreferType/insert}" method="post" th:object="${memberPreferTypeVO}">
+			<p>
+				<label>會員編號: 
+					<select th:field="*{member.memberId}">
+					    <option th:each="m : ${memberListData}"
+					            th:value="${m.memberId}"
+					            th:text="${m.memberId}">
+					    </option>
+					</select>
+					<p th:if="${#fields.hasErrors('member.memberId')}" th:errors="*{member.memberId}" class="errorMsg" id="memberId.errors"></p>
+				</label>
+			</p>
+			<p>
+				<label> 選擇電影類型: 
+					<select th:field="*{movieType.movieTypeId}">
+						<option th:each="mtd : ${movieTypeListData}"
+							th:value="${mtd.movieTypeId}" th:text="${mtd.typeName}">
+						</option>
+					</select>
+				</label>
+			</p>
+			<input type="submit" value="送出新增">
+		</form>
+
+	</div>
+
+	<script>
+		
+	</script>
+</body>
+</html>

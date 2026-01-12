@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>會員註冊</title>
+        
+        <link rel="stylesheet" th:href="@{/css/member/member.css}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+        <link
+            href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=LXGW+WenKai+Mono+TC&display=swap"
+            rel="stylesheet">
+        <style>
+            .signUpBody{
+                background: linear-gradient(0deg, rgb(84, 84, 83) 0%, rgb(75, 79, 107) 16%, rgb(50, 45, 118) 65%) no-repeat center center fixed;
+            }
+            .progress{
+                width: 250px;
+                height: 20px;
+                font-size: 14px;
+                font-weight: 500;
+                margin-left: 28vw;
+                margin-bottom: 20px;
+            }
+            .signUpContent{
+                position: static;
+                margin: 5vh auto;
+                width: 50%;
+                height: 90%;
+                padding: 30px;
+                border-radius: 15px;
+                border: 2px solid rgb(243, 242, 242);
+                box-shadow: 10px 10px 10px rgba(234, 232, 232, 0.568);
+            }
+            .signUpContentTitle{
+                text-align: center;
+                font-weight: bold;
+                font-family: "LXGW WenKai Mono TC", sans-serif;
+            }
+            .formInfo{
+                display: block;
+                margin: 40px auto;
+                text-align: left;
+            }
+            .formInfo p{
+                font-size: 18px;
+                margin: 25px 10px 25px 220px;
+                font-weight: bold;
+                width: 450px;
+            }
+            .forgetPwd{
+                text-align: center;
+                font-weight: bold;
+                padding-left: 180px;
+                margin-top: -15px;
+                color: rgb(80, 74, 163);
+                cursor: pointer;
+            }
+            .signUpNotice{
+                font-size: 14px !important;
+                text-align: center !important;
+            }
+            .btn{
+                display: block;
+                width: 50%;
+                margin: 20px auto;
+                text-align: center;
+            }
+            .signUpBtn{
+                background-color: rgb(80, 74, 163);
+                color: white;
+                font-weight: bold;
+                border: none;
+            }
+            .signUpBtn:hover{
+                background-color: rgb(60, 54, 143);
+                color: white;
+            }
+            .styleInfoHeader{
+                background-color: rgb(194, 196, 214);
+            }
+            /* 移除 modal 內容所有文字/連結的下底線 */
+            .styleInfo, .styleInfo *{
+                text-decoration: none !important;
+                text-align: left;
+            }
+            .styleInfo li{
+                text-decoration: none;
+                margin-bottom: 8px;
+                border-bottom: 0 !important;
+            }
+            .styleBtn{
+                background: transparent !important;
+                border: 0 !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                color: #0d6efd !important; /* Bootstrap primary */
+                font: inherit !important;
+                line-height: inherit !important;
+                text-decoration: none !important;
+                box-shadow: none !important;
+                cursor: pointer;
+            }
+            .styleBtn:hover{
+                color: #0a58ca !important; /* darker blue on hover */
+            }
+            input{
+                border-radius: 6px;
+                border: 1px solid gray;
+            }
+            .errorMsg {
+				font-size: 14px !important;
+				color: red;
+				border-radius: 10px;
+				background-color: rgba(251, 230, 211, 0.546);
+				padding: 5px 20px;
+			}
+        </style>
+
+    </head>
+    <body class="signUpBody">
+
+        <div class="content signUpContent">
+            <div class="progress" role="progressbar" aria-label="Success example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                <div class="progress-bar bg-success" style="width: 25%"></div>會員註冊進度 25%
+            </div>
+            <h2 class="contentTitle signUpContentTitle">會員註冊</h2>
+            <hr>
+            <p th:if="${errorMsg}" th:text="${errorMsg}" class="errorMsg"></p>
+            
+            <form class="formInfo signUpInfo" th:action="@{/loginAndRegister/memberRegisterHandler}" method="post" name="signUpForm" th:object="${member}">
+                <p>姓名：
+                    <input type="text" minlength="2" maxlength="10" class="signUpInput signUpName" th:field="*{name}" placeholder="請輸入姓名" required
+                    	pattern="[\u4e00-\u9fa5A-Za-z0-9_]{2,10}" title="姓名只能包含中文、英文、數字或底線，長度 2~10"
+                    >
+                </p>
+                <p>電話：
+                    <input type="tel" class="signUpInput signUpPhone" th:field="*{phone}" placeholder="請輸入電話" required
+                    	pattern="^09\d{8}$" title="電話需為 09 開頭，後接 8 碼數字"
+                    >
+                </p>
+                <p>信箱：
+                    <input type="email" class="signUpInput signUpEmail" th:field="*{email}" placeholder="請輸入信箱" required
+                    	pattern="^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$" title="信箱: 只能是英文字母、數字和+_.-所組合 , 且須包含@"
+                    >
+                </p>
+                <p>生日：
+                    <input type="date" class="signUpInput signUpBirthday" th:field="*{birthdate}" placeholder="請輸入生日" required
+                    	th:max="${#dates.format(today,'yyyy-MM-dd')}" title="日期必須是今日(含)以前"
+                    >
+                </p>
+                <p>密碼：
+                    <input type="password" minlength="6" maxlength="20" class="signUpInput signUpPassword" th:field="*{password}" placeholder="請輸入密碼" required
+                    	pattern="^[a-zA-Z0-9_]{6,20}$" title="密碼只能是英文字母、數字或底線，長度 6~20"
+                    >
+                </p>
+                
+                
+                <div class="signUpNotice">註冊即表示您已閱讀並同意
+                	<button type="button" class="styleBtn" data-bs-toggle="modal" data-bs-target="#exampleModal1">用戶服務條款</button> 與 
+                	<button type="button" class="styleBtn" data-bs-toggle="modal" data-bs-target="#exampleModal2">隱私權政策</button>
+               	</div>
+
+				<input type="submit" class="btn btn-warning signUpBtn " value="註冊，並寄送驗證碼">
+                
+           	</form>
+
+                <!-- Modal -->
+                <div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header styleInfoHeader">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel"><strong>《用戶服務條款》</strong></h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body styleInfo">
+                                歡迎您使用本電影院網站（以下稱「本網站」）。
+                                在註冊成為會員或使用本網站服務前，請您詳細閱讀以下條款。當您完成註冊或使用本網站時，即表示您已閱讀、瞭解並同意遵守本條款之全部內容。<br>
+                                一、會員註冊與帳號管理<br>
+                                使用者需提供真實、正確、完整的個人資料進行註冊，並有責任維護資料之即時更新。
+                                會員帳號僅限本人使用，請妥善保管帳號與密碼。若因帳號被冒用或遺失所造成的損失，本網站不負賠償責任。
+                                若發現帳號有異常使用情形，請立即通知本網站客服。<br>
+                                二、服務內容<br>
+                                本網站提供之服務包括電影資訊查詢、線上購票、會員活動、電子報訂閱及其他相關功能。
+                                本網站保留隨時修改、暫停或終止部分或全部服務之權利，無須事前通知。
+                                若本網站進行系統維護、升級或其他必要措施，可能暫時中斷服務。<br>
+                                三、使用者行為<br>
+                                會員不得利用本網站進行任何違法、侵權、詐騙、散播惡意程式或影響系統安全的行為。
+                                不得未經授權擷取、修改或使用本網站任何資料、圖片、影音或程式碼。
+                                若違反本條款，本網站有權終止會員資格並保留法律追訴權。<br>
+                                四、訂票與退票政策<br>
+                                使用者於完成線上購票後，應依網站規定完成付款。
+                                已付款之票券若需退票，須依本網站公告之退票辦法辦理，並可能酌收手續費。
+                                本網站對於影城臨時調整場次、座位或其他不可抗力因素，將盡力通知會員，但不負賠償責任。<br>
+                                五、智慧財產權<br>
+                                本網站所有內容（包含文字、圖片、影片、標誌、設計、程式等）之智慧財產權屬本網站或合法授權人所有。
+                                未經書面同意，不得擅自重製、散佈、公開展示或商業使用。<br>
+                                六、免責聲明<br>
+                                本網站對於使用者因網路問題、系統故障或不可抗力所造成之損失，概不負責。
+                                本網站對外部連結網站之內容不負擔任何保證或責任。<br>
+                                七、條款修改<br>
+                                本網站有權隨時修改本條款，修改後之內容將公告於網站上，並自公告日起生效。使用者於修改後仍繼續使用本網站者，視為同意修訂內容。<br>
+                                八、準據法與管轄法院<br>
+                                本條款以 中華民國法律 為準據法，若發生爭議，雙方同意以本網站所在地之 地方法院 為第一審管轄法院。
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header styleInfoHeader">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel"><strong>《隱私權政策》</strong></h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body styleInfo">
+                                本網站非常重視您的隱私權，依據《個人資料保護法》及相關法令，說明我們如何蒐集、處理與保護您的個人資料。<br>
+                                一、資料蒐集目的與項目<br>
+                                蒐集目的：
+                                會員註冊及身份驗證、
+                                線上購票及付款處理、
+                                客戶服務與活動推廣、
+                                系統營運與安全維護<br>
+                                蒐集資料項目：
+                                基本資料：姓名、電子郵件、手機號碼、地址<br>
+                                交易資料：信用卡或付款資訊、訂票紀錄
+                                使用資料：登入時間、IP 位址、瀏覽紀錄、Cookie<br>
+                                二、資料使用範圍與期間<br>
+                                本網站僅於提供服務所需範圍內使用您的個人資料。
+                                除法令要求或經您同意外，不會將個資提供予第三方。
+                                個資保存期間為您會員資格有效期間及法律規定之保存期限。<br>
+                                三、資料安全與保護<br>
+                                僅授權必要人員可存取個人資料，並定期進行安全稽核。<br>
+                                四、使用者權利<br>
+                                依個資法第 3 條規定，您可就您的個人資料行使以下權利：
+                                查詢或請求閱覽；
+                                製給複製本；
+                                補充或更正；
+                                請求停止蒐集、處理或利用；
+                                請求刪除。
+                                如欲行使上述權利，請聯絡本電影院。<br>
+                                五、政策修訂<br>
+                                本網站得依實際需求隨時修訂本政策，修改後將公告於網站上並即時生效。
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                
+        </div>
+
+        
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+        <script>
+			document.addEventListener("DOMContentLoaded", function() {
+			    const signUpForm = document.querySelector("form[name='signUpForm']");
+			    const birthInput = document.querySelector("input.signUpBirthday");
+			
+			    signUpForm.addEventListener("submit", function(e) {
+			        const today = new Date();
+			        today.setHours(0,0,0,0); // 只比較日期，不比時間
+			        const birthDate = new Date(birthInput.value);
+			
+			        if (birthDate > today) {
+			            e.preventDefault(); // 阻止表單送出
+			            alert("生日不能是未來的日期(含今日)，請重新選擇");
+			            birthInput.focus();
+			        }
+			    });
+			});
+		</script>
+
+    </body>
+</html>

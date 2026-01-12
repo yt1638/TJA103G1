@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>後台系統–會員喜好資料一覽表</title>
+
+<link rel="stylesheet" href="">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link
+	href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=LXGW+WenKai+Mono+TC&display=swap"
+	rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>                                    <!-- jquery datatables 用 -->
+<script	src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>              <!-- jquery datatables 用 -->
+
+<style>
+.memberListContent {
+	width: 60%;
+	height: 60%;
+	margin: 20vh auto 2vh;
+	border: 3px solid #7d7575;
+	border-radius: 20px;
+	padding: 20px 50px;
+	box-shadow: 5px 5px 30px rgba(0, 0, 0, 0.3);
+	background-color: white;
+}
+
+.memberListH2 {
+	font-size: 32px;
+	font-family: "Dancing Script", "LXGW WenKai Mono TC", sans-serif;
+	background: linear-gradient(0deg, rgba(255, 242, 129, 0.772) 0%,
+		rgb(255, 0, 0) 100%);
+	-webkit-background-clip: text;
+	-moz-background-clip: text;
+	background-clip: text;
+	color: transparent;
+	margin-bottom: 10px;
+}
+
+.mark {
+	color: red;
+}
+
+table, th, td {
+	border: 1px solid black;
+	border-collapse: collapse; /* 合併相鄰的邊框 */
+	text-align: center;
+	padding: 8px;
+	white-space: nowrap;
+}
+</style>
+
+</head>
+<body>
+	<div class="content memberListContent">
+		<h2 class="memberListH2">會員喜好一覽表</h2>
+		<h3>
+			<a th:href="@{/memberPreferType/select_page}">回會員喜好主頁
+				<span th:text="${success}"></span>
+			</a>
+		</h3>
+		<table id="allMemberPreferTable">
+			<thead>
+				<tr>
+					<th>會員喜好電影類型編號</th>
+					<th>會員編號(姓名)</th>
+					<th>電影類型編號(名稱)</th>
+					<th>修改</th>
+				</tr>
+			</thead>
+			<tbody>
+				<th:block th:each="memberPreferTypeVO : ${memberPreferTypeListData}">
+				<tr>
+					<td th:text="${memberPreferTypeVO.memberPreferTypeId}"></td>
+					<td th:text="${memberPreferTypeVO.member.memberId} + ' (' + ${memberPreferTypeVO.member.name} + ')'"></td>
+					<td th:text="${memberPreferTypeVO.movieType.movieTypeId} + ' (' + ${memberPreferTypeVO.movieType.typeName} + ')'"></td>
+					<td>
+						<form th:action="@{/memberPreferType/getOne_For_Update}" method="post">
+							<input type="submit" value="修改">
+							<input type="hidden" name="memberPreferTypeId" th:value="${memberPreferTypeVO.memberPreferTypeId}">
+						</form>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+
+	</div>
+
+	<script>
+		$(document).ready(function() {
+			$('#allMemberPreferTable').DataTable({
+				"lengthMenu": [3 ,5, 10, 20, 50, 100],
+				"searching": false,  //搜尋功能, 預設是開啟
+			    "paging": true,     //分頁功能, 預設是開啟
+			    "ordering": true,   //排序功能, 預設是開啟
+			    "language": {
+			        "processing": "處理中...",
+			        "loadingRecords": "載入中...",
+			        "lengthMenu": "顯示 _MENU_ 筆結果",
+			        "zeroRecords": "沒有符合的結果",
+			        "info": "顯示第 _START_ 至 _END_ 筆結果，共<font color=red> _TOTAL_ </font>筆",
+			        "infoEmpty": "顯示第 0 至 0 筆結果，共 0 筆",
+			        "infoFiltered": "(從 _MAX_ 筆結果中過濾)",
+			        "infoPostFix": "",
+			        "search": "搜尋:",
+			        "paginate": {
+			            "first": "第一頁",
+			            "previous": "上一頁",
+			            "next": "下一頁",
+			            "last": "最後一頁"
+			        },
+			        "aria": {
+			            "sortAscending":  ": 升冪排列",
+			            "sortDescending": ": 降冪排列"
+			        }
+			    }
+			});
+		});
+	</script>
+</body>
+</html>

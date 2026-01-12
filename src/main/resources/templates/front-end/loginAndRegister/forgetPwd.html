@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>忘記密碼</title>
+        
+        <link rel="stylesheet" th:href="@{/css/member/member.css}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+        <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=LXGW+WenKai+Mono+TC&display=swap"
+              rel="stylesheet">
+        <style>
+            .forgetPwdBody{
+                background: linear-gradient(0deg, rgb(84, 84, 83) 0%, rgb(75, 79, 107) 16%, rgb(50, 45, 118) 65%) no-repeat center center fixed;
+            }
+            .forgetPwdContent{
+                position: static;
+                margin: 10vh auto;
+                width: 30vw;
+                padding: 30px;
+                border-radius: 15px;
+                border: 2px solid rgb(243, 242, 242);
+                box-shadow: 10px 10px 10px rgba(234, 232, 232, 0.705);
+            }
+            .loginLogo{
+                display: block;
+                margin: 0 auto;
+                width: 150px;
+                height: auto;
+                margin-bottom: 20px;
+            }
+            .contentTitle{
+                text-align: center;
+                font-weight: bold;
+                font-family: "LXGW WenKai Mono TC", sans-serif;
+            }
+            .formInfo{
+                display: block;
+                margin: 40px auto;
+                text-align: center;
+            }
+            .formInfo p{
+                font-size: 18px;
+                margin: 25px;
+                font-weight: bold;
+            }
+            .btn{
+                display: block;
+                width: 50%;
+                margin: 20px auto;
+                text-align: center;
+            }
+            .forgetPwdBtn{
+                background-color: rgb(80, 74, 163);
+                color: white;
+                font-weight: bold;
+                border: none;
+            }
+            .forgetPwdBtn:hover{
+                background-color: rgb(60, 54, 143);
+                color: white;
+            }
+        </style>
+
+    </head>
+    <body class="forgetPwdBody">
+
+        <div class="content forgetPwdContent">
+        
+            <img class="loginLogo" th:src="@{/img/member/logo0.png}" alt="Logo">
+            <h2 class="contentTitle">忘記密碼？</h2>
+            <hr>
+         
+            <div th:if="${errorMessage}" class="text-center">
+		        <p class="errorP" th:text="${errorMessage}"></p>
+		    </div>
+		    <div th:if="${successMsg}" class="text-center text-success fw-bold mb-3">
+			    <p th:text="${successMsg}"></p>
+			</div>
+		    <div th:if="${emailBlankErrorMessage}" class="text-center text-success fw-bold mb-3">
+			    <p th:text="${emailBlankErrorMessage}"></p>
+			</div>
+            
+            <form class="formInfo forgetPwdInfo" th:action="@{/loginAndRegister/sendForgetPwd}" method="post" name="forgetPwdForm">
+                <p>電子信箱：
+                    <input type="email" class="loginInput loginAccount" name="email" placeholder="請輸入電子信箱" required
+                    	pattern="^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$" title="信箱: 只能是英文字母、數字和+_.-所組合 , 且須包含@"
+                    >
+                </p>
+                <p>密碼重設信件將寄送至您輸入的電子信箱中</p>
+                <input type="submit" class="btn btn-warning forgetPwdBtn " value="傳送">
+                
+            </form>
+        </div>
+
+
+           
+  
+
+
+        
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+        <script>
+
+        </script>
+    </body>
+</html>
