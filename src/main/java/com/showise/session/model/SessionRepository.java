@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.showise.movie.model.MovieVO;
+
 public interface SessionRepository extends JpaRepository<SessionVO,Integer>{
 	
 	@Query("select count(s) from SessionVO s where s.cinema.cinemaId = :cinemaId "
@@ -38,5 +40,50 @@ public interface SessionRepository extends JpaRepository<SessionVO,Integer>{
 		
 		@Query("from SessionVO s join fetch s.movie where s.movie.movieId = :movieId and s.startTime >= :start AND s.startTime <= :end order by s.startTime")
 		List<SessionVO> listByMovieAndDate(@Param("movieId") Integer movieId,@Param("start") Timestamp start,@Param("end") Timestamp end);
+
+        @Query(
+            "select s.startTime " +
+            "from SessionVO s " +
+            "where s.movie.movieId = :movieId " +
+            "  and s.sessionStatus = 1 " +
+            "  and s.startTime >= :now " +
+            "  and s.startTime < :end " +
+            "order by s.startTime"
+        )
+        List<Timestamp> findStartTimesByMovieInRange(
+            @Param("movieId") Integer movieId,
+            @Param("now") Timestamp now,
+            @Param("end") Timestamp end
+        );
+
+
+
+        @Query(
+            "select s " +
+            "from SessionVO s " +
+            "where s.movie.movieId = :movieId " +
+            "  and s.sessionStatus = 1 " +
+            "  and s.startTime >= :start " +
+            "  and s.startTime < :end " +
+            "order by s.startTime"
+        )
+        List<SessionVO> findOnSaleSessionsByMovieAndDay(
+            @Param("movieId") Integer movieId,
+            @Param("start") Timestamp start,
+            @Param("end") Timestamp end
+        );
+
+        // 查詢「未來時間區間內有可售場次」的電影（由Session反查，distinct避免同一電影重複）
+        @Query("""
+            select distinct s.movie
+            from SessionVO s
+            where s.sessionStatus = 1
+              and s.startTime >= :now
+              and s.startTime < :end
+        """)
+        List<MovieVO> findBookableMovies(
+            @Param("now") Timestamp now,
+            @Param("end") Timestamp end
+        );
 
 }

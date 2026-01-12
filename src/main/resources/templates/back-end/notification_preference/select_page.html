@@ -1,4 +1,4 @@
-<div th:fragment = "content">
+<div th:fragment="content">
     <style>
         /* 頁面標題 */
         .page-title {
@@ -11,42 +11,45 @@
             margin-bottom: 18px;
         }
 
-        /* 灰底查詢區塊 */
+        /* ✅ 核心修正：灰底查詢區塊 (強制一行) */
         .search-bar-wrapper {
             background: #e9eaec;
             border-radius: 10px;
-            padding: 18px 24px;
+            padding: 15px 24px;
             display: flex;
-            flex-wrap: wrap;
+            flex-wrap: nowrap;   /* 強制不換行 */
             align-items: center;
+            justify-content: flex-start;
+            gap: 15px;           /* 欄位間距 */
         }
 
         .search-group {
             display: flex;
             align-items: center;
-            margin-right: 40px;
-            margin-bottom: 10px;
+            flex-shrink: 0;      /* 防止欄位被壓縮 */
+            margin-bottom: 0 !important; /* 移除原本的下邊距 */
         }
 
         .search-group label {
             margin-right: 8px;
             white-space: nowrap;
             font-weight: 600;
-            color: #333;
+            color: #000; /* 加深顏色提升質感 */
         }
 
+        /* 調整 input 寬度確保並列 */
         .search-group input {
-            min-width: 210px;
+            width: 160px;
+            height: 38px;
+            color: #000;
+            font-weight: 500;
         }
 
+        /* 搜尋按鈕置右 */
         .search-submit {
             margin-left: auto;
-            margin-bottom: 10px;
-        }
-
-        .search-submit .btn {
-            padding: 6px 26px;
-            border-radius: 20px;
+            flex-shrink: 0;
+            margin-bottom: 0 !important;
         }
 
         /* 下方表格 */
@@ -57,6 +60,7 @@
         .notify-table-wrapper .table thead th {
             text-align: center;
             background-color: #f5f5f5;
+            vertical-align: middle;
         }
 
         .notify-table-wrapper .table tbody td {
@@ -80,16 +84,16 @@
             border-radius: 8px;
             font-size: 14px;
             font-weight: 600;
-            cursor: pointer;
+            text-decoration: none;
             transition: all 0.2s ease;
         }
 
         .edit-showstart-btn:hover {
             background-color: #333;
+            color: #fff;
             transform: translateY(-1px);
         }
 
-        /* ✅ 前端錯誤提示 */
         .error-msg {
             color: red;
             font-weight: 700;
@@ -110,150 +114,107 @@
 
         .search-btn:hover {
             background-color: #333 !important;
-            color: #fff !important;
             transform: translateY(-1px);
-        }
-
-        .search-btn:active {
-            background-color: #111 !important;
         }
     </style>
 
-            <div class="container-fluid">
+    <div class="container-fluid">
 
-                <div class="page-title-bar">
-                    <span class="page-title">喜好通知查詢</span>
+        <div class="page-title-bar">
+            <span class="page-title">喜好通知查詢</span>
+            <a class="edit-showstart-btn" th:href="@{/notification_preference/update_notificationPreference_input}">
+                喜好通知編輯
+            </a>
+        </div>
 
-                    <a class="edit-showstart-btn"
-						   th:href="@{/notification_preference/update_notificationPreference_input}">
-						  喜好通知編輯
-					</a>
+        <div id="clientError" class="error-msg"></div>
+
+        <form method="post" th:action="@{/notification_preference/listNotificationPreferences_ByCompositeQuery}" onsubmit="return validateForm();">
+            <div class="search-bar-wrapper">
+
+                <div class="search-group">
+                    <label>已發送日期：</label>
+                    <input type="date" class="form-control" name="notiPrefStime">
                 </div>
 
-                <div id="clientError" class="error-msg"></div>
+                <div class="search-group">
+                    <label>會員編號：</label>
+                    <input type="text" class="form-control" name="memberId" placeholder="請輸入編號">
+                </div>
 
-                <form method="post"
-                      action="/notification_preference/listNotificationPreferences_ByCompositeQuery"
-                      onsubmit="return validateForm();">
+                <div class="search-group">
+                    <label>電影編號：</label>
+                    <input type="text" class="form-control" name="movieId" placeholder="請輸入編號">
+                </div>
 
-                    <div class="search-bar-wrapper">
+                <div class="search-submit">
+                    <button type="submit" class="btn search-btn">搜尋</button>
+                </div>
+            </div>
+        </form>
 
-                        <!-- 發送日期 -->
-                        <div class="search-group">
-                            <label for="sendDate">已發送日期查詢:</label>
-                            <input type="date"
-                                   class="form-control"
-                                   id="sendDate"
-                                   name="notiPrefStime">
-                        </div>
-
-                        <!-- 會員編號 -->
-                        <div class="search-group">
-                            <label for="memberId">會員編號:</label>
-                            <input type="text"
-                                   class="form-control"
-                                   id="memberId"
-                                   name="memberId"
-                                   placeholder="請輸入會員編號">
-                        </div>
-
-                        <!-- 電影編號 -->
-                        <div class="search-group">
-                            <label for="movieId">電影編號:</label>
-                            <input type="text"
-                                   class="form-control"
-                                   id="movieId"
-                                   name="movieId"
-                                   placeholder="請輸入電影編號">
-                        </div>
-
-                        <div class="search-submit">
-                            <button type="submit" class="btn search-btn">搜尋</button>
-                        </div>
-                    </div>
-                </form>
-
-                <!-- 訂單表格 -->
-                <div class="notify-table-wrapper">
-                    <div class="card shadow">
-                        <div class="card-body p-0">
-                            <div class="table-responsive">
-                                <table class="table table-bordered mb-0">
-                                    <thead>
-                                    <tr>
-                                        <th>會員編號</th>
-                                        <th>電影編號</th>
-                                        <th>發送日期</th>
-                                        <th>發送狀態</th>
-                                        <th>發送內容</th>
+        <div class="notify-table-wrapper">
+            <div class="card shadow">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-bordered mb-0">
+                            <thead>
+                                <tr>
+                                    <th>會員編號</th>
+                                    <th>電影編號</th>
+                                    <th>發送日期</th>
+                                    <th>發送狀態</th>
+                                    <th>發送內容</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <th:block th:if="${notificationPreferenceListData != null and !#lists.isEmpty(notificationPreferenceListData)}">
+                                    <tr th:each="noti : ${notificationPreferenceListData}">
+                                        <td th:text="${noti.member.memberId}"></td>
+                                        <td th:text="${noti.movie.movieId}"></td>
+                                        <td th:text="${noti.notiPrefStime}"></td>
+                                        <td th:text="${noti.notiPrefStat == 1 ? '已發送' : '未發送'}"></td>
+                                        <td th:text="${noti.notiPrefScon}"></td>
                                     </tr>
-                                    </thead>
-
-                                    <tbody>
-									  <th:block th:if="${notificationPreferenceListData != null and !#lists.isEmpty(notificationPreferenceListData)}">
-									    <tr th:each="noti : ${notificationPreferenceListData}">
-									      <td th:text="${noti.member.memberId}">會員編號</td>
-									      <td th:text="${noti.movie.movieId}">電影編號</td>
-									      <td th:text="${noti.notiPrefStime}">發送時間</td>
-									      <td th:text="${noti.notiPrefStat}">發送狀態</td>
-									      <td th:text="${noti.notiPrefScon}">發送內容</td>
-									    </tr>
-									  </th:block>
-									  <th:block th:unless="${notificationPreferenceListData != null and !#lists.isEmpty(notificationPreferenceListData)}">
-								        <tr>
-								            <td colspan="5" class="text-center text-muted py-4">
-								                查無資料
-								            </td>
-								        </tr>
-								    </th:block>			  
-									</tbody>
-
-                                </table>
-                            </div>
-                        </div>
+                                </th:block>
+                                <th:block th:unless="${notificationPreferenceListData != null and !#lists.isEmpty(notificationPreferenceListData)}">
+                                    <tr>
+                                        <td colspan="5" class="text-center text-muted py-4">查無資料</td>
+                                    </tr>
+                                </th:block>			  
+                            </tbody>
+                        </table>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
 
-            </div><!-- container-fluid -->
+    <script>
+    function validateForm() {
+        const memberId = document.querySelector("[name='memberId']").value.trim();
+        const movieId  = document.querySelector("[name='movieId']").value.trim();
+        const date     = document.querySelector("[name='notiPrefStime']").value.trim();
 
+        let errors = [];
+        const numberPattern = /^\d+$/;
 
-<a class="scroll-to-top rounded" href="#page-top">
-    <i class="fas fa-angle-up"></i>
-</a>
+        if (!movieId && !memberId && !date) {
+            errors.push("請至少輸入一個查詢條件");
+        }
+        if (movieId && !numberPattern.test(movieId)) {
+            errors.push("電影編號必須為數字");
+        }
+        if (memberId && !numberPattern.test(memberId)) {
+            errors.push("會員編號必須為數字");
+        }
 
-
-<!-- ✅ 至少填一個 + 數字驗證 -->
-<script>
-function validateForm() {
-
-    const memberId = document.querySelector("[name='memberId']").value.trim();
-    const movieId  = document.querySelector("[name='movieId']").value.trim();
-    const date     = document.querySelector("[name='notiPrefStime']").value.trim();
-
-    let errors = [];
-    const numberPattern = /^\d+$/;
-
-    if (!movieId && !memberId && !date) {
-        errors.push("請至少輸入一個查詢條件");
+        const errorDiv = document.getElementById("clientError");
+        if (errors.length > 0) {
+            errorDiv.innerHTML = errors.join("<br>");
+            return false;
+        }
+        return true;
     }
-
-    if (movieId && !numberPattern.test(movieId)) {
-        errors.push("電影編號必須為數字");
-    }
-    if (memberId && !numberPattern.test(memberId)) {
-        errors.push("會員編號必須為數字");
-    }
-
-    const errorDiv = document.getElementById("clientError");
-    errorDiv.innerHTML = "";
-
-    if (errors.length > 0) {
-        errorDiv.innerHTML = errors.join("<br>");
-        return false;
-    }
-
-    return true;
-}
-</script>
-
+    </script>
 </div>

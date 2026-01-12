@@ -72,7 +72,17 @@ public class MovieVO implements Serializable{
     @Column(name="trailer")
     private String trailer;
     
-    @NotEmpty(message = "電影年份請勿空白")
+    @Column(name = "sented")
+    private boolean sented;
+    
+    public boolean isSented() {
+		return sented;
+	}
+	public void setSented(boolean sented) {
+		this.sented = sented;
+	}
+
+	@NotEmpty(message = "電影年份請勿空白")
     @Pattern(regexp = "^\\d+$",message = "電影年份請填西元年份")
     @Min(value = 2000,message = "電影年份請填西元2000-2100年")
     @Max(value = 2100,message = "電影年份請填西元2000-2100年")

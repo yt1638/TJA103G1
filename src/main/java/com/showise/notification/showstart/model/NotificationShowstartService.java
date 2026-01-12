@@ -16,9 +16,6 @@ public class NotificationShowstartService {
 	@Autowired
 	NotificationShowstartRepository repository;
 	
-	@Autowired
-    private SessionFactory sessionFactory;
-
 	public void addNotificationShowstart(NotificationShowstartVO notificationShowstartVO) {
 		repository.save(notificationShowstartVO);
 	}
@@ -37,11 +34,11 @@ public class NotificationShowstartService {
 		return repository.findAll();
 	}
 
-	public List<NotificationShowstartVO> getAll(Map<String, String[]> map) {
+	public List<NotificationShowstartVO> compositeQuery(Map<String, String> map) {
 
-	    Integer memberId  = parseIntOrNull(getFirst(map, "memberId"));
-	    Integer sessionId = parseIntOrNull(getFirst(map, "sessionId"));
-	    java.sql.Date stime = parseDateOrNull(getFirst(map, "notiShowstStime"));
+	    Integer memberId  = parseIntOrNull(map.get("memberId"));
+	    Integer sessionId = parseIntOrNull(map.get("sessionId"));
+	    java.sql.Date stime = parseDateOrNull(map.get("notiShowstStime"));
 
 	    return repository.compositeQuery(memberId, sessionId, stime);
 	}

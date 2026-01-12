@@ -33,9 +33,10 @@ body {
 }
 
 #heroBanner .carousel-item {
-	height: 500px;
-	background-position: center;
-	background-size: cover;
+    height: 500px;
+    background-position: center; /* 確保圖片中心對齊 */
+    background-size: cover;      /* 自動填滿並裁切 */
+    background-repeat: no-repeat;
 }
 
 .section-title {
@@ -53,7 +54,7 @@ body {
 }
 
 .card-title {
-	color: hotpink;
+	color:white;
 }
 
 .movie-card:hover {
@@ -133,24 +134,45 @@ body {
     </nav>
 
     <div id="heroBanner" class="carousel slide" data-bs-ride="carousel">
-        <div class="carousel-inner">
-            <div th:each="movie, iterStat : ${ingMovie}" 
-                 th:class="${iterStat.first} ? 'carousel-item active' : 'carousel-item'"
-                 th:style="'background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url(' + @{/front/imageReader(movieId=${movie.movieId})} + ');'">
-                <div class="carousel-caption d-none d-md-block">
-                    <h2 class="display-4 fw-bold" th:text="${movie.nameTw}">電影名稱</h2>
-                    <p>強檔熱映中，絕佳視聽享受</p>
-                    <a th:href="@{/front/movieDetail(movieId=${movie.movieId})}" class="btn btn-warning btn-lg">查看詳情</a>
-                </div>
+    
+    <div class="carousel-inner">
+        <div class="carousel-item active" 
+             th:style="'background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url(' + @{/img/zootopia2.jpg.avif} + ');'">
+            <div class="carousel-caption d-none d-md-block">
+                <h2 class="display-4 fw-bold">動物方程式2</h2>
+                <p>Disney 人氣動畫電影續集</p>
+                <a th:href="@{/front/movieDetail(movieId=11)}" class="btn btn-warning btn-lg">查看詳情</a>
             </div>
         </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#heroBanner" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon"></span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#heroBanner" data-bs-slide="next">
-            <span class="carousel-control-next-icon"></span>
-        </button>
+
+        <div class="carousel-item" 
+             th:style="'background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url(' + @{/img/avatar.jpg} + ');'">
+            <div class="carousel-caption d-none d-md-block">
+                <h2 class="display-4 fw-bold">阿凡達:火與燼</h2>
+                <p>最磅礴震撼的視覺饗宴</p>
+                <a th:href="@{/front/movieDetail(movieId=10)}" class="btn btn-warning btn-lg">查看詳情</a>
+            </div>
+        </div>
+        
+        <div class="carousel-item" 
+             th:style="'background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url(' + @{/img/spongebob.jpg} + ');'">
+            <div class="carousel-caption d-none d-md-block">
+                <h2 class="display-4 fw-bold">海綿寶寶電影版：尋寶大冒險</h2>
+                <p>最瘋狂的尋寶之旅！</p>
+                <a th:href="@{/front/movieDetail(movieId=15)}" class="btn btn-warning btn-lg">查看詳情</a>
+            </div>
+        </div>
     </div>
+
+    <button class="carousel-control-prev" type="button" data-bs-target="#heroBanner" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#heroBanner" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+</div>
 
     <div class="container">
         <div class="d-flex align-items-center mt-5">

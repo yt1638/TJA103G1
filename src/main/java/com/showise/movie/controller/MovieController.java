@@ -35,7 +35,7 @@ public class MovieController {
 	
 	@GetMapping("/")
 	public String listAll(Model model) {
-		model.addAttribute("movieList",movieSvc.findAllByOrderByMovieIdDesc());
+		model.addAttribute("movieList",movieSvc.findAllOrderByStatusAndMovieId());
 		model.addAttribute("typeList",mtSvc.listAll());
 		model.addAttribute("pageTitle","電影資料管理");
 		model.addAttribute("content","back-end/movie/listAll :: content");

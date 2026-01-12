@@ -2,6 +2,7 @@ package com.showise.message.model;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.Objects;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -25,74 +26,92 @@ public class MessageVO implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "MSGNO")
     private Integer msgNo;
+    
+    @Column(name = "MSG_content", nullable = false)
+    private String msgContent;
 
-    @Column(name = "MSGCONT", nullable = false)
-    @NotNull(message = "發送內容: 請勿空白")
-    private String msgCont;
+    @Column(name = "MSG_subject", nullable = false)
+    private String msgSubject;
     
-    @Column(name = "MSGTIME", nullable = false)
-    @NotNull(message = "發送時間: 請勿空白")
-    private Integer msgTime;
+    @Column(name = "pre_hours", nullable = false)
+    private Integer preHours;
     
-    @Column(name = "MSGTYPE", nullable = false)
-    @NotNull(message = "通知類型: 請勿空白")
+    @Column(name = "MSG_type", nullable = false)
     private Short msgType;
 
-
-
-
-
-    public MessageVO getmsgNo(MessageVO msgNo) {
-        return msgNo;
-
-    }
-
-
+	public Integer getMsgNo() {
+		return msgNo;
+	}
 
 	public void setMsgNo(Integer msgNo) {
 		this.msgNo = msgNo;
 	}
 
-
-
-	public String getMsgCont() {
-		return msgCont;
+	public String getMsgContent() {
+		return msgContent;
 	}
 
-
-
-	public void setMsgCont(String msgCont) {
-		this.msgCont = msgCont;
+	public void setMsgContent(String msgContent) {
+		this.msgContent = msgContent;
 	}
 
-
-
-	public Integer getMsgTime() {
-		return msgTime;
+	public String getMsgSubject() {
+		return msgSubject;
 	}
 
-
-
-	public void setMsgTime(Integer msgTime) {
-		this.msgTime = msgTime;
+	public void setMsgSubject(String msgSubject) {
+		this.msgSubject = msgSubject;
 	}
 
+	public Integer getPreHours() {
+		return preHours;
+	}
 
+	public void setPreHours(Integer preHours) {
+		this.preHours = preHours;
+	}
 
 	public Short getMsgType() {
 		return msgType;
 	}
 
-
-
 	public void setMsgType(Short msgType) {
 		this.msgType = msgType;
 	}
 
-
-
-	public static long getSerialversionuid() {
-		return serialVersionUID;
+	public MessageVO() {
+		super();
+		// TODO Auto-generated constructor stub
 	}
+
+	public MessageVO(Integer msgNo) {
+		super();
+		this.msgNo = msgNo;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(msgContent, msgNo, msgSubject, msgType, preHours);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		MessageVO other = (MessageVO) obj;
+		return Objects.equals(msgContent, other.msgContent) && Objects.equals(msgNo, other.msgNo)
+				&& Objects.equals(msgSubject, other.msgSubject) && Objects.equals(msgType, other.msgType)
+				&& Objects.equals(preHours, other.preHours);
+	}
+
+
+
+
+
+    
 	
 }

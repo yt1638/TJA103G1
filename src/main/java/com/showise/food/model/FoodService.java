@@ -28,7 +28,7 @@ public class FoodService {
 	}
 	
 	public List<FoodVO> getAll(){
-		return repository.findAll();
+		return repository.listAll();
 	}
 	
 	public List<FoodVO> listByStatus(Integer status){

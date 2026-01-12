@@ -56,6 +56,17 @@ public class OrderVO implements Serializable {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval=true)
     private Set<OrderTicketVO> orderTickets = new HashSet<>();
 
+    @Column(name = "sented")
+    private boolean sented;
+    
+	public boolean isSented() {
+		return sented;
+	}
+
+	public void setSented(boolean sented) {
+		this.sented = sented;
+	}
+
 	public Integer getOrderId() {
 		return orderId;
 	}

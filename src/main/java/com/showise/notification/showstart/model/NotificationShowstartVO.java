@@ -2,6 +2,7 @@ package com.showise.notification.showstart.model;
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.time.LocalDateTime;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -47,14 +48,13 @@ public class NotificationShowstartVO implements Serializable {
     private String notiShowstScon;
 
     @NotNull(message = "通知日期: 請勿空白")
-    @Future(message = "日期必須是在今日(不含)之後")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Column(name = "noti_showstSTIME", nullable = false)
-    private Date notiShowstStime;
+    private LocalDateTime notiShowstStime;
 
     @NotNull(message = "通知狀態: 請勿空白")
     @Column(name = "noti_showstSTAT", nullable = false)
-    private Short notiShowstStat;
+    private Integer notiShowstStat;
 
     public Integer getNotiShowstNo() {
         return notiShowstNo;
@@ -84,17 +84,17 @@ public class NotificationShowstartVO implements Serializable {
         this.notiShowstScon = notiShowstScon;
     }
 
-    public Date getNotiShowstStime() {
+    public LocalDateTime getNotiShowstStime() {
         return notiShowstStime;
     }
-    public void setNotiShowstStime(Date notiShowstStime) {
-        this.notiShowstStime = notiShowstStime;
+    public void setNotiShowstStime(LocalDateTime localDateTime) {
+        this.notiShowstStime = localDateTime;
     }
 
-    public Short getNotiShowstStat() {
+    public Integer getNotiShowstStat() {
         return notiShowstStat;
     }
-    public void setNotiShowstStat(Short notiShowstStat) {
+    public void setNotiShowstStat(Integer notiShowstStat) {
         this.notiShowstStat = notiShowstStat;
     }
 }

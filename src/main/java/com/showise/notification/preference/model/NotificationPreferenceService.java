@@ -1,6 +1,6 @@
 package com.showise.notification.preference.model;
 
-import java.sql.Date;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,7 +40,11 @@ public class NotificationPreferenceService {
     }
 
     // 複合查詢（✅你現在的 Repository JPQL 就是吃這三個）
-    public List<NotificationPreferenceVO> compositeQuery(Integer memberId, Integer movieId, Date sendDate) {
+    public List<NotificationPreferenceVO> compositeQuery(Integer memberId, Integer movieId,Date sendDate) {
         return repository.compositeQuery(memberId, movieId, sendDate);
+    }
+    
+    public void save(NotificationPreferenceVO vo) {
+        repository.save(vo);
     }
 }

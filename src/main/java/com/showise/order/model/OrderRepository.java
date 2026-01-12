@@ -1,5 +1,7 @@
 package com.showise.order.model;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -41,6 +43,17 @@ public interface OrderRepository extends JpaRepository<OrderVO, Integer>{
 		    "where o.orderId = :orderId"
 		)
 		Optional<OrderVO> findDetailWithFoods(@Param("orderId") Integer orderId);
+	
+	@Query(
+			"select distinct o " +
+	        "from OrderVO o " +
+			"join fetch o.session s " +
+	        "join fetch s.movie m " +
+			"join fetch o.member mem " +
+	        "where o.sented = false " +
+			"and s.startTime between :from and :to"
+			)
+	    List<OrderVO> findOrderToRemind(@Param("from") LocalDateTime from,@Param("to") LocalDateTime to);
 
 	
 	
