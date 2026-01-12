@@ -32,7 +32,8 @@ public class OrderVO implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_id")
     private Integer orderId;
-
+    
+    
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "session_id", nullable = false)
     private SessionVO session;
@@ -46,26 +47,28 @@ public class OrderVO implements Serializable {
 
     @Column(name = "order_status", nullable = false)
     private Integer orderStatus;
+    
+    @Column(name = "lock_token", length = 64, nullable = false)
+    private String lockToken;
 
     @Column(name = "order_create_time", updatable = false, insertable=false)
     private Timestamp orderCreateTime;
+    
+    @Column(name="qr_code")
+    private String qrCode;
+    
+    @Column(name="used" , nullable = false)
+    private Boolean used=false;
+    
+    @Column(name = "sented")
+    private boolean sented;
     
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval=true)
     private Set<OrderFoodVO> orderFoods = new HashSet<>();
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval=true)
     private Set<OrderTicketVO> orderTickets = new HashSet<>();
-
-    @Column(name = "sented")
-    private boolean sented;
     
-	public boolean isSented() {
-		return sented;
-	}
-
-	public void setSented(boolean sented) {
-		this.sented = sented;
-	}
 
 	public Integer getOrderId() {
 		return orderId;
@@ -107,12 +110,52 @@ public class OrderVO implements Serializable {
 		this.orderStatus = orderStatus;
 	}
 
+	public String getLockToken() {
+		return lockToken;
+	}
+
+	public void setLockToken(String lockToken) {
+		this.lockToken = lockToken;
+	}
+
 	public Timestamp getOrderCreateTime() {
 		return orderCreateTime;
 	}
 
 	public void setOrderCreateTime(Timestamp orderCreateTime) {
 		this.orderCreateTime = orderCreateTime;
+	}
+
+	public String getQrCode() {
+		return qrCode;
+	}
+
+	public void setQrCode(String qrCode) {
+		this.qrCode = qrCode;
+	}
+
+	public Boolean getUsed() {
+		return used;
+	}
+
+	public void setUsed(Boolean used) {
+		this.used = used;
+	}
+
+	public Boolean getSented() {
+		return sented;
+	}
+	
+	public boolean isSented() {
+		return sented;
+	}
+
+	public void setSented(boolean sented) {
+		this.sented = sented;
+	}
+
+	public void setSented(Boolean sented) {
+		this.sented = sented;
 	}
 
 	public Set<OrderFoodVO> getOrderFoods() {
@@ -130,6 +173,4 @@ public class OrderVO implements Serializable {
 	public void setOrderTickets(Set<OrderTicketVO> orderTickets) {
 		this.orderTickets = orderTickets;
 	}
-
-	
 }
