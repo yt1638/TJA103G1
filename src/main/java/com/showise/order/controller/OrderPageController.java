@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.showise.food.model.FoodService;
@@ -43,6 +44,8 @@ import com.showise.session.model.SessionVO;
 import com.showise.tickettype.model.TicketTypeService;
 import com.showise.tickettype.model.TicketTypeVO;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 //這隻是前台order
@@ -74,6 +77,7 @@ public class OrderPageController {
 
   private static final long TTL_MS = 15 * 60 * 1000;//草稿效期:15分鐘的限制
 
+
   //第一次進入，建立訂單草稿
   //只在session沒有orderDraft時會被呼叫
   /**要記得檢查：登出要session.invalidate()！！！！！**/
@@ -81,10 +85,10 @@ public class OrderPageController {
   public OrderDraft initDraft(HttpSession session) {
     OrderDraft od = new OrderDraft();
     
-    MemberVO memberVO=(MemberVO)session.getAttribute("loginMember");
-    Integer memberId =memberVO.getMemberId();
+    MemberVO memberVO = (MemberVO) session.getAttribute("loginMember");
+    Integer loginMemberId = (memberVO != null) ? memberVO.getMemberId() : null;
     
-    od.setMemberId(memberId);
+    od.setMemberId(loginMemberId);
 //    od.setMemberId(3);
     od.setExpireAt(System.currentTimeMillis() + TTL_MS);  //失效時間：現在＋15分鐘
     od.setLockToken(UUID.randomUUID().toString());//用UUID生成一個token，用來綁seatlock
@@ -104,8 +108,8 @@ public class OrderPageController {
   //1. GET/order：只讀draft
   @GetMapping
   public String orderPage(Model model,@ModelAttribute("orderDraft") OrderDraft draft,HttpSession session,SessionStatus sessionStatus) {
-	  MemberVO memberVO=(MemberVO)session.getAttribute("loginMember");
-	  Integer loginMemberId =memberVO.getMemberId();
+	  MemberVO memberVO = (MemberVO) session.getAttribute("loginMember");
+	  Integer loginMemberId = (memberVO != null) ? memberVO.getMemberId() : null;
 	  
 	  if(loginMemberId != null && draft.getMemberId() != null && !loginMemberId.equals(draft.getMemberId())) {
 		  sessionStatus.setComplete();
