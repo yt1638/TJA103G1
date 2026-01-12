@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>訂購電影票</title>
+  <link rel="stylesheet" th:href="@{/css/order_all.css}">
+	<style>
+	div.errorMessage {
+		text-align: center;
+		color: red;
+	}
+	</style>
+</head>
+
+<body>
+  <div id="order">
+    <div class="order-overlay"></div>
+    <div class="order-dialog">
+      <button class="order-close" type="button">&times;</button>
+
+      <div class="order-grid">
+        <!-- 左側：訂單輸入區 -->
+        <div class="order-left">
+
+          <!-- 訂購電影票 -->
+          <section class="panel">
+            <div class="panel-header">訂購電影票</div>
+            <div th:if="${errorMessage}" class="errorMessage" th:text="${errorMessage}"></div>
+            <div class="panel-body">
+            
+
+              <!--movie/date：POST /order/select-movie-date -->
+              <form id="movieDateForm" th:action="@{/order/select-movie-date}" method="post">
+                <!-- movie -->
+                <div class="field-group">
+                  <label for="movie-select">選擇電影</label>
+                  <select id="movie-select" name="movieId" onchange="this.form.submit()">
+                    <option value="">請選電影</option>
+                    <option th:each="m : ${movies}"
+                            th:value="${m.movieId}"
+                            th:text="${m.nameTw}"
+                            th:selected="${m.movieId == movieId}">
+                    </option>
+                  </select>
+                </div>
+
+                <!-- date -->
+                <div class="field-group">
+                  <label for="date-select">選擇日期</label>
+                  <select id="date-select" name="date"
+                          th:disabled="${movieId == null or #lists.isEmpty(dates)}"
+                          onchange="this.form.submit()">
+
+                    <option value=""
+                            th:text="${movieId == null ? '請先選電影' : (#lists.isEmpty(dates) ? '無可選日期' : '請選日期')}"
+                            th:selected="${date == null}">
+                    </option>
+
+                    <option th:each="d : ${dates}"
+                            th:value="${d}"
+                            th:text="${d}"
+                            th:selected="${date != null and d.equals(date)}">
+                    </option>
+                  </select>
+                </div>
+              </form>
+
+              <!-- 場次：POST /order/select-session-->
+              <div class="field-group">
+                <label>時間</label>
+
+                <div id="time-buttons" class="time-buttons" th:if="${date != null}">
+                  <form th:each="s : ${sessions}"
+                        th:action="@{/order/select-session}"
+                        method="post"
+                        style="display:inline;">
+                    <input type="hidden" name="sessionId" th:value="${s.sessionId}">
+                    <button type="submit"
+                            class="time-button"
+                            th:classappend="${sessionId != null and s.sessionId == sessionId} ? ' active selected' : ''">
+                      <span th:text="${#temporals.format(s.startTime.toLocalDateTime(), 'HH:mm')}"></span>
+                    </button>
+                  </form>
+                </div>
+                <div th:if="${date == null}" style="margin-top:6px; opacity:.7;">請先選擇日期</div>
+                <div th:if="${date != null and #lists.isEmpty(sessions)}" style="margin-top:6px; opacity:.7;">此日期沒有場次</div>
+              </div>
+
+              <!-- 票種 + 餐飲 + 去選座位：POST /order/prepare-seat -->
+              <form id="prepareSeatForm" th:action="@{/order/prepare-seat}" method="post">
+
+                <!-- 票種 -->
+                <div class="field-group">
+                  <label>選擇票種</label>
+                  <div class="ticket-box">
+                    <table class="ticket-table">
+                      <thead>
+                        <tr>
+                          <th>票種</th>
+                          <th>價格</th>
+                          <th>數量</th>
+                          <th>小計</th>
+                        </tr>
+                      </thead>
+
+                      <tbody>
+                        <tr th:each="tt : ${ticketTypes}">
+                          <td th:text="${tt.ticketName}">票種</td>
+                          <td th:text="'$' + ${ticketFinalPriceMap[tt.ticketTypeId]}">$0</td>
+
+                          <!-- name: ticket_{ticketTypeId} -->
+                          <td>
+                            <input type="number"
+                                   min="0"
+                                   value="0"
+                                   class="ticket-qty"
+                                   th:name="'ticket_' + ${tt.ticketTypeId}"
+                                   th:attr="data-ticket-type-id=${tt.ticketTypeId},
+                                            data-price=${ticketFinalPriceMap[tt.ticketTypeId]},
+                                            data-ticket-name=${tt.ticketName}">
+                          </td>
+
+                          <td class="ticket-subtotal"
+                              th:attr="data-ticket-type-id=${tt.ticketTypeId}">$0</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <!-- 訂購餐飲 -->
+                <section class="panel">
+                  <div class="panel-header">訂購餐飲</div>
+                  <div class="panel-body">
+                    <!-- 頁籤按鈕 -->
+                    <div class="tab-list">
+                      <button type="button" class="tab-button active" data-target="tab-hot">熱食</button>
+                      <button type="button" class="tab-button" data-target="tab-drink">飲料</button>
+                      <button type="button" class="tab-button" data-target="tab-popcorn">爆米花</button>
+                    </div>
+
+                    <!-- 頁籤內容 -->
+                    <div class="tab-contents">
+
+                      <!-- 熱食 -->
+                      <div class="tab-pane active" id="tab-hot">
+                        <div class="product-slider" data-category="hot">
+                          <button class="slider-btn slider-prev" type="button">◀</button>
+
+                          <div class="product-track">
+                            <div class="product-card"
+                                 th:each="f : ${foods}"
+                                 th:if="${f.foodCate != null and f.foodCate.foodCategoryId == 1}"
+                                 th:attr="data-food-id=${f.foodId},
+                                          data-name=${f.foodName},
+                                          data-price=${f.foodPrice}">
+                              <div class="product-img">
+                                <img th:src="@{/food/imageReader(foodId=${f.foodId})}" th:alt="${f.foodName}">
+                              </div>
+
+                              <div class="product-name" th:text="${f.foodName}">品名</div>
+
+                              <div class="product-prices">
+                                <div th:text="'網路價：$' + ${f.foodPrice}">網路價</div>
+                                <div class="origin-price" th:text="'原價：$' + ${f.foodOriginalPrice}">原價</div>
+                              </div>
+
+                              <div class="product-qty-row">
+                                <span>數量：</span>
+                                <!-- name: food_{foodId} -->
+                                <input type="number"
+                                       min="0"
+                                       value="0"
+                                       class="food-qty"
+                                       th:name="'food_' + ${f.foodId}">
+                              </div>
+                            </div>
+                          </div>
+
+                          <button class="slider-btn slider-next" type="button">▶</button>
+                        </div>
+                      </div>
+
+                      <!-- 飲料 -->
+                      <div class="tab-pane" id="tab-drink">
+                        <div class="product-slider" data-category="drink">
+                          <button class="slider-btn slider-prev" type="button">◀</button>
+
+                          <div class="product-track">
+                            <div class="product-card"
+                                 th:each="f : ${foods}"
+                                 th:if="${f.foodCate != null and f.foodCate.foodCategoryId == 2}"
+                                 th:attr="data-food-id=${f.foodId},
+                                          data-name=${f.foodName},
+                                          data-price=${f.foodPrice}">
+                              <div class="product-img">
+                                <img th:src="@{/food/imageReader(foodId=${f.foodId})}" th:alt="${f.foodName}">
+                              </div>
+
+                              <div class="product-name" th:text="${f.foodName}">品名</div>
+
+                              <div class="product-prices">
+                                <div th:text="'網路價：$' + ${f.foodPrice}">網路價</div>
+                                <div class="origin-price" th:text="'原價：$' + ${f.foodOriginalPrice}">原價</div>
+                              </div>
+
+                              <div class="product-qty-row">
+                                <span>數量：</span>
+                                <input type="number"
+                                       min="0"
+                                       value="0"
+                                       class="food-qty"
+                                       th:name="'food_' + ${f.foodId}">
+                              </div>
+                            </div>
+                          </div>
+
+                          <button class="slider-btn slider-next" type="button">▶</button>
+                        </div>
+                      </div>
+
+                      <!-- 爆米花 -->
+                      <div class="tab-pane" id="tab-popcorn">
+                        <div class="product-slider" data-category="popcorn">
+                          <button class="slider-btn slider-prev" type="button">◀</button>
+
+                          <div class="product-track">
+                            <div class="product-card"
+                                 th:each="f : ${foods}"
+                                 th:if="${f.foodCate != null and f.foodCate.foodCategoryId == 3}"
+                                 th:attr="data-food-id=${f.foodId},
+                                          data-name=${f.foodName},
+                                          data-price=${f.foodPrice}">
+                              <div class="product-img">
+                                <img th:src="@{/food/imageReader(foodId=${f.foodId})}" th:alt="${f.foodName}">
+                              </div>
+
+                              <div class="product-name" th:text="${f.foodName}">品名</div>
+
+                              <div class="product-prices">
+                                <div th:text="'網路價：$' + ${f.foodPrice}">網路價</div>
+                                <div class="origin-price" th:text="'原價：$' + ${f.foodOriginalPrice}">原價</div>
+                              </div>
+
+                              <div class="product-qty-row">
+                                <span>數量：</span>
+                                <input type="number"
+                                       min="0"
+                                       value="0"
+                                       class="food-qty"
+                                       th:name="'food_' + ${f.foodId}">
+                              </div>
+                            </div>
+                          </div>
+
+                          <button class="slider-btn slider-next" type="button">▶</button>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+                </section>
+
+                <!--  送出到 /order/prepare-seat -->
+                <div class="order-footer">
+                  <button class="btn-primary" type="submit" id="go-seat-btn">去選座位</button>
+                </div>
+
+              </form>
+              <!-- /prepareSeatForm -->
+
+            </div>
+          </section>
+
+        </div>
+
+        <!-- 右側：訂單明細（order.js填） -->
+        <aside class="order-right">
+          <section class="panel summary-panel">
+            <div class="panel-header">訂單明細</div>
+            <div class="panel-body summary-body">
+
+              <div class="summary-row">
+                <span class="label">電影：</span> 
+                <span id="summary-movie">—</span>
+              </div>
+
+              <div class="summary-row">
+                <span class="label">日期：</span> 
+                <span id="summary-date">—</span>
+              </div>
+
+              <div class="summary-row">
+                <span class="label">場次：</span> 
+                <span id="summary-time">—</span>
+              </div>
+
+              <div class="summary-section">
+                <div class="summary-section-title">票種：</div>
+                <table class="summary-table" id="summary-ticket-table">
+                  <thead>
+                    <tr>
+                      <th>票種</th>
+                      <th>張數</th>
+                      <th>小計</th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+
+              <div class="summary-section">
+                <div class="summary-section-title">餐飲：</div>
+                <table class="summary-table" id="summary-food-table">
+                  <thead>
+                    <tr>
+                      <th>品名</th>
+                      <th>數量</th>
+                      <th>小計</th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+
+              <div class="summary-total">
+                <div class="summary-row">
+                  <span class="label">總金額：</span> 
+                  <span id="summary-total">$0</span>
+                </div>
+                <div class="summary-row">
+                  <span class="label">座位：</span> 
+                  <span id="summary-seat">尚未選位</span>
+                </div>
+              </div>
+
+            </div>
+          </section>
+        </aside>
+
+      </div>
+    </div>
+  </div>
+
+  <script th:src="@{/js/order.js}"></script>
+</body>
+
+</html>

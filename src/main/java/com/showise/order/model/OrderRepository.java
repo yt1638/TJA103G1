@@ -14,9 +14,10 @@ public interface OrderRepository extends JpaRepository<OrderVO, Integer>{
 	 boolean existsBySession_SessionIdAndOrderStatus(Integer sessionId,Integer orderStatus);
 	
 	 //JPQL
-	 //Join fetch:解決 N+1 查詢問題，避免在service/controller層拿到lazy關聯時，session已關閉。
+	 //Join fetch:解決 N+1 查詢問題，避免在 service/controller 層拿到lazy關聯時（session 已關閉）。
 	 //查訂單時，順便把關聯物件在同一個查詢中載入（一次載入）
-	 //distinct o：把重複的root entity合併成一個OrderVO
+	 //distinct o 是告訴 JPA：把重複的root entity合併成一個 OrderVO
+	 
 	@Query(
 		    "select distinct o " +
 		    "from OrderVO o " +
@@ -31,7 +32,7 @@ public interface OrderRepository extends JpaRepository<OrderVO, Integer>{
 		)
 		Optional<OrderVO> findDetailWithTickets(@Param("orderId") Integer orderId);
 	//Optional的意義:這個查詢「可能查不到」。查得到：回傳Optional.of(order)。查不到：回傳Optional.empty()
-	//好處：避免拿到 null
+	//好處避免你拿到null
 
 	
 	@Query(
@@ -55,7 +56,9 @@ public interface OrderRepository extends JpaRepository<OrderVO, Integer>{
 			)
 	    List<OrderVO> findOrderToRemind(@Param("from") LocalDateTime from,@Param("to") LocalDateTime to);
 
-	
+	// 根據 qrCode 查詢訂單
+    OrderVO findByQrCode(String qrCode);
+    
 	
 
 }

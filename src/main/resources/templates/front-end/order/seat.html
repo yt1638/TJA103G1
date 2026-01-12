@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>選擇座位</title>
+  <link rel="stylesheet" th:href="@{/css/order_all.css}">
+  <style>
+    div.errorMessage {
+    text-align: center;
+    color:red ; 
+    }
+  </style>
+  
+</head>
+
+<body>
+  <div id="order">
+    <div class="order-overlay"></div>
+    <div class="order-dialog">
+      <button class="order-close" type="button">&times;</button>
+
+      <div class="order-grid">
+        <!-- 左側：選擇座位 -->
+        <div class="order-left">
+          <section class="panel">
+            <div class="panel-header">選擇座位</div>
+            <div  th:if="${errorMessage}" class="errorMessage" th:text="${errorMessage}"></div>
+            <div class="panel-body">
+
+              <!-- 銀幕 -->
+              <div class="screen-area">
+                <div class="screen-label">銀幕</div>
+              </div>
+
+              <!-- 座位區 -->
+              <div class="seat-wrapper">
+                <!-- max seats 直接後端塞 -->
+                <div class="seat-grid" th:attr="data-max-seats=${orderDraft.totalTicketQty}">
+                  <div th:each="entry : ${seatMap}">
+                    <div class="seat-row" th:attr="data-row=${entry.key}">
+                      <span class="row-label" th:text="${entry.key}">A</span>
+
+                      <button th:each="seat : ${entry.value}"
+                              type="button"
+                              class="seat available"
+                              th:attr="data-seat-id=${seat.seatId},
+                                       data-row=${seat.rowNo},
+                                       data-seat=${seat.columnNo}"
+                              th:text="${seat.columnNo}">1</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 座位圖 -->
+              <div class="seat-legend">
+                <div class="seat-legend-item">
+                  <span class="seat-legend-sample sample-available"></span> <span>可選</span>
+                </div>
+                <div class="seat-legend-item">
+                  <span class="seat-legend-sample sample-selected"></span> <span>已選</span>
+                </div>
+                <div class="seat-legend-item">
+                  <span class="seat-legend-sample sample-unavailable"></span> <span>不可選</span>
+                </div>
+              </div>
+
+              <!-- 已選座位資訊 -->
+              <div class="seat-info">
+                <div>
+                  已選座位： <span id="selected-seats-text">尚未選位</span>
+                </div>
+                <div class="seat-count-text">
+                  （已選 <span id="selected-count">0</span> 個座位）
+                </div>
+              </div>
+
+            </div>
+          </section>
+
+          <!-- 送到後端的表單 -->
+          <form id="seatNextForm" th:action="@{/order/seat/next}" method="post">
+            <!--seatIds=1,2,3 / seatLabels=A1,A2,B1 -->
+            <input type="hidden" name="seatIdsCsv" id="seatIdsCsv">
+          </form>
+
+          <!-- 底部按鈕 -->
+          <div class="order-footer seat-footer">
+            <div class="seat-timer">
+              ⏱︎ 剩餘時間：<span id="countdown">10:00</span>
+            </div>
+            <div>
+              <button type="button" class="btn-back" id="back-btn">返回上一頁</button>
+              <button class="btn-primary" type="button" id="confirm-seat-btn">下一頁</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 右側：訂單明細-->
+        <aside class="order-right">
+          <section class="panel summary-panel">
+            <div class="panel-header">訂單明細</div>
+            <div class="panel-body summary-body">
+
+              <div class="summary-row">
+                <span class="label">電影：</span>
+                <span id="summary-movie" th:text="${orderDraft.movieName}">—</span>
+              </div>
+              <div class="summary-row">
+                <span class="label">日期：</span>
+                <span id="summary-date" th:text="${orderDraft.date}">—</span>
+              </div>
+              <div class="summary-row">
+                <span class="label">場次：</span>
+                <span id="summary-time" th:text="${orderDraft.sessionTimeText}">—</span>
+              </div>
+
+              <div class="summary-section">
+                <div class="summary-section-title">票種：</div>
+                <table class="summary-table" id="summary-ticket-table">
+                  <thead>
+                    <tr><th>票種</th><th>張數</th><th>小計</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr th:if="${#lists.isEmpty(orderDraft.tickets)}">
+                      <td colspan="3">未選擇票種</td>
+                    </tr>
+                    <tr th:each="t : ${orderDraft.tickets}">
+                      <td th:text="${t.name}">票種</td>
+                      <td th:text="${t.qty}">0</td>
+                      <td th:text="${'$' + #numbers.formatInteger(t.subtotal, 0, 'COMMA')}">$0</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="summary-section">
+                <div class="summary-section-title">餐飲：</div>
+                <table class="summary-table" id="summary-food-table">
+                  <thead>
+                    <tr><th>品名</th><th>數量</th><th>小計</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr th:if="${#lists.isEmpty(orderDraft.foods)}">
+                      <td colspan="3">未加購餐飲</td>
+                    </tr>
+                    <tr th:each="f : ${orderDraft.foods}">
+                      <td th:text="${f.name}">餐飲</td>
+                      <td th:text="${f.qty}">0</td>
+                      <td th:text="${'$' + #numbers.formatInteger(f.subtotal, 0, 'COMMA')}">$0</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="summary-total">
+                <div class="summary-row">
+                  <span class="label">總金額：</span>
+                  <span id="summary-total"
+                        th:text="${'$' + #numbers.formatInteger(orderDraft.total, 0, 'COMMA')}">$0</span>
+                </div>
+                <div class="summary-row">
+                  <span class="label">座位：</span>
+                  <span id="summary-seat">尚未選位</span>
+                </div>
+              </div>
+
+            </div>
+          </section>
+        </aside>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- 後端塞給 JS 的資料 -->
+  <script th:inline="javascript">
+    window.UNAVAILABLE_SEAT_IDS    = /*[[${unavailableSeatIds}]]*/ [];
+    window.LOCKED_SEAT_IDS  = /*[[${lockedSeatIds}]]*/ [];
+    window.SELECTED_SEAT_IDS = /*[[${selectedSeatIds}]]*/ [];
+    window.EXPIRE_AT        = /*[[${expireAt}]]*/ 0;
+    window.MAX_SEATS        = /*[[${orderDraft.totalTicketQty}]]*/ 0;
+    window.CONFLICT_SEAT_ID     = /*[[${conflictSeatId}]]*/ null;
+  </script>
+
+  <script th:src="@{/js/seat.js}"></script>
+</body>
+</html>
