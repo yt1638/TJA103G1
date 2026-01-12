@@ -54,7 +54,10 @@ public class PaymentController {
         // 綠界要的參數
         Map<String, String> params = new LinkedHashMap<>();
         params.put("MerchantID", merchantId);//特店編號
-        params.put("MerchantTradeNo","ORDER"+orderId); //特店交易編號
+        String merchantTradeNo =
+                "ORDER" + orderId +
+                LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyMMddHHmmss"));
+        params.put("MerchantTradeNo",merchantTradeNo); //特店交易編號
         params.put("MerchantTradeDate",LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss")));
         params.put("PaymentType", "aio");
         String totalPrice=String.valueOf(order.getTotalPrice().intValue());

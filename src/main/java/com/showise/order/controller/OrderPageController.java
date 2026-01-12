@@ -104,12 +104,6 @@ public class OrderPageController {
 		  sessionStatus.setComplete();
 		  return "redirect:/order";
 	  }
-	  
-
-	/**測試用：記得刪掉！！如果已登入但 draft.memberId 沒設定**/
-//	if (loginMemberId != null && draft.getMemberId() == null) {
-//	    draft.setMemberId(loginMemberId);
-//	}
 	  System.out.println("draft.memberId=" + draft.getMemberId());
 
 	  //檢查草稿是否過期：一過期就清掉，redirect 回/order 重新建立草稿
@@ -121,13 +115,13 @@ public class OrderPageController {
       /* ========= 1.從session回填（draft是空時）========= */
       boolean draftEmpty=draft.getMovieId() == null && draft.getDate() == null && draft.getSessionId() == null;
       if (draftEmpty) {
-//          Integer sMovieId=(Integer) session.getAttribute("movieId");
-//          LocalDate sDate=(LocalDate) session.getAttribute("date");
-//          Integer sSessionId=(Integer) session.getAttribute("sessionId");
+          Integer sMovieId=(Integer) session.getAttribute("movieId");
+          LocalDate sDate=(LocalDate) session.getAttribute("date");
+          Integer sSessionId=(Integer) session.getAttribute("sessionId");
           
-          Integer sMovieId=6;
-          LocalDate sDate=LocalDate.parse("2026-01-14");
-          Integer sSessionId=16;
+//          Integer sMovieId=6;
+//          LocalDate sDate=LocalDate.parse("2026-01-14");
+//          Integer sSessionId=16;
 
           if (sMovieId != null || sDate != null || sSessionId != null) {
               draft.setMovieId(sMovieId);
@@ -401,6 +395,8 @@ public class OrderPageController {
     	}
     }
     
+
+    
     //被別人鎖走的座位（有排除自己鎖住的座位）
     List<Integer> lockedSeatIds=seatLockSvc.getLockedSeatIds(sessionId, draft.getMemberId(),seats,draft.getLockToken());
     
@@ -587,7 +583,7 @@ public class OrderPageController {
     	  sessionStatus.setComplete();
           ra.addFlashAttribute("errorMessage", "下單失敗，請重新選購");
           return "redirect:/order";
-      }
+      } 
   }
   
   @GetMapping("/orderresult")

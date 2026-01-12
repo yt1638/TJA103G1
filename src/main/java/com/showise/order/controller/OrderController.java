@@ -29,7 +29,7 @@ public class OrderController {
 	
 	@GetMapping("/")
 	public String orderSearch(Model model) {
-		return "back-end/order/orderSearch";
+		return "back-end/layout/admin-layout";
 	}
 
 	@PostMapping("listOrders_ByCompositeNativeSQLQuery")
@@ -78,13 +78,13 @@ public class OrderController {
 		// 有錯誤，就回畫面顯示
 		if(!errorMessage.isEmpty()) {
 			model.addAttribute("errorMessage", errorMessage);
-			return "back-end/order/orderSearch";
+			return "back-end/layout/admin-layout";
 		}
 		
 		Map<String, String[]> map = req.getParameterMap();
 		List<OrderVO> list = orderSvc.getAll(map);
 		model.addAttribute("orderListData", list); 
-		return "back-end/order/orderSearch";
+		return "back-end/layout/admin-layout";
 	}
 	
 	@GetMapping("/OrderDetail")
@@ -94,7 +94,7 @@ public class OrderController {
 	    
 		if(order == null) {
 			model.addAttribute("errorMessage", "查無此訂單");
-			return "back-end/order/orderSearch";
+			return "back-end/layout/admin-layout";
 		}
 		
 		List<TicketSummaryDTO> ticketSummary = orderSvc.ticketSummary(order);

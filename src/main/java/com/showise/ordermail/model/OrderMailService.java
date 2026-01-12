@@ -59,7 +59,7 @@ public class OrderMailService {
 //            String to = "nineten20220910@gmail.com";
 
             String subject = "【Tibame小琉球影城】付款成功通知｜訂單 #" + order.getOrderId();
-            String orderLink = "http://showise.ddns.net/member/orders";
+            String orderLink = "http://showise.ddns.net/member/memberTicket";
 
             /* ===== 座位 ===== */
             StringBuilder seatSb = new StringBuilder();
