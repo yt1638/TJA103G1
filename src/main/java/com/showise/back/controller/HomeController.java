@@ -24,6 +24,11 @@ public class HomeController {
     public String loginPage() {
         return "back-end/login"; 
     }
+    
+    @GetMapping("/")
+    public String root() {
+        return "redirect:/admin/login";
+    }
 
     @PostMapping("/admin/login")
     public String login(@RequestParam String account,
