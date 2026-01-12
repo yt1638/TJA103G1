@@ -107,33 +107,34 @@ public class OrderPageController {
 
   //1. GET/order：只讀draft
   @GetMapping
-  public String orderPage(Model model,@ModelAttribute("orderDraft") OrderDraft draft,HttpSession session,SessionStatus sessionStatus) {
+  public String orderPage(Model model,@ModelAttribute("orderDraft") OrderDraft draft,HttpSession session,SessionStatus sessionStatus,RedirectAttributes ra) {
 	  MemberVO memberVO = (MemberVO) session.getAttribute("loginMember");
-	  Integer loginMemberId = (memberVO != null) ? memberVO.getMemberId() : null;
-
-	  //若已登入但 draft.memberId 還沒塞，就補回來
-	  if (loginMemberId != null && draft.getMemberId() == null) {
-	      draft.setMemberId(loginMemberId);
-	  }
-
-	  //若 draft 綁的是別人（你原本的防切帳號邏輯）
-	  if (loginMemberId != null && draft.getMemberId() != null && !loginMemberId.equals(draft.getMemberId())) {
-	      sessionStatus.setComplete();
-	      return "redirect:/order";
-	  }
-
+	  if (memberVO == null) {
+	        sessionStatus.setComplete(); // 順便清掉可能殘留的 draft
+	        ra.addFlashAttribute("errorMessage", "請先登入會員才能訂票");
+	        return "redirect:/loginAndRegister/memberLogin";
+	    }
 	  
-	  if(loginMemberId != null && draft.getMemberId() != null && !loginMemberId.equals(draft.getMemberId())) {
-		  sessionStatus.setComplete();
-		  return "redirect:/order";
-	  }
-	  System.out.println("draft.memberId=" + draft.getMemberId());
-
 	  //檢查草稿是否過期：一過期就清掉，redirect 回/order 重新建立草稿
       if (isExpired(draft)) {
     	  sessionStatus.setComplete();
     	  return "redirect:/order"; //重新發送 Get/order請求
       }
+
+	    Integer loginMemberId = memberVO.getMemberId();
+	    Integer draftMemberId = draft.getMemberId();
+
+	    // 先防切帳號
+	    if (draftMemberId != null && !loginMemberId.equals(draftMemberId)) {
+	        sessionStatus.setComplete();
+	        return "redirect:/order";
+	    }
+	    // 再補回memberId
+	    if (draftMemberId == null) {
+	        draft.setMemberId(loginMemberId);
+	    }
+
+	  System.out.println("draft.memberId=" + draft.getMemberId());
       
       /* ========= 1.從session回填（draft是空時）========= */
       boolean draftEmpty=draft.getMovieId() == null && draft.getDate() == null && draft.getSessionId() == null;
