@@ -83,7 +83,7 @@ public class HomeController {
         model.addAttribute("movieList",movieSvc.findAllOrderByStatusAndMovieId());
 		model.addAttribute("typeList",mtSvc.listAll());
 		model.addAttribute("pageTitle","電影資料管理");
-		model.addAttribute("content","back-end/movie/listAll :: content");
+		model.addAttribute("content","back-end/movie/listAll :: content"); 
 		
 		return "back-end/layout/admin-layout";
     }

@@ -160,7 +160,7 @@ public class SessionService {
     }
 
 
-    public List<SessionVO> listSessionsByMovieAndDate(Integer movieId, LocalDate date) {
+    public List<SessionVO> listSessionsByMovieAndDate(Integer movieId, LocalDate date) { 
 
         Timestamp end = Timestamp.valueOf(date.plusDays(1).atStartOfDay()); // 隔天 00:00
 
