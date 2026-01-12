@@ -79,6 +79,7 @@ public class OrderController {
 		
 		// 有錯誤，就回畫面顯示
 		if(!errorMessage.isEmpty()) {
+			model.addAttribute("content", "back-end/order/orderSearch :: content");
 			model.addAttribute("errorMessage", errorMessage);
 			return "back-end/layout/admin-layout";
 		}
@@ -98,9 +99,9 @@ public class OrderController {
 	    
 		if(order == null) {
 			model.addAttribute("errorMessage", "查無此訂單");
+			model.addAttribute("content", "back-end/order/orderDetail :: content");
 			return "back-end/layout/admin-layout";
 		}
-		
 		List<TicketSummaryDTO> ticketSummary = orderSvc.ticketSummary(order);
 		BigDecimal ticketTotal = orderSvc.calcTicketTotal(order);
 		BigDecimal foodTotal = orderSvc.calcFoodTotal(order);
