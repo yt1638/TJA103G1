@@ -110,6 +110,18 @@ public class OrderPageController {
   public String orderPage(Model model,@ModelAttribute("orderDraft") OrderDraft draft,HttpSession session,SessionStatus sessionStatus) {
 	  MemberVO memberVO = (MemberVO) session.getAttribute("loginMember");
 	  Integer loginMemberId = (memberVO != null) ? memberVO.getMemberId() : null;
+
+	  //若已登入但 draft.memberId 還沒塞，就補回來
+	  if (loginMemberId != null && draft.getMemberId() == null) {
+	      draft.setMemberId(loginMemberId);
+	  }
+
+	  //若 draft 綁的是別人（你原本的防切帳號邏輯）
+	  if (loginMemberId != null && draft.getMemberId() != null && !loginMemberId.equals(draft.getMemberId())) {
+	      sessionStatus.setComplete();
+	      return "redirect:/order";
+	  }
+
 	  
 	  if(loginMemberId != null && draft.getMemberId() != null && !loginMemberId.equals(draft.getMemberId())) {
 		  sessionStatus.setComplete();
