@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>後台系統–單筆會員資料</title>
+
+<link rel="stylesheet" href="">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link
+	href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=LXGW+WenKai+Mono+TC&display=swap"
+	rel="stylesheet">
+	
+<style>
+.memberContent {
+    margin: 5% 8%;
+    padding: 30px 40px;
+    max-width: 1400px;
+/*     background-color: #ffffff; */
+/*     border-radius: 15px; */
+/*     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15); */
+}
+
+.memberH2 {
+    font-size: 36px;
+    font-family: "Dancing Script", cursive;
+    color: #4682b4;
+    text-align: left;
+    margin-bottom: 25px;
+}
+
+a.back-link {
+    display: inline-block;
+    margin-bottom: 20px;
+    color: #ffffff;
+    background: #4a90e2;
+    padding: 8px 16px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: 0.3s;
+}
+
+a.back-link:hover {
+    background: #357abd;
+}
+
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 10px;
+}
+
+table th {
+    background-color: #4a90e2;
+    color: #ffffff;
+    font-weight: 600;
+    padding: 12px;
+    border: none;
+    border-radius: 8px 8px 0 0;
+    text-align: center;
+    white-space:nowrap;
+}
+
+table td {
+    background-color: #fdfdfd;
+    padding: 10px;
+    border-bottom: 1px solid #e0e0e0;
+    border-radius: 4px;
+    text-align: center;
+    white-space:nowrap;
+}
+
+table tr:hover td {
+    background-color: #f1f7ff;
+}
+
+.mark {
+    color: red;
+}
+
+</style>
+
+</head>
+<body>
+	<div class="content memberContent memberListContent">
+		<h2 class="memberH2">單筆會員資料表</h2>
+		<h3>
+			<a th:href="@{/bmember/select_page}">回後台會員主頁</a>
+			<span th:text="${success}"></span>
+		</h3>
+		<table>
+			<tr>
+				<th>會員編號</th>
+				<th>會員等級編號</th>
+				<th>帳號(信箱)</th>
+				<th>密碼</th>
+				<th>姓名</th>
+				<th>電話</th>
+				<th>生日</th>
+				<th>帳號狀態</th>
+				<th>註冊時間</th>
+				<th>累積消費金額</th>
+				<th>喜好電影類型</th>
+			</tr>
+			<tr>
+				<td><span th:text="${memberVO.memberId}"></span></td>
+				<td><span th:text="${memberVO.memberClass.memberName}"></span></td>
+				<td><span th:text="${memberVO.email}"></span></td>
+				<td><span th:text="${memberVO.password}"></span></td>
+				<td><span th:text="${memberVO.name}"></span></td>
+				<td><span th:text="${memberVO.phone}"></span></td>
+				<td><span th:text="${memberVO.birthdate}"></span></td>
+				<td><span th:text="${memberVO.status==0? '啟用' : '停用'}"></span></td>
+				<td><span th:text="${#dates.format(memberVO.createTime, 'yyyy-MM-dd HH:mm')}"></span></td>
+				<td><span th:text="${memberVO.accConsumption}"></span></td>
+				<td>
+					  <span th:if="${#lists.isEmpty(memberVO.memberPreferType)}">無</span>
+					  <span th:each="type, stat : ${memberVO.memberPreferType}">
+					    <span th:text="${type.movieType.typeName}"></span>
+					    <span th:if="${!stat.last}">、</span>
+					  </span>
+				</td>
+			</tr>
+		</table>
+
+	</div>
+
+	<script>
+		
+	</script>
+</body>
+</html>

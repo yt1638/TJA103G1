@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+	<!-- 會員系統左側導覽列 -->
+	<ul th:fragment="sideNav" class="nav flex-column">
+         <li class="welcomeLi nav-item">
+             <a class="nav-link"><h3 class="welcomeH3">歡迎回來!</h3></a>
+         </li>
+         <li class="nav-item">
+             <a class="nav-link active" aria-current="page" th:href="@{/member/mainMemberPage}"><i class="fa-solid fa-user icon"></i>會員資料</a>
+         </li>
+         <li class="nav-item">
+             <a class="nav-link" th:href="@{/member/changePwd}"><i class="fa-solid fa-lock icon"></i>密碼變更</a>
+         </li>
+         <li class="nav-item">
+             <a class="nav-link" th:href="@{/member/myMemberClass}"><i class="fa-solid fa-medal icon"></i></i>會員等級</a>
+         </li>
+         <li class="nav-item">
+             <a class="nav-link" th:href="@{/member/memberOrder}"><i class="fa-regular fa-clipboard icon"></i>我的訂單</a>
+         </li>
+         <li class="nav-item">
+             <a class="nav-link" th:href="@{/member/memberTicket}"><i class="fa-solid fa-ticket icon"></i>我的票券</a>
+         </li>
+         <li class="nav-item">
+             <a class="nav-link" th:href="@{/member/memberNotify}"><i class="fa-solid fa-bell icon"></i>我的通知</a>
+         </li>
+         <li class="nav-item">
+             <a class="nav-link" th:href="@{/member/recommend}"><i class="fa-regular fa-thumbs-up icon"></i>推薦電影</a>
+         </li>
+         <li class="nav-item">
+             <a class="nav-link" th:href="@{/loginAndRegister/memberLogout}"><i class="fa-solid fa-right-from-bracket"></i> 登出</a>
+         </li>
+     </ul>
+
+</body>
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>後台系統–會員等級資料一覽表</title>
+
+<link rel="stylesheet" href="">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=LXGW+WenKai+Mono+TC&display=swap" rel="stylesheet">
+<style>
+.memberClassContent {
+	margin: 8% auto;
+	padding: 30px 40px;
+	max-width: 800px;
+	background-color: #ffffff;
+	border-radius: 15px;
+	box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.memberClassH2 {
+	font-size: 36px;
+    font-family: "Dancing Script", cursive;
+   	color: #4682b4;
+    text-align: left;
+    margin-bottom: 25px;
+}
+
+.memberClassContent table, .memberClassContent th, .memberClassContent td
+	{
+	border: 1px solid none;
+	border-collapse: collapse; 
+	text-align: center;
+	padding: 3px;
+}
+
+.error {
+	border-radius: 10px;
+	background-color: rgba(251, 230, 211, 0.546);
+	padding: 5px 20px;
+}
+
+.errorP {
+	color: red;
+}
+table {
+    width: 100% !important;
+    border-collapse: separate !important;
+    border-spacing: 0 10px;
+}
+
+table thead th {
+    background-color: #4a90e2;
+    color: #ffffff;
+    font-weight: 600;
+    padding: 12px;
+    border: none;
+    border-radius: 8px 8px 0 0;
+    white-space:nowrap;
+}
+
+table tbody td {
+    background-color: #fdfdfd;
+    padding: 10px;
+    border-bottom: 1px solid #e0e0e0;
+    border-radius: 4px;
+    white-space:nowrap;
+}
+
+table tr:hover td {
+    background-color: #f1f7ff;
+}
+input[type="submit"] {
+    font-size: 14px;
+    background-color: #ff6b6b;
+    padding: 6px 16px;
+    border-radius: 8px;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+input[type="submit"]:hover {
+    background-color: #e14c4c;
+}
+</style>
+
+ </head>
+ <body>
+     <div class="content memberClassContent memberClassMainPageContent">
+         <h2 class="memberClassH2">會員等級資料一覽表</h2>
+         <table>
+         	<thead>
+              <tr>
+                  <th>會員等級編號</th>
+                  <th>會員等級名稱</th>
+                  <th>累積消費金額</th>
+                  <th>購票優惠</th>
+                  <th>修改</th>
+              </tr>
+           </thead>
+           <tbody>
+           	<th:block th:each="memberClassVO : ${memberClassListData}">
+           	<tr>
+           		<td th:text="${memberClassVO.memberClassId}"></td>
+           		<td th:text="${memberClassVO.memberName}"></td>
+           		<td th:text="${memberClassVO.memberAccPrice}"></td>
+           		<td th:text="${memberClassVO.memberDiscount}"></td>
+           		<td>
+                     <form th:action="@{/memberClass/getOne_For_Update}" method="post">
+                         <input type="submit" value="修改">
+                         <input type="hidden" name="memberClassId" th:value="${memberClassVO.memberClassId}">
+                     </form>
+                 </td>
+             </tr>
+           </tbody>
+         </table>
+         <br>
+         <h3>新增會員等級資料:</h3>
+         <ul>
+             <li><a th:href="@{/memberClass/addMemberClass}">新增一筆會員等級資料</a></li>
+         </ul>
+     </div>
+
+     <script>
+
+     </script>
+    </body>
+</html>

@@ -35,7 +35,7 @@ public class MemberClassVO implements Serializable{
 	
 	@Column(name = "member_name")
 	@NotEmpty(message = "會員等級名稱: 請勿空白")
-	@Pattern(regexp = "^[(\\u4e00-\\u9fa5)(a-zA-Z0-9_)]{2,10}$", message = "姓名: 只能是中文、英文字母、數字和_ , 且長度必需在2到10之間")
+	@Pattern(regexp = "^[(\\u4e00-\\u9fa5)(a-zA-Z0-9_)]{2,10}$", message = "會員等級名稱: 只能是中文、英文字母、數字和_ , 且長度必需在2到10之間")
 	private String memberName;
 	
 	

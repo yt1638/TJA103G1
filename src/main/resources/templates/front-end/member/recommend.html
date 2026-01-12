@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>會員系統–推薦電影</title>
+        
+        <link rel="stylesheet" th:href="@{/css/member/member.css}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+        <link
+            href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=LXGW+WenKai+Mono+TC&display=swap"
+            rel="stylesheet">
+            
+        <style>
+        .recommendMovieContent {
+            padding: 1rem;
+        }
+
+        .movieScrollContainer {
+            display: flex;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            gap: 1rem;
+            padding-bottom: 1rem;
+        }
+
+        .movieCard {
+            flex: 0 0 30%;
+            min-width: 200px;
+            max-width: 250px;
+            
+        }
+
+        .movieImg {
+            height: 255px;
+            object-fit: cover;
+        }
+
+        /* 隱藏滾動條 */
+        .movieScrollContainer::-webkit-scrollbar {
+            display: none;
+        }
+        .movieScrollContainer {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .scrollBtn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(0,0,0,0.5);
+            border: none;
+            color: white;
+            font-size: 2rem;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .scrollBtn:hover {
+            background-color: rgba(0,0,0,0.7);
+        }
+
+        .scrollLeft {
+            left: 0;
+        }
+        .scrollRight {
+            right: 0;
+        }
+
+        .movieWrapper {
+            position: relative;
+        }
+    </style>
+</head>
+<body>
+    <div th:replace="fragments/memberTopNav :: topNav"></div>
+
+    <div class="inner">
+        <div th:replace="fragments/memberLeftNav :: sideNav"></div>
+
+        <div class="content recommendMovieContent">
+            <div class="top d-flex justify-content-between align-items-center">
+                <h2 class="contentTitle">近期推薦電影</h2>
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-primary recommendBtn">
+                        <a th:href="@{/member/recommend}">推薦電影</a>
+                    </button>
+                    <button type="button" class="btn btn-primary preferBtn">
+                        <a th:href="@{/member/memberStyle}">偏好風格</a>
+                    </button>
+                </div>
+            </div>
+            <hr>
+
+            <div class="movieWrapper">
+                <!-- 左右滑動按鈕 -->
+                <button class="scrollBtn scrollLeft" onclick="scrollMovies(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+                <button class="scrollBtn scrollRight" onclick="scrollMovies(1)"><i class="fa-solid fa-chevron-right"></i></button>
+
+                <!-- 水平滑動容器 -->
+                <div id="movieContainer" class="movieScrollContainer">
+                    <th:block th:each="movie : ${recommendedMovies}">
+                        <div class="card movieCard">
+                            <img th:src="@{/member/movie/image/{id}(id=${movie.movieId})}"  class="card-img-top movieImg" th:alt="${movie.nameTw}">
+                            <div class="card-body">
+                                <h6 class="movieTitle" th:text="${movie.nameTw}">電影中文名</h6>
+                                <p class="card-text movieContext engTitle" th:text="${movie.nameEng}">電影英文名</p>
+                                <p class="card-text movieContext" th:text="${movie.produceYear}">年份</p>
+                                <p class="card-text movieContext">
+		                            <span th:each="emt, iterStat : ${movie.eachMovieTypes}">
+		                                <span th:text="${emt.movieType.typeName}">類型</span>
+		                                <span th:if="${!iterStat.last}">, </span>
+		                            </span>
+		                        </p>
+                            </div>
+                        </div>
+                    </th:block>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    
+        let container = document.getElementById('movieContainer');
+
+        function scrollMovies(direction) {
+            // 每次滑動一個卡片寬度加間距
+            let cardWidth = container.querySelector('.movieCard').offsetWidth + 35; // 35 = gap
+            container.scrollBy({ left: direction * cardWidth * 3, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>

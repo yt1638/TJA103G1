@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>會員系統–我的訂單</title>
+        
+        <link rel="stylesheet" th:href="@{/css/member/member.css}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+        <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=LXGW+WenKai+Mono+TC&display=swap"
+              rel="stylesheet">
+        <style>
+            .orderDetails{
+                margin: 20px;
+            }
+            .orderDetailsInner{
+                margin-left: 20px;
+                padding: 5px 0;
+                background-color: rgba(218, 216, 250, 0.518);  
+                width: 500px;
+                border-radius: 20px;
+            }
+            .orderDetailsInner li {
+			    border-bottom: none;
+			}
+
+			.orderContent {
+			    padding-bottom: 70px; 
+			}
+
+			.order-pagination {
+			    margin-top: 10px;
+			    padding-top: 0px;
+			    border-top: 1px dashed #ddd;
+			    padding-left: 12px;
+			}
+
+			.btn-page {
+			    border-radius: 20px;
+			    padding: 6px 14px;
+			    font-size: 0.9rem;
+			    color: #5a5a5a;
+			    border: 1px solid #cfcfe8;
+			    background-color: #fff;
+			    transition: all 0.2s ease;
+			}
+			
+			
+			.btn-page:hover:not(.disabled) {
+			    background-color: #f0f1ff;
+			    color: #3f3d99;
+			    border-color: #3f3d99;
+			}
+			
+			
+			.btn-page.disabled {
+			    color: #aaa;
+			    background-color: #f3f3f3;
+			    border-color: #ddd;
+			
+			    opacity: 1;               
+			    cursor: not-allowed;      
+			    pointer-events: none;     
+			
+			    box-shadow: inset 0 1px 2px rgba(0,0,0,0.08); 
+			}
+			
+			
+			.btn-page.disabled:hover {
+			    background-color: #f3f3f3;
+			    color: #aaa;
+			    border-color: #ddd;
+			}
+
+			
+			.page-info {
+			    font-size: 0.95rem;
+			    color: #777;
+			}
+			.page-info strong {
+			    color: #3f3d99;
+			}
+
+        </style>
+
+    </head>
+    <body>
+        <div th:replace="fragments/memberTopNav :: topNav"></div>
+        
+        <div class="inner">
+            <div th:replace="fragments/memberLeftNav :: sideNav"></div>
+            <div class="content orderContent">
+                <h2 class="contentTitle">我的訂單</h2>
+                <hr>
+                
+                <div class="orderDetails" th:if="${order == null}">
+				    <h5>目前沒有任何訂單，快去挑一部喜歡的電影吧!  <a href="/movie/list" >前往電影列表</a></h5>
+				</div>
+                
+                <div class="orderDetails" th:if="${order != null}">
+                    <h5> 訂單編號: <span th:text="${order.orderId}" class="order orderId"></span></h5>
+                    <h5> 訂單日期: <span th:text="${#dates.format(order.orderCreateTime, 'yyyy-MM-dd HH:mm')}" class="order orderDate"></span></h5>
+                    <h5> 訂單狀態: <span th:text="${order.orderStatus != null and order.orderStatus == 1? '訂單成功' : '訂單失敗'}" class="order orderStatus"></span></h5>
+                    <h5> 訂單明細: </h5>
+                    <div class="orderDetailsInner">
+	                    <ul>
+	                    	
+	                        <li><strong>電影名稱: <span th:text="${order.session.movie.nameTw}" class="order ordermName"></span> </strong></li>
+	                        <li><strong>日期與場次: <span th:text="${#dates.format(order.session.startTime, 'yyyy-MM-dd HH:mm')}" class="order ordermDate"></span> </strong></li>
+	                        <li><strong>座位: </strong>
+		                        <ul th:each="ticket : ${order.orderTickets}">
+		                        	<li th:text="${ticket.seat.rowNo + '排 ' + ticket.seat.columnNo + '號'}"></li>
+		                        </ul>
+		                    </li>
+	                        <li><strong>加購餐飲: </strong>
+		                        <ul th:if="${not #lists.isEmpty(order.orderFoods)}">
+		                        	<li th:each="food : ${order.orderFoods}">
+		                        		<span th:text="${food.food.foodName}" class="order ordermFood"></span> x
+		                        		<span th:text="${food.foodQuantity}" class="order ordermFood"></span>
+		                        	</li>
+		                        </ul>
+	                        <h6 th:if="${#lists.isEmpty(order.orderFoods)}">未加購餐飲</h6>
+	                        </li>
+	              		
+	                    </ul>
+                    </div>
+                    <h5> 訂單金額:<span th:text="${order.totalPrice}" class="order orderAmount"></span></h5>
+                </div>
+                
+                <div th:if="${order != null}"
+				     class="order-pagination d-flex align-items-center gap-2 mt-4">
+				
+				    <a class="btn btn-page"
+				       th:href="@{/member/memberOrder(page=0)}"
+				       th:classappend="${currentPage == 0} ? ' disabled' : ''">
+				       第一筆
+				    </a>
+				
+				    <a class="btn btn-page"
+				       th:href="@{/member/memberOrder(page=${currentPage - 1})}"
+				       th:classappend="${currentPage == 0} ? ' disabled' : ''">
+				       上一筆
+				    </a>
+				
+				    <span class="page-info mx-3">
+				        第 <strong th:text="${currentPage + 1}"></strong>
+				        / <strong th:text="${totalPages > 0 ? totalPages : 1}"></strong>
+				    </span>
+				
+				    <a class="btn btn-page"
+				       th:href="@{/member/memberOrder(page=${currentPage + 1})}"
+				       th:classappend="${currentPage + 1 >= totalPages} ? ' disabled' : ''">
+				        下一筆
+				    </a>
+				
+				    <a class="btn btn-page"
+				       th:href="@{/member/memberOrder(page=${totalPages - 1})}"
+				       th:classappend="${currentPage + 1 >= totalPages} ? ' disabled' : ''">
+				        最後一筆
+				    </a>
+				</div>
+                
+                
+                
+                
+            </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+        
+ 
+    </body>
+</html>

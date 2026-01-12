@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>會員系統–電影風格選擇</title>
+        
+        <link rel="stylesheet" th:href="@{/css/member/member.css}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+        <link
+            href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=LXGW+WenKai+Mono+TC&display=swap"
+            rel="stylesheet">
+        <style>
+            .styleInfoHeader{
+                background-color: rgb(194, 196, 214);
+            }
+            /* 移除 modal 內容所有文字/連結的下底線 */
+            .styleInfo, .styleInfo *{
+                text-decoration: none !important;
+            }
+            .styleInfo li{
+                text-decoration: none;
+                margin-bottom: 8px;
+                border-bottom: 0 !important;
+            }
+            .styleBtn{
+                background: transparent !important;
+                border: 0 !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                color: #0d6efd !important; /* Bootstrap primary */
+                font: inherit !important;
+                line-height: inherit !important;
+                text-decoration: none !important;
+                box-shadow: none !important;
+                cursor: pointer;
+            }
+            .styleBtn:hover{
+                color: #0a58ca !important; /* darker blue on hover */
+            }
+            .modal-backdrop.show {
+                opacity: var(--bs-backdrop-opacity);
+                z-index: -100; /* Ensure backdrop is behind modal */
+            }
+            .stylePart{
+            	width: 600px;
+            	margin-left: 10px;
+            }
+            
+        </style>
+
+    </head>
+    <body>
+        <div th:replace="fragments/memberTopNav :: topNav"></div>
+
+	    <div class="inner">
+	        <div th:replace="fragments/memberLeftNav :: sideNav"></div>
+            <div class="content userStyleContent">
+                <div class="top">
+                    <h2 class="contentTitle">喜歡的電影風格</h2>
+                    <div class="btn-group" role="group" aria-label="Basic example">
+                        <a  class="btn btn-primary recommendBtn" th:href="@{/member/recommend}">推薦電影</a>
+                        <a  class="btn btn-primary preferBtn" th:href="@{/member/memberStyle}">偏好風格</a>
+                    </div>
+                </div>
+                <hr>
+                <div th:if="${successMsg}" class="alert alert-warning">[[${successMsg}]]</div>
+                <h6 class="secondTitle">本影城之後會依據您所選的<button type="button" class="styleBtn" data-bs-toggle="modal" data-bs-target="#exampleModal">風格</button>，推薦您相關的電影 </h6>
+
+                <!-- Modal -->
+                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header styleInfoHeader">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel"><strong>電影風格說明</strong></h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body styleInfo">
+                                <ul>
+                                    <li>Action (動作片)： 強調快節奏的打鬥、追逐和體能展現。</li>
+	                                <li>Adventure (冒險片)：描寫一段驚心動魄的旅程或探險。</li>
+	                                <li>Science Fiction (科幻片)：以科學奇想為題材。</li>
+	                                <li>Thriller (驚悚片)：營造高度的緊張感和懸疑氣氛。</li>
+	                                <li>Drama (劇情片)：著重於角色和故事的發展。</li>
+	                                <li>Comedy (喜劇片)： 以逗樂觀眾為主要目的。</li>
+	                                <li>Fantasy (奇幻片)：包含魔法、夢幻或神話等超現實元素。</li>
+	                                <li>Romance (愛情片)： 故事圍繞著人際愛情關係展開。</li>
+	                                <li>Animation (動畫片)： 以動畫製作的影片。</li>
+	                                <li>War Film (戰爭片)： 故事背景設定在戰爭之中。</li>
+                                </ul>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+				
+                <div class="styleForm">
+                    <form th:action="@{/member/updateMemberStyle}" method="post" class="userStyleInfo">
+                        <div class="stylePart sp1">
+	                        <label><input type="checkbox" id="action" name="styleId" value="1" class="firstLabel" th:checked="${selectTypeIds.contains(1)}">動作片</label>
+	                        <label><input type="checkbox" id="adventure" name="styleId" value="2" th:checked="${selectTypeIds.contains(2)}">冒險片</label>
+	                        <label><input type="checkbox" id="scienceFiction" name="styleId" value="3" th:checked="${selectTypeIds.contains(3)}">科幻片</label>
+	                        <label><input type="checkbox" id="thriller" name="styleId" value="4" th:checked="${selectTypeIds.contains(4)}">驚悚片</label>
+	                    </div>
+	                    <div class="stylePart sp2">
+	                        <label><input type="checkbox" id="drama" name="styleId" value="5" class="firstLabel" th:checked="${selectTypeIds.contains(5)}">劇情片</label>
+	                        <label><input type="checkbox" id="comedy" name="styleId" value="6" th:checked="${selectTypeIds.contains(6)}">喜劇片</label>
+	                        <label><input type="checkbox" id="fantasy" name="styleId" value="7" th:checked="${selectTypeIds.contains(7)}">奇幻片</label>
+	                        <label><input type="checkbox" id="romance" name="styleId" value="8" th:checked="${selectTypeIds.contains(8)}">愛情片</label>
+	                    </div>
+	                    <div class="stylePart sp3">
+	                        <label><input type="checkbox" id="animation" name="styleId" value="9" class="firstLabel" th:checked="${selectTypeIds.contains(9)}">動畫片</label>
+	                        <label><input type="checkbox" id="warFilm" name="styleId" value="10" th:checked="${selectTypeIds.contains(10)}">戰爭片</label>
+	                    </div>
+                    	<button type="submit" class="btn btn-warning editStyleBtn">送出</button>
+                    </form>
+                </div>
+                
+            </div>
+        </div>
+
+
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+        <script></script>
+        
+            
+    </body>
+</html>

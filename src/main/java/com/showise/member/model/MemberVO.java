@@ -3,7 +3,11 @@ package com.showise.member.model;
 import java.io.Serializable;
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 import com.showise.memberclass.model.MemberClassVO;
 import com.showise.memberprefertype.model.MemberPreferTypeVO;
@@ -21,7 +25,9 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
@@ -72,7 +78,8 @@ public class MemberVO implements Serializable{
 	@Column(name = "birthdate")
 	@NotNull(message = "請選擇日期")
 	@Past(message = "日期必須是今日(含)以前")
-	private Date birthdate;
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private LocalDate birthdate;
 	
 	
 	@Column(name = "status")
@@ -82,7 +89,8 @@ public class MemberVO implements Serializable{
 	@Column(name = "create_time")
 	private Timestamp createTime;
 	
-	
+	// @NotNull(message = "累積消費金額: 請勿空白")
+	@Min(value = 0, message = "累積消費金額: 不得小於0")
 	@Column(name = "acc_consumption")
 	private Integer accConsumption;
 	
@@ -96,8 +104,8 @@ public class MemberVO implements Serializable{
 	
 
 	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-	@OrderBy("orderId asc")	
-	private Set<OrderVO> order;
+	@OrderBy("orderId desc")	
+	private List<OrderVO> order;
 
 	
 //	喜好通知
@@ -167,11 +175,11 @@ public class MemberVO implements Serializable{
 	}
 
 	
-	public Date getBirthdate() {
+	public LocalDate getBirthdate() {
 		return birthdate;
 	}
 
-	public void setBirthdate(Date birthdate) {
+	public void setBirthdate(LocalDate birthdate) {
 		this.birthdate = birthdate;
 	}
 
@@ -225,13 +233,27 @@ public class MemberVO implements Serializable{
 		this.notiShowst = notiShowst;
 	}
 
-	public Set<OrderVO> getOrder() {
+	public List<OrderVO> getOrder() {
 		return order;
 	}
 
-	public void setOrder(Set<OrderVO> order) {
+	public void setOrder(List<OrderVO> order) {
 		this.order = order;
 	}
+	
+	@PrePersist
+	public void prePersist() {
+	    if (this.status == null) {
+	        this.status = 0;
+	    }
+	    if (this.createTime == null) {
+	        this.createTime = new Timestamp(System.currentTimeMillis());
+	    }
+	    if (this.accConsumption == null) {
+	        this.accConsumption = 0;
+	    }
+	}
+
 	
 }
 

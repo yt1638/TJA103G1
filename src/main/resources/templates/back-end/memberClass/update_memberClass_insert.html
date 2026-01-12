@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>後台系統–修改會員等級資料</title>
+
+<link rel="stylesheet" href="">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link
+	href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=LXGW+WenKai+Mono+TC&display=swap"
+	rel="stylesheet">
+<style>
+.memberClassContent {
+	margin: 8% auto;
+    padding: 30px 40px;
+    max-width: 700px;
+    background-color: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.memberClassH2 {
+	font-size: 36px;
+    font-family: "Dancing Script", cursive;
+    color: #4682b4;
+    margin-bottom: 20px;
+}
+
+.memberClassContent p, .memberClassContent input {
+	font-size: 18px;
+	margin: 8px 0;
+}
+
+.memberClassContent select {
+	font-size: 17px;
+	margin: 8px 0;
+}
+
+input[type="text"],
+select {
+    font-size: 16px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    margin-top: 5px;
+}
+
+input[type="submit"] {
+    margin-top: 25px;
+    font-size: 16px;
+    background-color: #4a90e2;
+    color: #fff;
+    padding: 8px 25px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+input[type="submit"]:hover {
+    background-color: #357abd;
+}
+
+.errorMsg {
+	font-size: 14px !important;
+	color: red;
+	border-radius: 10px;
+	background-color: rgba(251, 230, 211, 0.546);
+	padding: 5px 20px;
+}
+</style>
+
+</head>
+<body>
+	<div class="content memberClassContent memberClassUpdatePageContent">
+		<h2 class="memberClassH2">修改會員等級資料</h2>
+		<h3>
+			<a th:href="@{/memberClass/select_page}">回後臺會員等級主頁</a>
+		</h3>
+		<form th:action="@{/memberClass/update}" method="post"
+			th:object="${memberClassVO}">
+			<p>
+				會員等級編號: <span th:text="*{memberClassId}"></span> <input
+					type="hidden" th:field="*{memberClassId}" />
+			</p>
+			<p>
+				<label>會員等級名稱: <input type="text" th:field="*{memberName}"
+					placeholder="">
+					<p th:if="${#fields.hasErrors('memberName')}"
+						th:errors="*{memberName}" class="errorMsg" id="memberName.errors">
+					</p>
+				</label>
+			</p>
+			<p>
+				<label>年累積消費金額: <input type="text"
+					th:field="*{memberAccPrice}" placeholder=""> 元以上
+					<p th:if="${#fields.hasErrors('memberAccPrice')}"
+						th:errors="*{memberAccPrice}" class="errorMsg"
+						id="memberAccPrice.errors"></p>
+				</label>
+			</p>
+			<p>
+				<label>購票優惠: <input type="text" th:field="*{memberDiscount}"
+					placeholder=""> 
+					<p th:if="${#fields.hasErrors('memberDiscount')}"
+						th:errors="*{memberDiscount}" class="errorMsg"
+						id="memberDiscount.errors"></p>
+				</label>
+			</p>
+			<input type="submit" value="送出修改">
+		</form>
+
+	</div>
+
+	<script>
+		
+	</script>
+</body>
+</html>
