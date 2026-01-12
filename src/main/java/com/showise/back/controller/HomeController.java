@@ -30,6 +30,7 @@ public class HomeController {
         return "redirect:/admin/login";
     }
 
+    
     @PostMapping("/admin/login")
     public String login(@RequestParam String account,
                         @RequestParam String password,
