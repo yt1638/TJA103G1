@@ -27,6 +27,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.showise.food.model.FoodService;
 import com.showise.food.model.FoodVO;
 import com.showise.member.model.MemberService;
+import com.showise.member.model.MemberVO;
 import com.showise.movie.model.MovieService;
 import com.showise.movie.model.MovieVO;
 import com.showise.order.model.OrderDraft;
@@ -79,7 +80,11 @@ public class OrderPageController {
   @ModelAttribute("orderDraft")
   public OrderDraft initDraft(HttpSession session) {
     OrderDraft od = new OrderDraft();
-    od.setMemberId((Integer) session.getAttribute("memberId"));
+    
+    MemberVO memberVO=(MemberVO)session.getAttribute("loginMember");
+    Integer memberId =memberVO.getMemberId();
+    
+    od.setMemberId(memberId);
 //    od.setMemberId(3);
     od.setExpireAt(System.currentTimeMillis() + TTL_MS);  //失效時間：現在＋15分鐘
     od.setLockToken(UUID.randomUUID().toString());//用UUID生成一個token，用來綁seatlock
@@ -99,7 +104,9 @@ public class OrderPageController {
   //1. GET/order：只讀draft
   @GetMapping
   public String orderPage(Model model,@ModelAttribute("orderDraft") OrderDraft draft,HttpSession session,SessionStatus sessionStatus) {
-	  Integer loginMemberId =(Integer) session.getAttribute("memberId");
+	  MemberVO memberVO=(MemberVO)session.getAttribute("loginMember");
+	  Integer loginMemberId =memberVO.getMemberId();
+	  
 	  if(loginMemberId != null && draft.getMemberId() != null && !loginMemberId.equals(draft.getMemberId())) {
 		  sessionStatus.setComplete();
 		  return "redirect:/order";
