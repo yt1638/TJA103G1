@@ -33,14 +33,18 @@ public class MemberClassController {
 	public String select_page(ModelMap model) {
 		List<MemberClassVO> list = memberClassService.getAll();
 	    model.addAttribute("memberClassListData", list);
-		return "back-end/memberClass/select_page";
+	    model.addAttribute("pageTitle","會員等級管理");
+		model.addAttribute("content","back-end/memberClass/select_page :: content");
+		return "back-end/layout/admin-layout";
 	}
 	
 	@GetMapping("addMemberClass")
 	public String addMemberClass(ModelMap model) {
 		MemberClassVO memberClassVO = new MemberClassVO();
 		model.addAttribute("memberClassVO", memberClassVO);
-		return "back-end/memberClass/addMemberClass";
+		model.addAttribute("pageTitle","會員等級管理");
+		model.addAttribute("content","back-end/memberClass/addMemberClass :: content");
+		return "back-end/layout/admin-layout";
 	}
 	
 	@PostMapping("insert")
@@ -48,7 +52,9 @@ public class MemberClassController {
 		
 		//******************1.接收請求參數，輸入格式的錯誤處理	******************
 		if(result.hasErrors()) {
-			return "back-end/memberClass/addMemberClass";
+			model.addAttribute("pageTitle","會員等級管理");
+			model.addAttribute("content","back-end/memberClass/addMemberClass :: content");
+			return "back-end/layout/admin-layout";
 		}
 		
 		//******************2.開始新增資料********************************
@@ -58,7 +64,9 @@ public class MemberClassController {
 		List<MemberClassVO> list = memberClassService.getAll();
 		model.addAttribute("memberClassListData", list);
 		model.addAttribute("success", "-(新增成功)");
-		return "redirect:/memberClass/select_page";
+		model.addAttribute("pageTitle","新增會員等級");
+		model.addAttribute("content","back-end/memberClass/select_page :: content");
+		return "back-end/layout/admin-layout";
 		
 	}
 	
@@ -70,14 +78,18 @@ public class MemberClassController {
 		
 		//******************3.查詢完成，準備轉交****************************
 		model.addAttribute("memberClassVO", memberClassVO);
-		return "back-end/memberClass/update_memberClass_insert";
+		model.addAttribute("pageTitle","新增會員等級");
+		model.addAttribute("content","back-end/memberClass/update_memberClass_insert :: content");
+		return "back-end/layout/admin-layout";
 	}
 	
 	@PostMapping("update")
 	public String update(@Valid MemberClassVO memberClassVO, BindingResult result, ModelMap model) {
 		//******************1.接收請求參數，輸入格式的錯誤處理	******************
 		if(result.hasErrors()) {
-			return "back-end/memberClass/update_memberClass_insert";
+			model.addAttribute("pageTitle","新增會員等級");
+			model.addAttribute("content","back-end/memberClass/update_memberClass_insert :: content");
+			return "back-end/layout/admin-layout";
 		}
 		
 		//******************2.開始修改資料********************************	
@@ -87,7 +99,9 @@ public class MemberClassController {
 		model.addAttribute("success", "-(修改成功)");
 		memberClassVO = memberClassService.getOneMemberClass(Integer.valueOf(memberClassVO.getMemberClassId()));
 		model.addAttribute("memberClassVO", memberClassVO);
-		return "redirect:/memberClass/select_page";
+		model.addAttribute("pageTitle","會員等級管理");
+		model.addAttribute("content","back-end/memberClass/select_page :: content");
+		return "back-end/layout/admin-layout";
 	}
 	
 	@PostMapping("delete")
@@ -100,7 +114,7 @@ public class MemberClassController {
 		List<MemberClassVO> list = memberClassService.getAll();
 		model.addAttribute("memberClassListData", list);
 		model.addAttribute("success", "-(刪除成功)");
-		return "redirect:/memberClass/select_page";	//這邊用redirect，避免重複送出
+		return "back-end/layout/admin-layout";	//這邊用redirect，避免重複送出
 	}
 	
 	// 會員

@@ -54,12 +54,16 @@ public class MemberIdController {
 	    
 	    if (resultList.isEmpty()) {
 	        model.addAttribute("errorMessage", "查無資料");
-	        return "back-end/bmember/select_page";
+	        model.addAttribute("pageTitle","會員管理");
+			model.addAttribute("content","back-end/bmember/select_page :: content");
+			return "back-end/layout/admin-layout";
 	    }
 	    
 	    model.addAttribute("searchResult", resultList);
+	    model.addAttribute("pageTitle","會員管理");
+		model.addAttribute("content","back-end/bmember/listSearchResult :: content");
+		return "back-end/layout/admin-layout";
 
-	    return "back-end/bmember/listSearchResult"; 
 	}
 
 	
@@ -86,12 +90,16 @@ public class MemberIdController {
 			
 			if(member == null) {
 				model.addAttribute("errorMessage", "查無資料");
-				return "back-end/bmember/select_page";
+				model.addAttribute("pageTitle","會員管理");
+				model.addAttribute("content","back-end/bmember/select_page :: content");
+				return "back-end/layout/admin-layout";
 			}
 			
 			//******************3.查詢完成，準備轉交****************************
 			model.addAttribute("memberVO", member);
-			return "back-end/bmember/listOneMember";		// 查詢完成後，轉交listOneMember.html
+			model.addAttribute("pageTitle","會員資料");
+			model.addAttribute("content","back-end/bmember/listOneMember :: content");
+			return "back-end/layout/admin-layout";
 	}
 		
 	// 當使用者輸入的資料未通過驗證

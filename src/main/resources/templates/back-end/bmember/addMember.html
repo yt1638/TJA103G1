@@ -1,206 +1,217 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>後台系統–新增會員資料</title>
+<div th:fragment="content">
 
-<link rel="stylesheet" href="">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link
-	href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=LXGW+WenKai+Mono+TC&display=swap"
-	rel="stylesheet">
 <style>
 .memberContent {
-    margin: 8% auto;
+	margin: 3% auto;
     padding: 30px 40px;
-    max-width: 700px;
+    max-width: 800px;
     background-color: #ffffff; 
     border-radius: 15px; 
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15); 
 }
 
 .memberH2 {
-    font-size: 36px;
-    font-family: "Dancing Script", cursive;
-    color: #4682b4;
-    text-align: left;
-    margin-bottom: 25px;
+	font-size: 36px;
+	font-family: "Dancing Script", cursive;
+	color: #4682b4;
+	text-align: left;
+	margin-bottom: 25px;
 }
 
 h3 {
-    margin-top: 30px;
-    color: #333;
+	margin-top: 30px;
+	color: #333;
 }
-
+a {
+	font-size: 18px;
+}
 form p {
-    margin: 12px 0;
-    display: flex;
-    flex-direction: column;
-    font-size: 16px;
+	margin: 12px 0;
+	display: flex;
+	flex-direction: column;
+	font-size: 16px;
 }
 
 input[type="text"], input[type="date"] {
-    font-size: 16px;
-    padding: 8px 10px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    margin-top: 5px;
+	font-size: 16px;
+	padding: 8px 10px;
+	border-radius: 8px;
+	border: 1px solid #ccc;
+	margin-top: 5px;
 }
 
 input[type="submit"] {
-    font-size: 16px;
-    margin-top: 15px;
-    background-color: #4a90e2;
-    color: #fff;
-    padding: 8px 20px;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
-    transition: 0.3s;
+	font-size: 16px;
+	margin-top: 15px;
+	background-color: #4a90e2;
+	color: #fff;
+	padding: 8px 20px;
+	border-radius: 8px;
+	border: none;
+	cursor: pointer;
+	transition: 0.3s;
 }
 
 input[type="submit"]:hover {
-    background-color: #357abd;
+	background-color: #357abd;
 }
 
-.errorMsg{
-    font-size: 14px;
-    color: red;
-    border-radius: 10px;
-    background-color: rgba(251, 230, 211, 0.546);
-    padding: 5px 15px; 
-    margin-top: 5px;
+.errorMsg {
+	font-size: 14px;
+	color: red;
+	border-radius: 10px;
+	background-color: rgba(251, 230, 211, 0.546);
+	padding: 5px 15px;
+	margin-top: 5px;
 }
 
 .stylePart {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    margin: 8px 0 20px 0;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 12px;
+	margin: 8px 0 20px 0;
 }
 
 .stylePart label {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    background-color: #f1f7ff;
-    padding: 5px 10px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: 0.3s;
-    font-size: 14px;
+	display: flex;
+	align-items: center;
+	gap: 5px;
+	background-color: #f1f7ff;
+	padding: 5px 10px;
+	border-radius: 8px;
+	cursor: pointer;
+	transition: 0.3s;
+	font-size: 14px;
 }
 
 .stylePart input[type="checkbox"] {
-    transform: scale(1.1);
-    cursor: pointer;
+	transform: scale(1.1);
+	cursor: pointer;
 }
 
 .stylePart label:hover {
-    background-color: #e0efff;
+	background-color: #e0efff;
 }
 
 ul {
-    list-style: none;
-    padding: 0;
+	list-style: none;
+	padding: 0;
 }
 
 li {
-    position: relative;
-    padding-left: 20px;
-    margin: 10px 0;
+	position: relative;
+	padding-left: 20px;
+	margin: 10px 0;
 }
 
 li::before {
-    content: "■";
-    position: absolute;
-    left: 0;
-    color: #4a90e2;
-    font-size: 14px;
-    line-height: 1.6;
+	content: "■";
+	position: absolute;
+	left: 0;
+	color: #4a90e2;
+	font-size: 14px;
+	line-height: 1.6;
 }
 
 a {
-    color: #4a90e2;
-    text-decoration: none;
-    font-weight: 500;
+	color: #4a90e2;
+	text-decoration: none;
+	font-weight: 500;
 }
 
 a:hover {
-    color: #357abd;
+	color: #357abd;
 }
-
 </style>
 
-</head>
-<body>
-	<div class="content memberContent">
-		<h2 class="memberH2">新增會員資料</h2>
-		<h3>
-			<a th:href="@{/bmember/select_page}">回後台會員主頁</a>
-		</h3>
-		<form th:action="@{/bmember/insert}" method="post" th:object="${memberVO}">
-			<p>
-				<label>帳號(信箱): 
-					<input type="text" th:field="*{email}" placeholder="">
-				</label>
-			</p>
-			<p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="errorMsg" id="email.errors"></p>
-			
-			<p>
-				<label>密碼: 
-					<input type="text" th:field="*{password}" placeholder="">
-				</label>
-			</p>
-			<p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="errorMsg" id="password.errors"></p>
-			
-			<p>
-				<label>姓名: 
-					<input type="text" th:field="*{name}" placeholder="">
-				</label>
-			</p>
-			<p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="errorMsg" id="name.errors"></p>
-			
-			<p>
-				<label>電話: 
-					<input type="text" th:field="*{phone}" placeholder="">
-				</label>
-			</p>
-			<p th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}" class="errorMsg" id="phone.errors"></p>
-			
-			<p>
-				<label>生日: 
-					<input type="date" th:field="*{birthdate}" placeholder="">
-				</label>
-			</p>
-			<p th:if="${#fields.hasErrors('birthdate')}" th:errors="*{birthdate}" class="errorMsg" id="birthdate.errors"></p>
-			
-			<p>喜歡的電影類型:</p>
-			<div class="stylePart sp1">
-			
-                <label><input type="checkbox" id="action" class="firstLabel" name="styleId" value="1" th:checked="${selectedStyleIds != null and selectedStyleIds.contains(1)}">動作片</label>
-                <label><input type="checkbox" id="adventure" name="styleId" value="2" th:checked="${selectedStyleIds != null and selectedStyleIds.contains(2)}">冒險片</label>
-                <label><input type="checkbox" id="scienceFiction" name="styleId" value="3" th:checked="${selectedStyleIds != null and selectedStyleIds.contains(3)}">科幻片</label>
-                <label><input type="checkbox" id="thriller" name="styleId" value="4" th:checked="${selectedStyleIds != null and selectedStyleIds.contains(4)}">驚悚片</label>
-                <label><input type="checkbox" id="drama" name="styleId" value="5" th:checked="${selectedStyleIds != null and selectedStyleIds.contains(5)}">劇情片</label>
-            </div>
-            <div class="stylePart sp2">
-                <label><input type="checkbox" id="comedy" class="firstLabel" name="styleId" value="6" th:checked="${selectedStyleIds != null and selectedStyleIds.contains(6)}">喜劇片</label>
-                <label><input type="checkbox" id="fantasy" name="styleId" value="7" th:checked="${selectedStyleIds != null and selectedStyleIds.contains(7)}">奇幻片</label>
-                <label><input type="checkbox" id="romance" name="styleId" value="8" th:checked="${selectedStyleIds != null and selectedStyleIds.contains(8)}">愛情片</label>
-                <label><input type="checkbox" id="animation" name="styleId" value="9" th:checked="${selectedStyleIds != null and selectedStyleIds.contains(9)}">動畫片</label>
-                <label><input type="checkbox" id="warFilm" name="styleId" value="10" th:checked="${selectedStyleIds != null and selectedStyleIds.contains(10)}">戰爭片</label>
-            </div>
-			
-			<input type="submit" value="送出新增">
-		</form>
+	</head>
+	<body>
+		<div class="content memberContent">
+			<h2 class="memberH2">新增會員資料</h2>
+			<h3>
+				<a th:href="@{/bmember/select_page}">回後台會員主頁</a>
+			</h3>
+			<form th:action="@{/bmember/insert}" method="post"
+				th:object="${memberVO}">
+				<p>
+					<label>帳號(信箱): <input type="text" th:field="*{email}"
+						placeholder="">
+					</label>
+				</p>
+				<p th:if="${#fields.hasErrors('email')}" th:errors="*{email}"
+					class="errorMsg" id="email.errors"></p>
 
-	</div>
+				<p>
+					<label>密碼: <input type="text" th:field="*{password}"
+						placeholder="">
+					</label>
+				</p>
+				<p th:if="${#fields.hasErrors('password')}" th:errors="*{password}"
+					class="errorMsg" id="password.errors"></p>
 
-	<script>
-		
-	</script>
-</body>
-</html>
+				<p>
+					<label>姓名: <input type="text" th:field="*{name}"
+						placeholder="">
+					</label>
+				</p>
+				<p th:if="${#fields.hasErrors('name')}" th:errors="*{name}"
+					class="errorMsg" id="name.errors"></p>
+
+				<p>
+					<label>電話: <input type="text" th:field="*{phone}"
+						placeholder="">
+					</label>
+				</p>
+				<p th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"
+					class="errorMsg" id="phone.errors"></p>
+
+				<p>
+					<label>生日: <input type="date" th:field="*{birthdate}"
+						placeholder="">
+					</label>
+				</p>
+				<p th:if="${#fields.hasErrors('birthdate')}"
+					th:errors="*{birthdate}" class="errorMsg" id="birthdate.errors"></p>
+
+				<p>喜歡的電影類型:</p>
+				<div class="stylePart sp1">
+
+					<label><input type="checkbox" id="action"
+						class="firstLabel" name="styleId" value="1"
+						th:checked="${selectedStyleIds != null and selectedStyleIds.contains(1)}">動作片</label>
+					<label><input type="checkbox" id="adventure" name="styleId"
+						value="2"
+						th:checked="${selectedStyleIds != null and selectedStyleIds.contains(2)}">冒險片</label>
+					<label><input type="checkbox" id="scienceFiction"
+						name="styleId" value="3"
+						th:checked="${selectedStyleIds != null and selectedStyleIds.contains(3)}">科幻片</label>
+					<label><input type="checkbox" id="thriller" name="styleId"
+						value="4"
+						th:checked="${selectedStyleIds != null and selectedStyleIds.contains(4)}">驚悚片</label>
+					<label><input type="checkbox" id="drama" name="styleId"
+						value="5"
+						th:checked="${selectedStyleIds != null and selectedStyleIds.contains(5)}">劇情片</label>
+				</div>
+				<div class="stylePart sp2">
+					<label><input type="checkbox" id="comedy"
+						class="firstLabel" name="styleId" value="6"
+						th:checked="${selectedStyleIds != null and selectedStyleIds.contains(6)}">喜劇片</label>
+					<label><input type="checkbox" id="fantasy" name="styleId"
+						value="7"
+						th:checked="${selectedStyleIds != null and selectedStyleIds.contains(7)}">奇幻片</label>
+					<label><input type="checkbox" id="romance" name="styleId"
+						value="8"
+						th:checked="${selectedStyleIds != null and selectedStyleIds.contains(8)}">愛情片</label>
+					<label><input type="checkbox" id="animation" name="styleId"
+						value="9"
+						th:checked="${selectedStyleIds != null and selectedStyleIds.contains(9)}">動畫片</label>
+					<label><input type="checkbox" id="warFilm" name="styleId"
+						value="10"
+						th:checked="${selectedStyleIds != null and selectedStyleIds.contains(10)}">戰爭片</label>
+				</div>
+
+				<input type="submit" value="送出新增">
+			</form>
+
+		</div>
+</div>

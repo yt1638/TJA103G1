@@ -51,12 +51,16 @@ public class MemberClassIdController {
 
 		if(memberClassVO == null) {
 			model.addAttribute("errorMessage", "查無資料");
-			return "back-end/memberClass/select_page";
+			model.addAttribute("pageTitle","會員等級管理");
+			model.addAttribute("content","back-end/memberClass/select_page :: content");
+			return "back-end/layout/admin-layout";
 		}
 		
 		//******************3.查詢完成，準備轉交****************************	
 		model.addAttribute("memberClassVO", memberClassVO);
-		return "back-end/memberClass/listOneMemberClass";	// 查詢完成後，轉交listOneMember.html
+		model.addAttribute("pageTitle","會員等級資料");
+		model.addAttribute("content","back-end/memberClass/listOneMemberClass :: content");
+		return "back-end/layout/admin-layout";
 	}
 	
 	// 當使用者輸入的資料未通過驗證
