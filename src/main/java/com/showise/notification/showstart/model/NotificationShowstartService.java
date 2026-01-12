@@ -16,6 +16,9 @@ public class NotificationShowstartService {
 	@Autowired
 	NotificationShowstartRepository repository;
 	
+	@Autowired
+    private SessionFactory sessionFactory;
+
 	public void addNotificationShowstart(NotificationShowstartVO notificationShowstartVO) {
 		repository.save(notificationShowstartVO);
 	}

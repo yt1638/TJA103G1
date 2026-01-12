@@ -1,0 +1,133 @@
+<div th:fragment="content">
+
+    <!-- 頁面標題 -->
+    <h2 class="mb-4 font-weight-bold text-primary">
+        📊 後台儀表板
+    </h2>
+
+    <!-- ✅ 只有權限=1 才顯示：員工權限卡片 / 入口 -->
+    <div class="row" th:if="${session.empPerm == 1}">
+        <div class="col-xl-12 mb-4">
+            <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                            員工權限
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                            你目前擁有管理員權限
+                        </div>
+                        <div class="text-gray-600 mt-1" style="font-size: 14px;">
+                            可進入員工權限管理功能
+                        </div>
+                    </div>
+
+                    <!-- 這裡的路徑請換成你「員工權限管理」真正的 mapping -->
+                    <a class="btn btn-danger"
+                       th:href="@{/employee_data/select_page}">
+                        前往管理
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 統計卡片 ===== -->
+    <div class="row">
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                本週訂單數
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                <span th:text="${weekOrderCount} ?: '0'"></span> 單
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                        本週上映數
+                    </div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">
+                        <span th:text="${movieCount} ?: '0'"></span> 部
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                        任務完成率
+                    </div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">50%</div>
+                    <div class="progress progress-sm mt-2">
+                        <div class="progress-bar bg-info" style="width: 50%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                        待處理請求
+                    </div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">
+                        <span th:text="${pendingCount} ?: '0'"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ===== 圖表區 ===== -->
+    <div class="row">
+
+        <!-- Area Chart -->
+        <div class="col-xl-8 col-lg-7">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        新增會員人數
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <canvas id="myAreaChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pie Chart -->
+        <div class="col-xl-4 col-lg-5">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        訂單來源
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <canvas id="myPieChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>

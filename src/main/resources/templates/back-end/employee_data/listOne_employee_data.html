@@ -24,9 +24,9 @@
 	        <td th:text="${employeeDataVO.empAccount}"></td>
 	        <td th:text="${employeeDataVO.empPassword}"></td>
 	        <td th:text="${employeeDataVO.empEmail}"></td>
-	        <td th:text="${employeeDataVO.empStatus}"></td>        
+	        <td th:text="${employeeDataVO.empStatus == 0 ? '啟用中' : '未啟用'}"></td>
             <td th:text="${employeeDataVO.empCreateTime}"></td>
-            <td th:text="${employeeDataVO.empPermissions}"></td>
+            <td th:text="${employeeDataVO.empPermissions == 0 ? '員工' : '主管'}"></td>
         </tr>
     </table>
 </div>

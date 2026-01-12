@@ -117,15 +117,20 @@
 
           <div class="form-row">
             <div class="form-group col-md-4">
-              <label class="font-weight-bold">員工狀態</label>
-              <input type="text" class="form-control"
-                     th:field="*{empStatus}"
-                     onclick="hideContent('empStatus.errors');">
-              <span th:if="${#fields.hasErrors('empStatus')}"
-                    th:errors="*{empStatus}"
-                    class="error"
-                    id="empStatus.errors"></span>
-            </div>
+			  <label class="font-weight-bold">員工狀態</label>
+			  <select class="form-control"
+			          th:field="*{empStatus}"
+			          onclick="hideContent('empStatus.errors');">
+			    <option value="">請選擇狀態</option>
+			    <option value="0">啟用中</option>
+			    <option value="1">未啟用</option>
+			  </select>
+			  <span th:if="${#fields.hasErrors('empStatus')}"
+			        th:errors="*{empStatus}"
+			        class="error"
+			        id="empStatus.errors"></span>
+			</div>
+
 
             <div class="form-group col-md-4">
               <label class="font-weight-bold">到職日期</label>
@@ -139,16 +144,20 @@
             </div>
 
             <div class="form-group col-md-4">
-              <label class="font-weight-bold">員工權限</label>
-              <input type="text" class="form-control"
-                     th:field="*{empPermissions}"
-                     onclick="hideContent('empPermissions.errors');">
-              <span th:if="${#fields.hasErrors('empPermissions')}"
-                    th:errors="*{empPermissions}"
-                    class="error"
-                    id="empPermissions.errors"></span>
-            </div>
-          </div>
+			  <label class="font-weight-bold">員工權限</label>
+			  <select class="form-control"
+			          th:field="*{empPermissions}"
+			          onclick="hideContent('empPermissions.errors');">
+			    <option value="">請選擇權限</option>
+			    <option value="0">員工</option>
+			    <option value="1">主管</option>
+			  </select>
+			  <span th:if="${#fields.hasErrors('empPermissions')}"
+			        th:errors="*{empPermissions}"
+			        class="error"
+			        id="empPermissions.errors"></span>
+			</div>
+
 
           <div class="d-flex" style="gap:10px; flex-wrap:wrap;">
             <button type="submit" class="btn btn-dark">送出修改</button>

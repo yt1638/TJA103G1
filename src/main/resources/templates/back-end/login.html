@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Login</title>
+
+    <!-- Custom fonts for this template-->
+    <link href="/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,300,400,700,900" rel="stylesheet">
+
+    <!-- Custom styles for this template-->
+    <link href="/css/sb-admin-2.min.css" rel="stylesheet">
+
+    <style>
+        .movie-bg {
+            background:
+                url('https://cdn-icons-png.flaticon.com/512/3103/3103446.png') 10% 20% / 70px no-repeat,
+                url('https://cdn-icons-png.flaticon.com/512/3103/3103473.png') 90% 80% / 60px no-repeat,
+                url('https://cdn-icons-png.flaticon.com/512/3103/3103432.png') 80% 15% / 65px no-repeat,
+                url('https://cdn-icons-png.flaticon.com/512/3103/3103452.png') 20% 75% / 60px no-repeat;
+            background-color: #ffffff !important;
+            opacity: 0.95;
+            background-blend-mode: soft-light;
+        }
+
+        .movie-title::before { content: "🎬 "; }
+
+        .btn-movie {
+            background: #3a5af9;
+            font-weight: bold;
+            letter-spacing: 2px;
+            transition: 0.3s;
+        }
+        .btn-movie:hover {
+            filter: brightness(1.15);
+            transform: translateY(-2px);
+        }
+
+        .input-icon-user { background-image: url('https://cdn-icons-png.flaticon.com/512/1077/1077114.png'); }
+        .input-icon-lock { background-image: url('https://cdn-icons-png.flaticon.com/512/3064/3064197.png'); }
+        .input-icon-user, .input-icon-lock {
+            background-repeat: no-repeat;
+            background-size: 22px;
+            background-position: 10px center;
+            padding-left: 45px !important;
+            padding-right: 45px !important;
+        }
+
+        .outer-card {
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+        }
+
+        /* ===== 👁 眼睛 icon ===== */
+        .pwd-wrapper {
+            position: relative;
+        }
+
+        .pwd-wrapper .toggle-eye {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #6c757d;
+            font-size: 18px;
+            z-index: 5;
+        }
+
+        .pwd-wrapper .toggle-eye:hover {
+            color: #3a5af9;
+        }
+    </style>
+</head>
+
+<body class="bg-gradient-primary">
+
+<div class="container">
+    <div class="row justify-content-center align-items-center min-vh-100">
+        <div class="col-xl-10 col-lg-12 col-md-9">
+
+            <div class="card outer-card">
+                <div class="card-body p-0">
+
+                    <div class="row justify-content-center align-items-center min-vh-100">
+                        <div class="col-xl-6 col-lg-8 col-md-10">
+
+                            <div class="card o-hidden border-0 shadow-lg movie-bg">
+                                <div class="card-body p-5">
+
+                                    <div class="text-center mb-4">
+                                        <h1 class="h4 text-gray-900 movie-title" style="white-space: nowrap;">
+                                            後台系統登錄
+                                        </h1>
+                                    </div>
+
+                                    <!-- ✅ 登入表單（加 onsubmit 驗證） -->
+                                    <form class="user"
+                                          th:action="@{/admin/login}"
+                                          method="post"
+                                          onsubmit="return validateLogin();">
+
+                                        <!-- 🔴 後端錯誤訊息（帳密錯） -->
+                                        <div class="alert alert-danger py-2 mb-3"
+                                             th:if="${errorMsg}"
+                                             th:text="${errorMsg}">
+                                        </div>
+
+                                        <!-- 🔴 前端錯誤訊息（空值） -->
+                                        <div id="clientError"
+                                             class="alert alert-danger py-2 mb-3"
+                                             style="display:none;">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <input type="text"
+                                                   id="account"
+                                                   name="account"
+                                                   class="form-control form-control-user input-icon-user"
+                                                   placeholder="請輸入帳號"
+                                                   th:value="${account}">
+                                        </div>
+
+                                        <!-- ✅ 密碼 + 👁 -->
+                                        <div class="form-group pwd-wrapper">
+                                            <input type="password"
+                                                   id="password"
+                                                   name="password"
+                                                   class="form-control form-control-user input-icon-lock"
+                                                   placeholder="請輸入密碼">
+
+                                            <i id="togglePwd" class="fas fa-eye toggle-eye"></i>
+                                        </div>
+
+                                        <button type="submit"
+                                                class="btn btn-primary btn-user btn-block btn-movie">
+                                            登錄
+                                        </button>
+                                    </form>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<footer class="sticky-footer bg-white">
+    <div class="container my-auto">
+        <div class="copyright text-center my-auto">
+            <span>版權所有 &copy; Showise</span>
+        </div>
+    </div>
+</footer>
+
+<script src="/vendor/jquery/jquery.min.js"></script>
+<script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="/vendor/jquery-easing/jquery.easing.min.js"></script>
+<script src="/js/sb-admin-2.min.js"></script>
+
+<!-- ✅ 👁 切換密碼顯示 -->
+<script>
+    const pwdInput = document.getElementById("password");
+    const toggleIcon = document.getElementById("togglePwd");
+
+    toggleIcon.addEventListener("click", function () {
+        const isPwd = pwdInput.type === "password";
+        pwdInput.type = isPwd ? "text" : "password";
+        this.classList.toggle("fa-eye");
+        this.classList.toggle("fa-eye-slash");
+    });
+
+    // ✅ 空值驗證
+    function validateLogin() {
+        const acc = document.getElementById("account").value.trim();
+        const pwd = document.getElementById("password").value.trim();
+        const errDiv = document.getElementById("clientError");
+
+        let msg = "";
+
+        if (!acc && !pwd) {
+            msg = "請輸入帳號與密碼";
+        } else if (!acc) {
+            msg = "請輸入帳號";
+        } else if (!pwd) {
+            msg = "請輸入密碼";
+        }
+
+        if (msg) {
+            errDiv.innerText = msg;
+            errDiv.style.display = "block";
+            return false; // ❌ 不送出表單
+        }
+
+        errDiv.style.display = "none";
+        return true; // ✅ 送出表單
+    }
+</script>
+
+</body>
+</html>
