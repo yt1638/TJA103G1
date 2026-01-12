@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>訂單確認</title>
+  <link rel="stylesheet" th:href="@{/css/order_all.css}">
+</head>
+
+<body>
+<div id="order">
+  <div class="order-overlay"></div>
+  <div class="order-dialog">
+    <button class="order-close" type="button">&times;</button>
+
+    <div class="confirm-wrapper">
+      <section class="panel summary-panel">
+        <div class="panel-header">訂單確認</div>
+
+        <div class="panel-body summary-body">
+          <div class="summary-row">
+            <span class="label">電影：</span>
+            <span th:text="${orderDraft.movieName} ?: '—'">—</span>
+          </div>
+
+          <div class="summary-row">
+            <span class="label">日期：</span>
+            <span th:text="${orderDraft.date} ?: '—'">—</span>
+          </div>
+
+          <div class="summary-row">
+            <span class="label">場次：</span>
+            <span th:text="${orderDraft.sessionTimeText} ?: '—'">—</span>
+          </div>
+
+          <div class="summary-row">
+            <span class="label">座位：</span>
+            <span th:text="${#lists.isEmpty(orderDraft.selectedSeats) ? '尚未選位' : ''}">尚未選位</span>
+
+            <span th:if="${!#lists.isEmpty(orderDraft.selectedSeats)}"
+                  th:text="${#strings.listJoin(orderDraft.selectedSeats.![row + seat], ', ')}">
+            </span>
+          </div>
+
+          <div class="summary-section">
+            <div class="summary-section-title">票種：</div>
+            <table class="summary-table">
+              <thead>
+              <tr>
+                <th>票種</th>
+                <th>張數</th>
+                <th>小計</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr th:if="${#lists.isEmpty(orderDraft.tickets)}">
+                <td colspan="3">未選擇票種</td>
+              </tr>
+              <tr th:each="t : ${orderDraft.tickets}">
+                <td th:text="${t.name}">票種</td>
+                <td th:text="${t.qty}">0</td>
+                <td th:text="'$' + ${#numbers.formatInteger(t.subtotal, 1, 'COMMA')}">$0</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="summary-section">
+            <div class="summary-section-title">餐飲：</div>
+            <table class="summary-table">
+              <thead>
+              <tr>
+                <th>品名</th>
+                <th>數量</th>
+                <th>小計</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr th:if="${#lists.isEmpty(orderDraft.foods)}">
+                <td colspan="3">未加購餐飲</td>
+              </tr>
+              <tr th:each="f : ${orderDraft.foods}">
+                <td th:text="${f.name}">餐飲</td>
+                <td th:text="${f.qty}">0</td>
+                <td th:text="'$' + ${#numbers.formatInteger(f.subtotal, 1, 'COMMA')}">$0</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="summary-total summary-total-top">
+            <div class="summary-row">
+              <span class="label">總金額：</span>
+              <span th:text="'$' + ${#numbers.formatInteger(orderDraft.total, 1, 'COMMA')}">$0</span>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- 去結帳：POST /order/submit-->
+      <form id="submitForm" method="post" th:action="@{/order/submit}"></form>
+
+      <div class="order-footer confirm-footer-center">
+        <div class="seat-timer">
+          ⏱︎ 剩餘時間：<span id="countdown">10:00</span>
+        </div>
+        <div>
+          <a class="btn-back" th:href="@{/order/seat}">返回上一頁</a>
+          <button id="checkout-btn" type="submit" class="btn-primary" form="submitForm">去結帳</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- 後端塞給 JS 的資料 -->
+<script th:inline="javascript">
+  window.EXPIRE_AT = /*[[${expireAt}]]*/ 0;
+</script>
+
+<script th:src="@{/js/confirm.js}"></script>
+</body>
+</html>

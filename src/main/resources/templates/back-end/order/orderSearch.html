@@ -1,18 +1,6 @@
-<!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div th:fragment="content">
 
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>訂單管理</title>
-<link th:href="@{/css/sb-admin-2.min.css}" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/dataTables.jqueryui.min.css" /> <!-- ●●css for jquery datatables 用 -->
-</head>
-
-<body>
-
-
-	<!-- Begin Page Content -->
+<!-- Begin Page Content -->
 	<div class="container-fluid">
 
 		<!-- Page Heading -->
@@ -64,6 +52,7 @@
 							<label for="orderStatus">訂單狀態</label> 
 							<select id="orderStatus" class="form-control" name="orderStatus">
 								<option value="">全部</option>
+								<option value="2" th:selected="${param.orderStatus == '2'}">已取消</option>
 								<option value="1" th:selected="${param.orderStatus == '1'}">已售出</option>
 								<option value="0" th:selected="${param.orderStatus == '0'}">未付款</option>
 							</select>
@@ -117,6 +106,9 @@
 										<span class="badge badge-secondary" th:if="${orderVO.orderStatus ==0 }">
 										未付款
 										</span>
+										<span class="badge badge-secondary" th:if="${orderVO.orderStatus ==2 }">
+										已取消
+										</span>
 									</td>
 									<td th:text="${#dates.format(orderVO.orderCreateTime, 'yyyy-MM-dd HH:mm')}"></td>
 									<td><a th:href="@{/backend/order/OrderDetail(orderId=${orderVO.orderId})}" class="btn btn-sm btn-primary"> 訂單詳情 </a></td>
@@ -127,12 +119,10 @@
 				</div>
 			</div>
 		</div>
-
 	</div>
 	<!-- /.container-fluid -->
-	
 	<!-- ●● jquery datatables 設定 -->
-	<script src="https://code.jquery.com/jquery-3.5.1.js"></script>                                    <!-- ●●js  for jquery datatables 用 -->
+<!-- 	<script src="https://code.jquery.com/jquery-3.5.1.js"></script>           -->                          <!-- ●●js  for jquery datatables 用 -->
 	<script	src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>              <!-- ●●js  for jquery datatables 用 -->
     <script>
         
@@ -167,7 +157,6 @@
 	});
 
     </script>
+</div>
 
-</body>
 
-</html>

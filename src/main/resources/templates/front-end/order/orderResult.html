@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>訂單結果</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <link rel="stylesheet" th:href="@{/css/order_all.css}">
+
+
+  <style>
+    .order-dialog.result-dialog {
+      max-width: 620px;
+      height: auto;
+      padding: 40px 36px;
+    }
+
+    .result-icon {
+      font-size: 56px;
+      color: #ff7e42;
+      text-align: center;
+      margin-bottom: 14px;
+    }
+
+    .result-title {
+      font-size: 28px;
+      font-weight: 400;
+      text-align: center;
+      margin: 0 0 24px;
+    }
+
+    .result-message {
+      text-align: center;
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1.6;
+      margin: 26px 0;
+      color: #c0392b; 
+    }
+
+    .result-meta {
+      text-align: center;
+      color: #555;
+      margin: 24px 0;
+    }
+
+    .result-meta .order-id {
+      font-size: 18px;
+      font-weight: 700;
+      color: #222;
+      margin-top: 6px;
+    }
+
+    .result-actions {
+      margin-top: 28px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .result-actions a.btn-primary {
+      text-decoration: none;
+      display: inline-block;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="order">
+    <div class="order-overlay"></div>
+
+    <div class="order-dialog result-dialog">
+      <div class="result-icon">
+        <i class="fa-solid fa-receipt"></i>
+      </div>
+
+      <h1 class="result-title">訂單結果</h1>
+
+      <!-- 後端帶的訊息 -->
+      <div th:if="${resultMessage}" class="result-message">
+        <span th:text="${resultMessage}"></span>
+      </div>
+
+      <!-- 訂單編號 -->
+      <div class="result-meta">
+        <div>訂單編號</div>
+        <div class="order-id" th:text="${param.orderId}">0</div>
+      </div>
+
+      <div class="result-actions">
+        <a class="btn-primary" th:href="@{/member/orders}">
+          前往「我的訂單」查看結果
+        </a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
