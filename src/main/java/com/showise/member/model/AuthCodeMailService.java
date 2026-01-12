@@ -15,7 +15,7 @@ import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 
 @Service
-public class MailService {
+public class AuthCodeMailService {
 	
 	@Value("${mail.gmail.username}")
 	private String myGmail;

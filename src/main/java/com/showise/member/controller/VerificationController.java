@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import com.showise.member.model.AuthCodeService;
-import com.showise.member.model.MailService;
+import com.showise.member.model.AuthCodeMailService;
 import com.showise.member.model.MemberService;
 import com.showise.member.model.MemberVO;
 
@@ -22,7 +22,7 @@ public class VerificationController {
 	private AuthCodeService authCodeService;
 	
 	@Autowired
-	private MailService mailService;
+	private AuthCodeMailService mailService;
 	
 	@Autowired
 	private MemberService memberService;
