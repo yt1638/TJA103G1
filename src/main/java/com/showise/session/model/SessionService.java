@@ -161,8 +161,16 @@ public class SessionService {
 
 
     public List<SessionVO> listSessionsByMovieAndDate(Integer movieId, LocalDate date) {
-        Timestamp start = Timestamp.valueOf(date.atStartOfDay());//當天開始時間
-        Timestamp end = Timestamp.valueOf(date.plusDays(1).atStartOfDay());//隔天開始時間（上限）
+
+        Timestamp end = Timestamp.valueOf(date.plusDays(1).atStartOfDay()); // 隔天 00:00
+
+        Timestamp start;
+        if (date != null && date.equals(LocalDate.now())) {
+            start = Timestamp.valueOf(LocalDateTime.now()); // 今天：從現在開始
+        } else {
+            start = Timestamp.valueOf(date.atStartOfDay()); // 非今天：從當天 00:00
+        }
+
         return repository.findOnSaleSessionsByMovieAndDay(movieId, start, end);
     }
 }

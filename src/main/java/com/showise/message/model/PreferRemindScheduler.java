@@ -38,7 +38,7 @@ public class PreferRemindScheduler {
 	MailService mailService;
 	
 	@Transactional
-	@Scheduled(cron = "0 41 10 * * ?", zone = "Asia/Taipei")
+	@Scheduled(cron = "0 26 20 * * ?", zone = "Asia/Taipei")
 	public void sendPreferRemind() {
 		
 		int preHour = msgService.findByType(1).getPreHours();

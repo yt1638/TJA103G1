@@ -11,11 +11,18 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.showise.employeedata.model.EmployeeDataService;
 import com.showise.employeedata.model.EmployeeDataVO;
+import com.showise.movie.model.MovieService;
+import com.showise.movietype.model.MovieTypeService;
 
 import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class HomeController {
+	
+	@Autowired
+	MovieService movieSvc;
+	@Autowired
+	MovieTypeService mtSvc;
 
     @Autowired
     private EmployeeDataService employeeService;
@@ -73,9 +80,12 @@ public class HomeController {
             return "redirect:/admin/login";
         }
 
-        model.addAttribute("pageTitle", "後台首頁");
-        model.addAttribute("content", "back-end/index2 :: content");
-        return "back-end/layout/admin-layout";
+        model.addAttribute("movieList",movieSvc.findAllOrderByStatusAndMovieId());
+		model.addAttribute("typeList",mtSvc.listAll());
+		model.addAttribute("pageTitle","電影資料管理");
+		model.addAttribute("content","back-end/movie/listAll :: content");
+		
+		return "back-end/layout/admin-layout";
     }
 
     // ✅ 登出

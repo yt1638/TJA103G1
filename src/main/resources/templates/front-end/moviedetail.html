@@ -40,8 +40,8 @@
         <div class="container">
             <a class="navbar-brand text-white fw-bold fs-3" th:href="@{/front/index}">SHOWISE</a>
             <div class="ms-auto">
-                <a th:href="@{/order}" class="btn btn-outline-warning me-2">立即訂票</a>
-                <a th:href="@{/login}" class="btn btn-warning">會員登入</a>
+                
+                <a th:href="@{/loginAndRegister/memberLogin}" class="btn btn-warning">會員登入</a>
             </div>
         </div>
     </nav>
@@ -76,50 +76,48 @@
         </div>
 
         <div class="row mt-5 mb-5">
-    <div class="col-12">
-        <h3 class="text-white mb-4"><i class="fas fa-clock text-warning"></i> 選擇場次</h3>
-        <input type="hidden" id="movieId" name="movieId" th:value="${movie.movieId}">
-        
-        <div th:each="i : ${#numbers.sequence(0, 6)}" class="date-card">
-            <div class="date-title fw-bold fs-5">
-                <input type="hidden" name="date" th:value="${datelist[i]}">
-                <i class="far fa-calendar-alt me-2"></i> 
-                <span th:text="${datelist[i]}">日期</span>
-            </div>
-
-            <div class="session-list">
-                <div th:with="dailySessions=${__${'session' + i}__}">
-                    <div th:if="${not #lists.isEmpty(dailySessions)}">						
-                        <div th:each="sess : ${dailySessions}" style="display: inline-block" class="me-2 mb-2">
-									<button class="btn session-btn"
-										th:data-session-id="${sess.sessionId}"
-										th:text="${#dates.format(sess.startTime, 'HH:mm')}">
-										時間</button>
-
-								</div>
-                    </div>
-                    <div th:if="${#lists.isEmpty(dailySessions)}" class="text-secondary ps-2">當天無播放該電影</div>
-                </div>
-            </div>
-
-            <div class="seat-preview-wrapper mt-3" style="display: none; background: #252525; border-radius: 10px; padding: 20px;">
-                <div class="text-center mb-2"><small class="text-warning">銀幕方向</small></div>
-                <div class="screen-divider" style="width: 60%; height: 3px; background: #555; margin: 0 auto 15px;"></div>
+            <div class="col-12">
+                <h3 class="text-white mb-4"><i class="fas fa-clock text-warning"></i> 選擇場次</h3>
+                <input type="hidden" id="movieId" name="movieId" th:value="${movie.movieId}">
                 
-                <div class="seat-grid-target text-center">
+                <div th:each="i : ${#numbers.sequence(0, 6)}" class="date-card">
+                    <div class="date-title fw-bold fs-5">
+                        <input type="hidden" name="date" th:value="${datelist[i]}">
+                        <i class="far fa-calendar-alt me-2"></i> 
+                        <span th:text="${datelist[i]}">日期</span>
                     </div>
 
-                <div class="text-center mt-3">
-                    <div class="mb-2" style="font-size: 0.8rem;">
-                        <span class="seat-demo seat-available"></span> 可選 &nbsp;
-                        <span class="seat-demo seat-sold"></span> 已售
+                    <div class="session-list">
+                        <div th:with="dailySessions=${__${'session' + i}__}">
+                            <div th:if="${not #lists.isEmpty(dailySessions)}">						
+                                <div th:each="sess : ${dailySessions}" style="display: inline-block" class="me-2 mb-2">
+                                    <button class="btn session-btn"
+                                        th:data-session-id="${sess.sessionId}"
+                                        th:text="${#dates.format(sess.startTime, 'HH:mm')}">
+                                        時間</button>
+                                </div>
+                            </div>
+                            <div th:if="${#lists.isEmpty(dailySessions)}" class="text-secondary ps-2">當天無播放該電影</div>
+                        </div>
                     </div>
-                    <a class="confirm-btn btn btn-sm btn-warning fw-bold px-4" href="#">前往訂票</a>
+
+                    <div class="seat-preview-wrapper mt-3" style="display: none; background: #252525; border-radius: 10px; padding: 20px;">
+                        <div class="text-center mb-2"><small class="text-warning">銀幕方向</small></div>
+                        <div class="screen-divider" style="width: 60%; height: 3px; background: #555; margin: 0 auto 15px;"></div>
+                        
+                        <div class="seat-grid-target text-center">
+                            </div>
+
+                        <div class="text-center mt-3">
+                            <div class="mb-2" style="font-size: 0.8rem;">
+                                <span class="seat-demo seat-available"></span> 可選 &nbsp;
+                                <span class="seat-demo seat-sold"></span> 已售
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -129,9 +127,7 @@
         btn.addEventListener('click', function() {
             // 1. 取得相關參數
             const sessionId = this.getAttribute('data-session-id');
-            const movieCard = this.closest('.date-card'); // 找到當前按鈕所屬的日期卡片
-            const movieId = document.getElementById('movieId').value;
-            const dateValue = movieCard.querySelector('input[name="date"]').value;
+            const movieCard = this.closest('.date-card'); 
 
             // 2. 移除所有按鈕的 active 狀態，並把所有其他的預覽區隱藏
             document.querySelectorAll('.session-btn').forEach(b => b.classList.remove('active', 'btn-warning'));
@@ -140,20 +136,16 @@
             // 3. 設定當前按鈕樣式
             this.classList.add('active', 'btn-warning');
 
-            // 4. AJAX 抓取座位資料 (回傳 Map<String, String>)
+            // 4. AJAX 抓取座位資料
             fetch(`/front/getSessionStatus?sessionId=${sessionId}`)
                 .then(res => res.json())
                 .then(data => {
-                    // 找到當前卡片內的預覽容器與渲染目標
+                    // 找到當前卡片內的渲染目標
                     const wrapper = movieCard.querySelector('.seat-preview-wrapper');
                     const grid = movieCard.querySelector('.seat-grid-target');
-                    const confirmBtn = movieCard.querySelector('.confirm-btn');
 
                     // 渲染座位圖
                     renderPreviewToGrid(grid, data.allSeatStatus);
-                    
-                    // 更新按鈕連結
-                    confirmBtn.href = `/order/prepare?movieId=${movieId}&sessionId=${sessionId}&date=${encodeURIComponent(dateValue)}`;
                     
                     // 顯示該區域
                     wrapper.style.display = 'block';
@@ -176,7 +168,6 @@
                 const seat = document.createElement('div');
                 // 使用之前定義的樣式類別
                 seat.className = 'seat-preview ' + (status === '1' ? 'seat-available' : 'seat-sold');
-                // 預覽圖縮小一點點以免太擠
                 seat.style.width = '18px';
                 seat.style.height = '18px';
                 seat.style.margin = '2px';
