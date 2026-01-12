@@ -94,7 +94,7 @@ public class MemberVO implements Serializable{
 	private Set<MemberPreferTypeVO> memberPreferType;
 
 	
-//	訂單
+
 	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
 	@OrderBy("orderId asc")	
 	private Set<OrderVO> order;
@@ -115,6 +115,7 @@ public class MemberVO implements Serializable{
 	public MemberVO() {
 		super();
 	}
+	
 
 	public Integer getMemberId() {
 		return memberId;
