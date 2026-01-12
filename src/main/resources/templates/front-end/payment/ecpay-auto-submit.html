@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>正在導向綠界付款頁</title>
+</head>
+<body>
+	<p>正在導向綠界付款頁，請稍候…</p>
+
+	<form id="ecpayForm" method="post" th:action="${aioUrl}">
+		<input type="hidden" th:each="e : ${params}" th:name="${e.key}"
+			th:value="${e.value}" />
+	</form>
+
+	<script>
+		document.getElementById("ecpayForm").submit();
+	</script>
+</body>
+
+</html>
