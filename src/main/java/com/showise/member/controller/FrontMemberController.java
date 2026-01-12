@@ -297,7 +297,7 @@ public class FrontMemberController {
 	        
 	        
 	        // 將驗票網址放進QrCode
-	        String qrUrl = "http://showise.ddns.net/ticket/verify?code=" + order.getQrCode();
+	        String qrUrl = VerifyQrCodeController.generateQrUrl(order.getQrCode());
 	        
 	        String qrCodeBase64 = QrCodeGenerator.generateQRCodeBase64(qrUrl, 400, 400);
 	        model.addAttribute("qrCodeBase64", qrCodeBase64);
