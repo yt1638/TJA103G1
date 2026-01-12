@@ -17,13 +17,11 @@ public class EmployeePermissionInterceptor implements HandlerInterceptor {
 
         HttpSession session = request.getSession(false);
 
-        // 1) 沒 session 或沒登入：擋
         if (session == null || session.getAttribute("loginEmployee") == null) {
-            response.sendRedirect(request.getContextPath() + "/admin/login");
+            response.sendRedirect(request.getContextPath() + "/admin/login"); // ✅ 對齊你的 mapping
             return false;
         }
 
-        // 2) 權限判斷：empPerm 必須是 1
         Object permObj = session.getAttribute("empPerm");
         int perm = 0;
 
@@ -32,13 +30,10 @@ public class EmployeePermissionInterceptor implements HandlerInterceptor {
         } else if (permObj != null) {
             try {
                 perm = Integer.parseInt(permObj.toString());
-            } catch (NumberFormatException ignore) {
-                perm = 0;
-            }
+            } catch (NumberFormatException ignore) {}
         }
 
         if (perm != 1) {
-            // ✅ 直接擋掉：導回首頁（或改成 /no-permission）
             response.sendRedirect(request.getContextPath() + "/index");
             return false;
         }
