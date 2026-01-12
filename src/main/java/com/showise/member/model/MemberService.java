@@ -36,6 +36,10 @@ public class MemberService {
 		return repository.findAll();
 	}
 	
+	public List<MemberVO> findMemberByPrefer(Integer movieTypeId){
+		return repository.findMemberByPrefer(movieTypeId);
+	}
+	
 	
 	
 }

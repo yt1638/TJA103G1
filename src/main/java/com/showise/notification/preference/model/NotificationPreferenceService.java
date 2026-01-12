@@ -1,6 +1,6 @@
 package com.showise.notification.preference.model;
 
-import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -10,33 +10,41 @@ import org.springframework.stereotype.Service;
 @Service("notification_preference")
 public class NotificationPreferenceService {
 
-	@Autowired
+    @Autowired
     private NotificationPreferenceRepository repository;
 
-    private static final short STAT_PENDING = 0; // 待寄
-
-    // 排程用：抓指定日期 + 待寄
-    public List<NotificationPreferenceVO> findPendingBySendDate(LocalDate sendDate) {
-        return repository.findByNotiPrefStimeAndNotiPrefStat(sendDate, STAT_PENDING);
+    // 新增
+    public void addNotificationPreference(NotificationPreferenceVO notificationPreferenceVO) {
+        repository.save(notificationPreferenceVO);
     }
 
-    public void addNotificationPreference(NotificationPreferenceVO vo) {
-        repository.save(vo);
+    // 修改
+    public void updateNotificationPreference(NotificationPreferenceVO notificationPreferenceVO) {
+        repository.save(notificationPreferenceVO);
     }
 
-    public void updateNotificationPreference(NotificationPreferenceVO vo) {
-        repository.save(vo);
-    }
-
+    // 刪除（✅補上，配合 Controller）
     public void deleteNotificationPreference(Integer notiPrefNo) {
         repository.deleteById(notiPrefNo);
     }
 
+    // 單筆查詢
     public NotificationPreferenceVO getOneNotificationPreference(Integer notiPrefNo) {
-        return repository.findById(notiPrefNo).orElse(null);
+        Optional<NotificationPreferenceVO> optional = repository.findById(notiPrefNo);
+        return optional.orElse(null);
     }
 
+    // 全部查詢
     public List<NotificationPreferenceVO> getAll() {
         return repository.findAll();
+    }
+
+    // 複合查詢（✅你現在的 Repository JPQL 就是吃這三個）
+    public List<NotificationPreferenceVO> compositeQuery(Integer memberId, Integer movieId,Date sendDate) {
+        return repository.compositeQuery(memberId, movieId, sendDate);
+    }
+    
+    public void save(NotificationPreferenceVO vo) {
+        repository.save(vo);
     }
 }

@@ -1,252 +1,85 @@
 <div th:fragment="content">
   <style>
-    .page-title{
-      font-size: 30px;
-      font-weight: 800;
-      color:#2f3b4a;
-      margin: 10px 0 18px;
-    }
+    /* 保持原有的基礎樣式 */
+    .page-title{ font-size:30px; font-weight:800; color:#2f3b4a; margin:10px 0 18px;}
+    .msg-box{ margin-top:10px; border:1px solid #d9d9d9; border-radius:5px; background:#fff; padding:0;}
+    .msg-textarea{ width:100%; min-height:150px; border:0; outline:0; resize: vertical; padding:14px; font-size:18px; line-height:1.7; color:#2f3b4a;}
+    .msg-textarea::placeholder{ color:#9aa4b2; font-weight:600;}
 
-    .tag-title{
-      display:inline-flex;
-      align-items:center;
-      gap:10px;
-      background:#e5e5e5;
-      color:#6b6b6b;
-      font-weight:700;
-      padding:14px 16px;
-      border-radius:4px;
-      min-width:260px;
-    }
-
-    .btn-black{
-      background:#111;
-      color:#fff;
-      border:1px solid #111;
-      padding:12px 16px;
-      border-radius:4px;
-      font-weight:700;
-    }
-    .btn-black:hover{ filter:brightness(.95); }
-
-    .msg-box{
-      margin-top:10px;
-      border:1px solid #d9d9d9;
-      border-radius:5px;
-      background:#fff;
-      padding:0;
-    }
-    .msg-textarea{
-      width:100%;
-      min-height:150px;
-      border:0;
-      outline:0;
-      resize: vertical;
-      padding:14px 14px;
-      font-size:18px;
-      line-height:1.7;
-      color:#2f3b4a;
-    }
-    .msg-textarea::placeholder{
-      color:#9aa4b2;
-      font-weight:600;
-    }
-
+    /* 移植喜好通知的灰色外盒樣式 */
     .schedule-box{
       margin-top:16px;
       background:#ededed;
       border-radius:12px;
       padding:18px 22px;
-      max-width:900px;
-      display:flex;
-      gap:40px;
+      max-width:500px; /* 限制寬度與喜好通知一致 */
     }
-    .schedule-col{ flex:1 1 0; }
     .schedule-title{
       font-weight:700;
       color:#7a7a7a;
       margin-bottom:12px;
       font-size:16px;
     }
-    .schedule-row{
-      display:flex;
-      align-items:center;
+    .schedule-row{ 
+      display:flex; 
+      align-items:center; 
       gap:12px;
-      flex-wrap:wrap;
+      font-weight: 700; /* 讓文字「提前」「小時發送」字重一致 */
+      color: #4b5563;
     }
-    .schedule-row select,
-    .schedule-row input{
-      min-width:220px;
-      height:44px;
-      border:1px solid #cfcfcf;
-      border-radius:6px;
-      padding:0 12px;
-      background:#fff;
+
+    /* 調整 input 視覺，使其與 select 高度與邊框一致 */
+    .schedule-row input{ 
+      width:100px; /* 稍微加大寬度 */
+      height:44px; /* 與 select 同高 */
+      border:1px solid #cfcfcf; 
+      border-radius:6px; 
+      padding:0 12px; 
       font-size:16px;
+      background:#fff;
+      font-weight:700;
       color:#4b5563;
-      font-weight:700;
-      box-sizing:border-box;
-      outline:none;
-    }
-    .unit{
-      font-weight:900;
-      color:#7a7a7a;
-      font-size:18px;
-      white-space:nowrap;
+      outline: none;
     }
 
-    .error{
-      color:#d60000;
-      font-weight:800;
-      margin-top:8px;
-      display:block;
-    }
-
-    .btn-black-sm{
-      background:#111;
-      color:#fff;
-      border:1px solid #111;
-      padding:8px 14px;
-      border-radius:4px;
-      font-weight:700;
-      font-size:14px;
-      height:44px;
-      white-space:nowrap;
-    }
+    .btn-black-sm{ background:#111; color:#fff; border:1px solid #111; padding:8px 14px; border-radius:4px; font-weight:700; font-size:14px; cursor: pointer;}
     .btn-black-sm:hover{ filter:brightness(.95); }
-
-    .flash{
-      width:100%;
-      margin: 10px 0 14px;
-      padding: 14px 18px;
-      border-radius: 10px;
-      font-weight: 900;
-      font-size: 18px;
-      box-sizing: border-box;
-      max-width:900px;
-    }
-    .flash-ok{
-      background:#e9fff0;
-      border:1px solid #9fe0b6;
-      color:#0f7a35;
-    }
-    .flash-err{
-      background:#fff0f0;
-      border:1px solid #f3bcbc;
-      color:#a40000;
-    }
-
-    @media (max-width: 992px){
-      .schedule-box{ flex-direction:column; }
-    }
+    
+    .error{ color:#d60000; font-weight:800; margin-top:8px; display:block;}
+    .flash{ max-width:900px; margin:10px 0 0; padding:12px 14px; border-radius:8px; font-weight:800;}
+    .flash-ok{ background:#e9fff0; border:1px solid #b7f0c7; color:#146c2e;}
+    .flash-err{ background:#fff0f0; border:1px solid #f3bcbc; color:#a40000;}
   </style>
 
   <div class="container-fluid">
-
     <div class="page-title">開演通知編輯</div>
 
     <div th:if="${success}" class="flash flash-ok" th:text="${success}"></div>
-    <div th:if="${error}"   class="flash flash-err" th:text="${error}"></div>
+    <div th:if="${error}" class="flash flash-err" th:text="${error}"></div>
 
-    <form id="editForm"
-          th:action="@{/notification_showstart/update}"
-          method="post"
-          th:object="${notificationShowstartVO}"
-          onsubmit="syncMemberAndSession();">
-
-      <!-- VO hidden -->
-      <input type="hidden" th:field="*{member.memberId}" id="memberIdHidden">
-      <input type="hidden" th:field="*{session.sessionId}" id="sessionIdHidden">
-      <input type="hidden" th:field="*{notiShowstStime}">
-      <input type="hidden" th:field="*{notiShowstStat}">
-
-      <!-- Controller @RequestParam 用 -->
-      <input type="hidden" name="memberId" id="memberIdParam">
-      <input type="hidden" name="sessionId" id="sessionIdParam">
-
-      <!-- 標籤 + 右上立即發送（只有這顆會 sendNow） -->
-      <div class="d-flex align-items-center justify-content-between" style="gap:12px;">
-        <div class="tag-title">
-          <span>開演通知:</span>
-          <i class="fas fa-pen"></i>
-        </div>
-
-        <button class="btn-black" type="submit" name="mode" value="sendNow"
-                onclick="syncMemberAndSession()">
-          立即發送
-        </button>
-      </div>
-
-      <!-- 訊息內容 -->
+    <form th:action="@{/notification_showstart/update}" method="post" th:object="${messageVO}">
+      
       <div class="msg-box">
         <textarea class="msg-textarea"
-                  th:field="*{notiShowstScon}"
+                  th:field="*{msgContent}"
                   placeholder="親愛的用戶您好：&#10;此封訊息為提醒您電影開演的時間..."
-                  onclick="hideContent('notiShowstScon.errors');"></textarea>
+                  onclick="hideContent('msgContent.errors');"></textarea>
       </div>
-
-      <span th:if="${#fields.hasErrors('notiShowstScon')}"
-            th:errors="*{notiShowstScon}"
+      <span th:if="${#fields.hasErrors('msgContent')}"
+            th:errors="*{msgContent}"
             class="error"
-            id="notiShowstScon.errors"></span>
+            id="msgContent.errors"></span>
 
-      <!-- 灰色左右兩欄 -->
       <div class="schedule-box">
-
-        <!-- 左欄：排程（✅ 這顆確認要 submit + schedule） -->
-        <div class="schedule-col">
-          <div class="schedule-title">設定預先發送時間:</div>
-
-          <div class="schedule-row">
-            <select name="advanceHours" id="advanceHoursSelect" onchange="syncMemberAndSession()">
-              <option value="" selected>請選擇小時數</option>
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="6">6</option>
-              <option value="24">24</option>
-            </select>
-
-            <span class="unit">小時</span>
-
-            <button class="btn-black-sm" type="submit" name="mode" value="schedule"
-                    onclick="syncMemberAndSession()">
-              確認
-            </button>
-          </div>
-
-          <div style="margin-top:8px; font-size:13px; font-weight:800; color:#7a7a7a;">
-            ※ 這是「開演前 N 小時寄出」。例如開演 2026-01-22 02:00，選 1 小時代表 2026-01-22 01:00 寄出。
-          </div>
+        <div class="schedule-title">設定發送時間:</div>
+        <div class="schedule-row">
+          提前
+          <input type="number" th:field="*{preHours}" placeholder="小時" min="1">
+          小時發送
+          <button class="btn-black-sm" type="submit">儲存設定</button>
         </div>
-
-        <!-- 右欄：選會員 + 場次（✅ 右欄確認不送出，避免誤寄） -->
-        <div class="schedule-col">
-          <div class="schedule-title">選擇會員信箱：</div>
-
-          <div class="schedule-row">
-            <select id="memberSelect" onchange="syncMemberAndSession()">
-              <option value="">請選擇會員信箱</option>
-              <option th:each="m : ${memberList}"
-                      th:value="${m.memberId}"
-                      th:text="${m.email}">
-              </option>
-            </select>
-
-            <input type="number"
-                   id="sessionIdInput"
-                   placeholder="請輸入場次編號"
-                   min="1"
-                   oninput="syncMemberAndSession()"
-                   onkeydown="if(event.key==='Enter'){ event.preventDefault(); }">
-
-            <button class="btn-black-sm" type="button"
-                    onclick="syncMemberAndSession(); alert('已選擇會員/場次。若要排程請在左欄選小時後按左欄「確認」。若要立即寄送請按右上「立即發送」。');">
-              確認
-            </button>
-          </div>
-        </div>
-
       </div>
+
     </form>
   </div>
 
@@ -255,23 +88,5 @@
       const el = document.getElementById(id);
       if(el) el.style.display = "none";
     }
-
-    function syncMemberAndSession(){
-      const memberId = document.getElementById("memberSelect")?.value || "";
-      const sessionId = document.getElementById("sessionIdInput")?.value || "";
-
-      const memberHidden = document.getElementById("memberIdHidden");
-      const sessionHidden = document.getElementById("sessionIdHidden");
-      if(memberHidden) memberHidden.value = memberId;
-      if(sessionHidden) sessionHidden.value = sessionId;
-
-      const memberParam = document.getElementById("memberIdParam");
-      const sessionParam = document.getElementById("sessionIdParam");
-      if(memberParam) memberParam.value = memberId;
-      if(sessionParam) sessionParam.value = sessionId;
-    }
-
-    document.addEventListener("DOMContentLoaded", syncMemberAndSession);
   </script>
-
 </div>

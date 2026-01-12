@@ -1,5 +1,6 @@
 <div th:fragment="content">
   <style>
+    /* 1. 頁面標題樣式 */
     .page-title {
       font-size: 24px;
       font-weight: 700;
@@ -10,43 +11,80 @@
       display: inline-block;
     }
 
+    /* 2. 查詢區塊：強制一行，移除導致換行的過大 margin */
     .search-bar-wrapper {
       background: #e9eaec;
       border-radius: 10px;
-      padding: 18px 24px;
+      padding: 15px 20px;
       display: flex;
-      flex-wrap: wrap;
-      align-items: center;
+      align-items: center; /* 垂直置中 */
+      flex-wrap: nowrap;   /* 強制不換行 */
+      gap: 15px;           /* 使用 gap 代替 margin，間距更精準 */
     }
 
     .search-group {
       display: flex;
       align-items: center;
-      margin-right: 40px;
-      margin-bottom: 10px;
+      flex-shrink: 0;      /* 防止欄位被壓縮變形 */
     }
 
     .search-group label {
       margin-right: 8px;
       font-weight: 600;
-      white-space: nowrap;
+      color: #000;
+      white-space: nowrap; /* 標籤文字絕不換行 */
     }
 
+    /* 調整 input 寬度，確保三個欄位能並列 */
     .search-group input {
-      min-width: 200px;
+      width: 150px; 
+      height: 38px;
+      color: #000;
+      font-weight: 500;
+      border-radius: 6px;
+      border: 1px solid #ced4da;
     }
 
+    .search-group input::placeholder {
+      color: #888;
+    }
+
+    /* 搜尋按鈕置右 */
     .search-submit {
-      margin-left: auto;
+      margin-left: auto; 
+      flex-shrink: 0;
     }
 
     .search-btn {
       background-color: #000;
       color: #fff;
       border-radius: 999px;
-      padding: 8px 26px;
+      padding: 8px 24px;
       font-weight: 600;
       border: none;
+      cursor: pointer;
+    }
+
+    .search-btn:hover {
+      background-color: #333;
+    }
+
+    /* 編輯按鈕樣式 */
+    .edit-preference-btn {
+      background-color: #000;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    /* 表格置中 */
+    .table thead th, .table tbody td {
+      text-align: center;
+      vertical-align: middle;
     }
 
     .error-msg {
@@ -54,105 +92,35 @@
       font-weight: 700;
       margin-top: 10px;
     }
-    /* === 查詢欄位文字改黑體 === */
-
-	/* label：黑色＋粗體 */
-	.search-group label {
-	    color: #000;
-	    font-weight: 550;
-	}
-	
-	/* input 文字本身 */
-	.search-group input {
-	    color: #000;
-	    font-weight: 500;
-	}
-	
-	/* placeholder 顏色加深 */
-	.search-group input::placeholder {
-	    color: #555;
-	    font-weight: 500;
-	}
-	
-	/* date input 的顯示文字 */
-	.search-group input[type="date"] {
-	    color: #000;
-	    font-weight: 500;
-	}
-	.table thead th,
-	.table tbody td {
-	  text-align: center;
-	  vertical-align: middle;
-	}
-	.edit-preference-btn {
-            background-color: #000;
-            color: #fff;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-    }
-	.edit-preference-btn:hover {
-            background-color: #333;
-            transform: translateY(-1px);
-    }
-    
   </style>
 
   <div class="container-fluid">
-
     <div class="page-title-bar d-flex justify-content-between align-items-center mb-3">
       <span class="page-title">開演通知查詢</span>
-      
-
-      <a class="edit-preference-btn"
-         th:href="@{/notification_showstart/update_notificationShowstart_input}">
+      <a class="edit-preference-btn" th:href="@{/notification_showstart/update_notificationShowstart_input}">
         開演通知編輯
       </a>
     </div>
 
-    <!-- 後端錯誤訊息 -->
     <div th:if="${errorMessage}" class="error-msg" th:text="${errorMessage}"></div>
-    <!-- 前端驗證錯誤 -->
     <div id="clientError" class="error-msg"></div>
 
-    <!-- 查詢表單 -->
-    <form method="post"
-          th:action="@{/notification_showstart/listNotificationShowstarts_ByCompositeQuery}"
-          onsubmit="return validateForm();">
-
+    <form method="post" th:action="@{/notification_showstart/listNotificationShowstarts_ByCompositeQuery}" onsubmit="return validateForm();">
       <div class="search-bar-wrapper">
 
-        <!-- ✅ 已發送日期查詢 -->
         <div class="search-group">
-          <label for="sendDate">已發送日期查詢：</label>
-          <input type="date"
-                 class="form-control"
-                 id="sendDate"
-                 name="notiShowstStime">
+          <label>已發送日期：</label>
+          <input type="date" class="form-control" name="notiShowstStime">
         </div>
 
-        <!-- ✅ 會員編號 -->
         <div class="search-group">
-          <label for="memberId">會員編號：</label>
-          <input type="text"
-                 class="form-control"
-                 id="memberId"
-                 name="memberId"
-                 placeholder="請輸入會員編號">
+          <label>會員編號：</label>
+          <input type="text" class="form-control" name="memberId" placeholder="請輸入編號">
         </div>
 
-        <!-- ✅ 電影編號（文字改成照片一樣；name 仍維持 sessionId） -->
         <div class="search-group">
-          <label for="movieId">電影編號：</label>
-          <input type="text"
-                 class="form-control"
-                 id="movieId"
-                 name="sessionId"
-                 placeholder="請輸入電影編號">
+          <label>場次編號：</label>
+          <input type="text" class="form-control" name="sessionId" placeholder="請輸入編號">
         </div>
 
         <div class="search-submit">
@@ -162,7 +130,6 @@
       </div>
     </form>
 
-    <!-- 查詢結果表格 -->
     <div class="mt-4">
       <div class="card shadow">
         <div class="card-body p-0">
@@ -177,33 +144,27 @@
                   <th>發送內容</th>
                 </tr>
               </thead>
-
               <tbody>
                 <th:block th:if="${notificationShowstartVOListData != null and !#lists.isEmpty(notificationShowstartVOListData)}">
                   <tr th:each="noti : ${notificationShowstartVOListData}">
-                    <td th:text="${noti.member.memberId}">會員編號</td>
-                    <td th:text="${noti.session.sessionId}">場次編號</td>
-                    <td th:text="${noti.notiShowstStime}">通知日期</td>
-                    <td th:text="${noti.notiShowstStat}">發送狀態</td>
-                    <td th:text="${noti.notiShowstScon}">發送內容</td>
+                    <td th:text="${noti.member.memberId}"></td>
+                    <td th:text="${noti.session.sessionId}"></td>
+                    <td th:text="${noti.notiShowstStime}"></td>
+                    <td th:text="${noti.notiShowstStat == 1 ? '已發送' : '未發送'}"></td>
+                    <td th:text="${noti.notiShowstScon}"></td>
                   </tr>
                 </th:block>
-
                 <th:block th:unless="${notificationShowstartVOListData != null and !#lists.isEmpty(notificationShowstartVOListData)}">
                   <tr>
-                    <td colspan="4" class="text-center text-muted py-4">
-                      查無資料
-                    </td>
+                    <td colspan="5" class="text-center text-muted py-4">查無資料</td>
                   </tr>
                 </th:block>
               </tbody>
-
             </table>
           </div>
         </div>
       </div>
     </div>
-
   </div>
 
   <script>
@@ -213,15 +174,16 @@
       const date      = document.querySelector("[name='notiShowstStime']").value.trim();
 
       let errors = [];
-      const num = /^\d+$/;
-
-      if (!memberId && !sessionId && !date) errors.push("請至少輸入一個查詢條件");
-      if (memberId && !num.test(memberId)) errors.push("會員編號必須為數字");
-      if (sessionId && !num.test(sessionId)) errors.push("電影編號必須為數字");
+      if (!memberId && !sessionId && !date) {
+        errors.push("請至少輸入一個查詢條件");
+      }
 
       const errorDiv = document.getElementById("clientError");
-      errorDiv.innerHTML = errors.join("<br>");
-      return errors.length === 0;
+      if (errors.length > 0) {
+        errorDiv.innerHTML = errors.join("<br>");
+        return false;
+      }
+      return true;
     }
   </script>
 </div>

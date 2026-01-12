@@ -18,10 +18,6 @@ public class MessageService {
 	@Autowired
 	MessageRepository repository;
 	
-	@Autowired
-    private SessionFactory sessionFactory;
-
-	
 	public MessageVO getOneById(Integer msgNo) {
 		Optional<MessageVO> optional = repository.findById(msgNo);
 		return optional.orElse(null);  
@@ -39,5 +35,8 @@ public class MessageService {
 		repository.save(messageVO);
 	}
 	
+	public MessageVO findByType(Integer type) {
+		return repository.findByType(type);
+	}
 
 }

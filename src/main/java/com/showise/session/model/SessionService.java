@@ -4,8 +4,13 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -118,4 +123,46 @@ public class SessionService {
 	public List<SessionVO> listByCinema(Integer cinemaId){
 		return repository.listByCinema(cinemaId);
 	}
+	
+    public List<MovieVO> listBookableMoviesNext7Days() {
+        Timestamp now = Timestamp.valueOf(LocalDateTime.now());
+
+        Timestamp end = Timestamp.valueOf(LocalDate.now().plusDays(7).atStartOfDay());
+        List<MovieVO> movies = repository.findBookableMovies(now, end);
+        Collections.sort(movies, new Comparator<MovieVO>() {
+            @Override
+            public int compare(MovieVO m1, MovieVO m2) {
+                return m1.getMovieId().compareTo(m2.getMovieId());
+            }
+        });
+        return movies;
+    }
+
+
+    public List<LocalDate> listDatesByMovieNext7Days(Integer movieId) {
+        LocalDate today = LocalDate.now();// 用系統預設時區，取得今天
+        Timestamp now = Timestamp.valueOf(java.time.LocalDateTime.now());//取得「現在時間」
+        Timestamp end = Timestamp.valueOf(today.plusDays(7).atStartOfDay()); // 含今天共7天
+
+        // 先從DB撈出場次時間
+        List<Timestamp> startTimes =repository.findStartTimesByMovieInRange(movieId, now, end);
+
+        // 用Set去重（同一天只留一次）
+        Set<LocalDate> dateSet = new HashSet<>();
+        for (Timestamp ts : startTimes) {
+            LocalDate date = ts.toLocalDateTime().toLocalDate();
+            dateSet.add(date);
+        }
+        // 轉成List並排序
+        List<LocalDate> result = new ArrayList<>(dateSet);
+        Collections.sort(result);
+        return result;
+    }
+
+
+    public List<SessionVO> listSessionsByMovieAndDate(Integer movieId, LocalDate date) {
+        Timestamp start = Timestamp.valueOf(date.atStartOfDay());//當天開始時間
+        Timestamp end = Timestamp.valueOf(date.plusDays(1).atStartOfDay());//隔天開始時間（上限）
+        return repository.findOnSaleSessionsByMovieAndDay(movieId, start, end);
+    }
 }

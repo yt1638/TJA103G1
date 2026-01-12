@@ -22,7 +22,7 @@ public interface NotificationPreferenceRepository extends JpaRepository<Notifica
     List<NotificationPreferenceVO> compositeQuery(
             @Param("memberId") Integer memberId,
             @Param("movieId")  Integer movieId,
-            @Param("sendDate") Date sendDate
+            @Param("sendDate") java.util.Date sendDate
     );
     
     // Service 用：指定日期 + 狀態

@@ -1,6 +1,7 @@
 package com.showise.movie.model;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,8 +33,8 @@ public class MovieService {
 		return repository.findAll();
 	}
 	
-	public List<MovieVO> findAllByOrderByMovieIdDesc(){
-		return repository.findAllByOrderByMovieIdDesc();
+	public List<MovieVO> findAllOrderByStatusAndMovieId(){
+		return repository.findAllOrderByStatusAndMovieId();
 	}
 	
 	public List<MovieVO> listByMovieName(String nameTw){
@@ -54,5 +55,9 @@ public class MovieService {
 	
 	public List<MovieVO> listByStatusAndType(Integer status,Integer movieTypeId){
 		return repository.findByStatusAndType(status, movieTypeId);
+	}
+	
+	public List<MovieVO> findMovieToRemind(LocalDate releaseDate){
+		return repository.findMovieToRemind(releaseDate);
 	}
 }

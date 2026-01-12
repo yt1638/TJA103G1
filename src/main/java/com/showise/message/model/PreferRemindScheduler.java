@@ -1,4 +1,4 @@
-package com.showise.notification.preference.model;
+package com.showise.message.model;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -14,17 +14,13 @@ import org.springframework.stereotype.Service;
 import com.showise.eachmovietype.model.EachMovieTypeVO;
 import com.showise.member.model.MemberService;
 import com.showise.member.model.MemberVO;
-import com.showise.message.model.MailService;
-import com.showise.message.model.MessageRepository;
-import com.showise.message.model.MessageService;
-import com.showise.message.model.MessageVO;
 import com.showise.movie.model.MovieService;
 import com.showise.movie.model.MovieVO;
 import com.showise.notification.preference.model.NotificationPreferenceVO;
 
 import jakarta.transaction.Transactional;
 @Service
-public class NotificationPreferenceScheduler {
+public class PreferRemindScheduler {
 	
 	@Autowired
 	MovieService movieService;
@@ -42,7 +38,7 @@ public class NotificationPreferenceScheduler {
 	MailService mailService;
 	
 	@Transactional
-	@Scheduled(cron = "0 02 23 * * ?", zone = "Asia/Taipei")
+	@Scheduled(cron = "0 41 10 * * ?", zone = "Asia/Taipei")
 	public void sendPreferRemind() {
 		
 		int preHour = msgService.findByType(1).getPreHours();
@@ -66,7 +62,6 @@ public class NotificationPreferenceScheduler {
 			
 			for(MemberVO member : memberSet) {
 				mailService.sendPreferRemindMail(template, movie, member);
-				NotificationPreferenceVO npVO = new NotificationPreferenceVO();	
 			}
 			mailService.setPreferSentStatus(movie);
 		}

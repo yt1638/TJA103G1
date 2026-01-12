@@ -309,5 +309,21 @@
             }
         }
     });
+    
+    document.querySelector("form").addEventListener("submit", function (e) {
+        const releaseDateInput = document.querySelector("input[name='releaseDate']");
+        const endDateInput = document.querySelector("input[name='endDate']");
+
+        const releaseDate = releaseDateInput.value;
+        const endDate = endDateInput.value;
+
+        if (releaseDate && endDate) {
+            if (new Date(endDate) <= new Date(releaseDate)) {
+                e.preventDefault();
+                alert("下檔日期必須晚於上映日期");
+                endDateInput.focus();
+            }
+        }
+    });
     </script>
 </div>

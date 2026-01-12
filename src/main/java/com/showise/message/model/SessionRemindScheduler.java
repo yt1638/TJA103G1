@@ -1,4 +1,4 @@
-package com.showise.notification.showstart.model;
+package com.showise.message.model;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -7,16 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import com.showise.message.model.MailService;
-import com.showise.message.model.MessageService;
-import com.showise.message.model.MessageVO;
 import com.showise.order.model.OrderService;
 import com.showise.order.model.OrderVO;
 
 import jakarta.transaction.Transactional;
 @Service
 @Transactional
-public class NotificationShowstartScheduler {
+public class SessionRemindScheduler {
 	
 	@Autowired 
 	OrderService ordService;

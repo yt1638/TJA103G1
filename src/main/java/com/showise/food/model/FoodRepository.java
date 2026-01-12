@@ -15,5 +15,7 @@ public interface FoodRepository extends JpaRepository<FoodVO,Integer>{
 	List<FoodVO> listByStatus(Integer foodStatus);
 	@Query(value = "From FoodVO where foodName like %?1%")
 	List<FoodVO> listByName(String foodName );
+	@Query("from FoodVO f order by f.foodId desc")
+	List<FoodVO> listAll();
 
 }
