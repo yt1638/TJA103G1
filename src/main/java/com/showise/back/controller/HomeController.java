@@ -46,8 +46,8 @@ public class HomeController {
         }
 
         Short status = null;
-        Object statusObj = readProp(emp, "empStatus"); // 先用常見命名
-        if (statusObj == null) statusObj = readProp(emp, "employeeStatus"); // 再試另一種
+        Object statusObj = readProp(emp, "empStatus"); 
+        if (statusObj == null) statusObj = readProp(emp, "employeeStatus"); 
 
         if (statusObj instanceof Number) {
             status = ((Number) statusObj).shortValue();
