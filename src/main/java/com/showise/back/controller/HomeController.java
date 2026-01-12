@@ -76,7 +76,7 @@ public class HomeController {
     @GetMapping("/index")
     public String index(Model model, HttpSession session, RedirectAttributes ra) {
         if (session.getAttribute("loginEmployee") == null) {
-            ra.addFlashAttribute("errorMsg", "請先登入");
+            ra.addFlashAttribute("errorMsg", "請先登入"); 
             return "redirect:/admin/login";
         }
 
