@@ -38,5 +38,4 @@ public class MessageService {
 	public MessageVO findByType(Integer type) {
 		return repository.findByType(type);
 	}
-
 }

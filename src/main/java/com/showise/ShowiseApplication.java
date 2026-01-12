@@ -13,13 +13,4 @@ public class ShowiseApplication {
 		SpringApplication.run(ShowiseApplication.class, args);
 	}
 	
-	@Controller
-	public class LoginController {
-
-	    @GetMapping("/login")          
-	    public String showLoginPage() {
-	        return "login";           
-	    }
-
-	}
 }
