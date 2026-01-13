@@ -32,6 +32,7 @@ import com.showise.member.model.MemberVO;
 import com.showise.movie.model.MovieService;
 import com.showise.movie.model.MovieVO;
 import com.showise.order.model.OrderDraft;
+import com.showise.order.model.OrderRepository;
 import com.showise.order.model.OrderService;
 import com.showise.order.model.OrderVO;
 import com.showise.order.model.SeatLockService;
@@ -74,6 +75,8 @@ public class OrderPageController {
 	MemberService memberSvc;
 	@Autowired
 	SeatRepository seatRepo;
+	@Autowired
+	OrderRepository orderRepo;
 
   private static final long TTL_MS = 15 * 60 * 1000;//草稿效期:15分鐘的限制
 
@@ -620,7 +623,26 @@ public class OrderPageController {
   }
   
   @GetMapping("/orderresult")
-  public String orderQuestionPage() {
+  public String orderQuestionPage(@RequestParam Integer orderId, Model model) {
+	    OrderVO order = orderRepo.findById(orderId).orElse(null);
+	    if (order == null) {
+	        model.addAttribute("resultMessage", "查無此訂單，請重新確認");
+	        model.addAttribute("orderId", orderId);
+	        return "front-end/order/orderResult";
+	    }
+
+	    String msg;
+	    if (order.getOrderStatus() == 0) {
+	        msg = "未付款，請重新訂購";
+	    } else if (order.getOrderStatus() == 1) {
+	        msg = "您已訂票成功！請留意email信件";
+	    } else { // 2 or others
+	        msg = "付款失敗或逾時，訂單已取消，請重新訂購";
+	    }
+
+	    model.addAttribute("resultMessage", msg);
+	    model.addAttribute("orderId", orderId);
+	    model.addAttribute("orderStatus", order.getOrderStatus());
       return "front-end/order/orderResult";
   }
 }

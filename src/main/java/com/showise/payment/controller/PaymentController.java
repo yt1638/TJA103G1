@@ -67,10 +67,10 @@ public class PaymentController {
         params.put("ChoosePayment", "Credit"); //只用信用卡一次付清
         params.put("EncryptType", "1");//CheckMacValue加密類型(固定填入1，代表是用SHA256加密)
         params.put("CustomField1", String.valueOf(orderId));
-        params.put("ReturnURL","http://showise.ddns.net/payment/notify");//付款完成回傳給後端的通知
-        params.put("OrderResultURL","http://showise.ddns.net/payment/return");//前端的網址
-//        params.put("ReturnURL","https://exogenously-unfactual-allison.ngrok-free.dev/payment/notify");//付款完成回傳給後端的通知
-//        params.put("OrderResultURL", "https://exogenously-unfactual-allison.ngrok-free.dev/payment/return");//前端的網址
+//        params.put("ReturnURL","http://showise.ddns.net/payment/notify");//付款完成回傳給後端的通知
+//        params.put("OrderResultURL","http://showise.ddns.net/payment/return");//前端的網址
+        params.put("ReturnURL","https://exogenously-unfactual-allison.ngrok-free.dev/payment/notify");//付款完成回傳給後端的通知
+        params.put("OrderResultURL", "https://exogenously-unfactual-allison.ngrok-free.dev/payment/return");//前端的網址
 
         //產生CheckMacValue，目的：綠界驗證是不是合法特店
         String checkMac = EcpayCheckMac.gen(params, hashKey, hashIv);
@@ -102,17 +102,6 @@ public class PaymentController {
     public String paymentReturn(@RequestParam Map<String, String> params,RedirectAttributes ra) {
     	System.out.println("ECPay params = " + params);
     	Integer orderId=Integer.valueOf(params.get("CustomField1"));
-    	OrderVO order = orderRepo.findById(orderId).orElse(null);
-        if(order.getOrderStatus() == 0) {
-        	ra.addFlashAttribute("resultMessage","未付款，請重新訂購");
-        }
-        if(order.getOrderStatus()==1) {
-        	ra.addFlashAttribute("resultMessage","您已訂票成功！請留意email信件");
-        }
-        if(order.getOrderStatus()==2) {
-        	ra.addFlashAttribute("resultMessage","付款失敗或逾時，訂單已取消，請重新訂購");
-        }
-
         return "redirect:/order/orderresult?orderId="+orderId;
     } 
     
