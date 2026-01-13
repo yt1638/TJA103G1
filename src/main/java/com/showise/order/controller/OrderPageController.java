@@ -113,26 +113,25 @@ public class OrderPageController {
   public String orderPage(Model model,@ModelAttribute("orderDraft") OrderDraft draft,HttpSession session,SessionStatus sessionStatus,RedirectAttributes ra) {
 	  MemberVO memberVO = (MemberVO) session.getAttribute("loginMember");
 	  if (memberVO == null) {
-	        sessionStatus.setComplete(); // 順便清掉可能殘留的 draft
-	        ra.addFlashAttribute("errorMessage", "請先登入會員才能訂票");
+	        sessionStatus.setComplete(); //清掉殘留的draft
 	        return "redirect:/loginAndRegister/memberLogin";
 	    }
 	  
-	  //檢查草稿是否過期：一過期就清掉，redirect 回/order 重新建立草稿
+	  //檢查草稿是否過期：一過期就清掉，redirect回/order重新建立草稿
       if (isExpired(draft)) {
     	  sessionStatus.setComplete();
-    	  return "redirect:/order"; //重新發送 Get/order請求
+    	  return "redirect:/order"; //重新發送Get/order請求
       }
 
 	    Integer loginMemberId = memberVO.getMemberId();
 	    Integer draftMemberId = draft.getMemberId();
 
-	    // 先防切帳號
+	    //先防切帳號
 	    if (draftMemberId != null && !loginMemberId.equals(draftMemberId)) {
 	        sessionStatus.setComplete();
 	        return "redirect:/order";
 	    }
-	    // 再補回memberId
+	    //再補回memberId
 	    if (draftMemberId == null) {
 	        draft.setMemberId(loginMemberId);
 	    }
@@ -180,7 +179,7 @@ public class OrderPageController {
       }
       
       /* ========= 3.基本下拉選單、票券、餐飲的資料 ========= */
-      model.addAttribute("movies",sessionSvc.listBookableMoviesNext7Days());//未來7天有場次可訂的電影
+      model.addAttribute("movies",sessionSvc.listBookableMoviesNext7Days());//7天有場次可訂的電影
       model.addAttribute("ticketTypes", ticketTypeSvc.getAll()); //列出票種
       model.addAttribute("ticketFinalPriceMap",orderSvc.getFinalPricesByMember(draft.getMemberId()));//登入會員後的票種價格
       model.addAttribute("foods", foodSvc.listByStatus(1));//只列出上架的餐飲
@@ -190,7 +189,7 @@ public class OrderPageController {
       Integer movieId = draft.getMovieId();
       LocalDate date = draft.getDate();
 
-      //dates：未來7天該電影有場次的日期，沒有選dates就是空的
+      //dates：7天該電影有場次的日期，沒有選dates就是空的
       List<LocalDate> dates = (movieId != null)? sessionSvc.listDatesByMovieNext7Days(movieId): List.of();
       
       //sessions:該電影在該日期的場次，必須movieId + date都有才能查場次，缺一的話sessions就是空的
@@ -550,7 +549,7 @@ public class OrderPageController {
       return "redirect:/order/confirm";
   }
 
-  // 7. GET /order/confirm
+  // 7.GET /order/confirm
   @GetMapping("/confirm")
   public String confirm(Model model,@ModelAttribute("orderDraft") OrderDraft draft,SessionStatus sessionStatus) {
 
@@ -567,7 +566,7 @@ public class OrderPageController {
   }
 
 
-  // 8. POST /order/submit：下單成功 → setComplete() → redirect 完成頁
+  // 8. POST /order/submit
   @PostMapping("/submit")
   public String submit(@ModelAttribute("orderDraft") OrderDraft draft,
                        Model model,
@@ -580,10 +579,6 @@ public class OrderPageController {
 	    }
 	  
 	  Integer memberId = draft.getMemberId();
-	  //改去登入頁
-//	  if (memberId == null) {
-//		  return "redirect:/order";
-//	  }
 
       //檢查訂單草稿的完整性
       if (draft.getMovieId() == null || draft.getDate() == null || draft.getSessionId() == null) {
@@ -604,14 +599,13 @@ public class OrderPageController {
           seatIds.add(seatSelected.get(i).getSeatId());
       }
 
-
       try {
           //建立訂單（在service做「交易」+「座位已售出檢查」+「寫入訂單/票券/餐飲」）
           //讓createOrder回傳orderId
           OrderVO order = orderSvc.createOrder(draft,memberId);
 
           //清掉session的草稿
-//          sessionStatus.setComplete();//告訴Spring這個session attribute的流程完成了，要清除
+          sessionStatus.setComplete();//告訴Spring這個session attribute的流程完成了，要清除
 
           return "redirect:/payment/gotoecpay?orderId=" + order.getOrderId();
 

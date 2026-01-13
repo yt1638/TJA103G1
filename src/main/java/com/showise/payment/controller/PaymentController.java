@@ -67,10 +67,10 @@ public class PaymentController {
         params.put("ChoosePayment", "Credit"); //只用信用卡一次付清
         params.put("EncryptType", "1");//CheckMacValue加密類型(固定填入1，代表是用SHA256加密)
         params.put("CustomField1", String.valueOf(orderId));
-//        params.put("ReturnURL","http://showise.ddns.net/payment/notify");//付款完成回傳給後端的通知
-//        params.put("OrderResultURL","http://showise.ddns.net/payment/return");//前端的網址
-        params.put("ReturnURL","https://exogenously-unfactual-allison.ngrok-free.dev/payment/notify");//付款完成回傳給後端的通知
-        params.put("OrderResultURL", "https://exogenously-unfactual-allison.ngrok-free.dev/payment/return");//前端的網址
+        params.put("ReturnURL","http://showise.ddns.net/payment/notify");//付款完成回傳給後端的通知
+        params.put("OrderResultURL","http://showise.ddns.net/payment/return");//前端的網址
+//        params.put("ReturnURL","https://exogenously-unfactual-allison.ngrok-free.dev/payment/notify");//付款完成回傳給後端的通知（本機用）
+//        params.put("OrderResultURL", "https://exogenously-unfactual-allison.ngrok-free.dev/payment/return");//前端的網址（本機用）
 
         //產生CheckMacValue，目的：綠界驗證是不是合法特店
         String checkMac = EcpayCheckMac.gen(params, hashKey, hashIv);

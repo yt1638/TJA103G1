@@ -58,7 +58,7 @@
               <tr th:each="t : ${orderDraft.tickets}">
                 <td th:text="${t.name}">票種</td>
                 <td th:text="${t.qty}">0</td>
-                <td th:text="'$' + ${#numbers.formatInteger(t.subtotal, 1, 'COMMA')}">$0</td>
+                <td th:text="'$' + ${#numbers.formatInteger(t.subtotal,0, 'COMMA')}">$0</td>
               </tr>
               </tbody>
             </table>
