@@ -86,7 +86,7 @@
       <!-- 訂單編號 -->
       <div class="result-meta">
         <div>訂單編號</div>
-        <div class="order-id" th:text="${param.orderId}">0</div>
+        <div class="order-id" th:text="${orderId != null ? orderId : '-'}">0</div>
       </div>
       
       <div class="result-actions">
