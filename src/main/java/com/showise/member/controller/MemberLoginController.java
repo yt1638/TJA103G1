@@ -115,8 +115,6 @@ public class MemberLoginController {
 			HttpSession session,
 			Model model) {
 		
-		MemberVO member = memberService.loginByEmail(email, password);
-		
 		if(email == null || (email.trim().isEmpty()) ||
 			password == null || (password.trim().isEmpty())	) {
 			
@@ -124,10 +122,21 @@ public class MemberLoginController {
 			return "front-end/loginAndRegister/memberLogin";
 		}
 		
+		MemberVO member = memberService.loginByEmail(email, password);
+		
 		if(member == null) {
 			model.addAttribute("loginError", "帳號或密碼錯誤");
 			return "front-end/loginAndRegister/memberLogin";
 		}
+		
+		// 計算累積消費，並寫回資料庫
+	    memberService.updateAccumulatedConsumption(member.getMemberId());
+
+	    // 重新抓最新會員資料（包含更新後的累積消費）
+	    member = memberService.getOneMember(member.getMemberId());
+
+	    // 判斷會員等級
+	    member = memberClassService.prepareMemberInfo(member);
 		
 		session.setAttribute("loginMember", member);
 		return "redirect:/member/mainMemberPage";
