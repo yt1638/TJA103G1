@@ -7,13 +7,17 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.showise.member.model.MemberRepository;
 import com.showise.member.model.MemberVO;
 
 @Service("memberClassService")
 public class MemberClassService {
 
 	@Autowired
-	MemberClassRepository repository;
+	private MemberRepository memberRepository;
+	
+	@Autowired
+	private MemberClassRepository repository;
 	
 	public void addMemberClass(MemberClassVO memberClass) {
 		repository.save(memberClass);
@@ -56,6 +60,7 @@ public class MemberClassService {
         }
 
         member.setMemberClass(memberClass);
+        memberRepository.save(member);
         return member;
     }
 }
