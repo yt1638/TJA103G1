@@ -20,6 +20,7 @@ import com.showise.member.model.MemberService;
 import com.showise.member.model.MemberVO;
 import com.showise.member.model.PasswordMailService;
 import com.showise.member.model.PasswordService;
+import com.showise.memberclass.model.MemberClassService;
 import com.showise.memberprefertype.model.MemberPreferTypeService;
 
 import jakarta.servlet.http.HttpSession;
@@ -30,6 +31,9 @@ public class MemberLoginController {
 
 	@Autowired
 	private MemberService memberService;
+	
+	@Autowired
+	private MemberClassService memberClassService;
 	
 	@Autowired
 	private MemberPreferTypeService memberPreferTypeService;
@@ -52,6 +56,15 @@ public class MemberLoginController {
 		MemberVO loginMember = (MemberVO) session.getAttribute("loginMember");
 		
 		if(loginMember != null) {
+			// 計算累積消費，並寫回資料庫
+		    memberService.updateAccumulatedConsumption(loginMember.getMemberId());
+
+		    // 重新抓最新會員資料（包含更新後的累積消費）
+		    loginMember = memberService.getOneMember(loginMember.getMemberId());
+
+		    // 判斷會員等級
+		    loginMember = memberClassService.prepareMemberInfo(loginMember);
+		    session.setAttribute("loginMember", loginMember);
 			return "redirect:/member/mainMemberPage";
 		}
 		
