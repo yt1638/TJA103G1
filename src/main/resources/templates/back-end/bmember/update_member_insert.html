@@ -123,6 +123,12 @@ input[type="submit"]:hover {
 				<input type="hidden" th:field="*{memberClass.memberClassId}">
 			</p>
 			<p>
+				累積消費金額: 
+				<span th:text="*{accConsumption}"></span>
+				<input type="hidden" th:field="*{accConsumption}" >
+			</p>
+			
+			<p>
 				<label>密碼: 
 					<input type="text" th:field="*{password}" placeholder="">
 				</label>
@@ -151,12 +157,7 @@ input[type="submit"]:hover {
 					</select>
 				</label>
 			</p>
-			<p>
-				<label>累積消費金額(若未填寫，預設為0): 
-					<input type="text" th:field="*{accConsumption}" placeholder="">
-				</label>
-			</p>
-			<p th:if="${#fields.hasErrors('accConsumption')}" th:errors="*{accConsumption}" class="errorMsg" id="accConsumption.errors"></p>
+			
 					
 			<p>喜歡的電影類型</p>
 			<div class="stylePart sp1">

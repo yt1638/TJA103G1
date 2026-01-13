@@ -44,6 +44,12 @@ public class MemberIdController {
 		// 搜尋會員名稱包含keyword的會員
 	    List<MemberVO> resultList = memberService.findByNameContaining(keyword);
 
+	    // 更新累積消費及會員等級
+	    for(MemberVO member : resultList) {
+	        memberService.updateAccumulatedConsumption(member.getMemberId());
+	        memberClassService.prepareMemberInfo(member);
+	    }
+	    
 	    // 傳送會員清單給下拉選單
 	    List<MemberVO> allMembers = memberService.getAll();
 	    List<MemberClassVO> memberClassList = memberClassService.getAll();
@@ -80,6 +86,10 @@ public class MemberIdController {
 
 			//******************2.開始查詢資料********************************
 			MemberVO member = memberService.getOneMember(Integer.valueOf(memberId)); 
+			if (member != null) {
+			    memberService.updateAccumulatedConsumption(member.getMemberId());
+			    memberClassService.prepareMemberInfo(member);
+			}
 			
 			// 不論查詢成功或失敗，都會回到select_page.html，而這個頁面都需要會員清單、會員等級下拉選單、空的memberClassVO來綁定表單
 			List<MemberVO> list = memberService.getAll();

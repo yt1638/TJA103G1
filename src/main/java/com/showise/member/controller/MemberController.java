@@ -64,7 +64,14 @@ public class MemberController {
 	@GetMapping("listAllMember")
 	public String listAllMember(ModelMap model) {
 		List<MemberVO> list = memberService.getAll();
-	    model.addAttribute("memberListData", list);
+		
+		// 更新所有會員的累積消費與會員等級
+	    for(MemberVO member : list) {
+	        memberService.updateAccumulatedConsumption(member.getMemberId());
+	        memberClassService.prepareMemberInfo(member);
+	    }
+		
+		model.addAttribute("memberListData", list);
 	    model.addAttribute("pageTitle","所有會員資料");
 		model.addAttribute("content","back-end/bmember/listAllMember :: content");
 		return "back-end/layout/admin-layout";
@@ -113,7 +120,20 @@ public class MemberController {
 		
 		//******************1.接收請求參數，輸入格式的錯誤處理	******************
 		//******************2.開始查詢資料********************************
-		MemberVO member = memberService.getOneMember(Integer.valueOf(memberId));
+		
+		// 累積消費金額
+		Integer id = Integer.valueOf(memberId);
+
+	    // 計算累積消費，並寫回資料庫
+	    memberService.updateAccumulatedConsumption(id);
+
+	    // 取得最新會員資料
+	    MemberVO member = memberService.getOneMember(Integer.valueOf(memberId));
+
+	    // 判斷會員等級
+	    member = memberClassService.prepareMemberInfo(member);
+		
+		
 		List<MemberPreferTypeVO> memberPreferTypeVOs = memberPreferTypeService.getByMemberId(member.getMemberId());
 		
 		// 存放已選的電影類型
@@ -178,7 +198,9 @@ public class MemberController {
 		member = memberService.getOneMember(Integer.valueOf(member.getMemberId()));
 		model.addAttribute("success", "-(修改成功)");
 		model.addAttribute("memberVO", member);
-		return "back-end/bmember/listOneMember";		
+		model.addAttribute("pageTitle","會員資料");
+		model.addAttribute("content","back-end/bmember/listOneMember :: content");
+		return "back-end/layout/admin-layout";
 	}
 	
 	

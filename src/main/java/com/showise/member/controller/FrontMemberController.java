@@ -27,6 +27,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.showise.eachmovietype.model.EachMovieTypeVO;
 import com.showise.member.model.MemberService;
 import com.showise.member.model.MemberVO;
+import com.showise.memberclass.model.MemberClassService;
 import com.showise.memberprefertype.model.MemberPreferTypeService;
 import com.showise.memberprefertype.model.MemberPreferTypeVO;
 import com.showise.movie.model.MovieService;
@@ -48,6 +49,9 @@ public class FrontMemberController {
 	private MemberService memberService;
 	
 	@Autowired
+	private MemberClassService memberClassService;
+	
+	@Autowired
 	private OrderService orderService;
 	
 	@Autowired
@@ -65,7 +69,6 @@ public class FrontMemberController {
 		if (loginMember == null) {
 			return "redirect:/loginAndRegister/memberLogin";
 		} 
-		
 		model.addAttribute("loginMember", loginMember);	// 因為Thymeleaf預設是從Model取資料，而現在資料是在session中，因此將session中的資料存到model
 		return "front-end/member/mainMemberPage";
 	}
@@ -92,6 +95,17 @@ public class FrontMemberController {
 		if (loginMember == null) {
 			return "redirect:/loginAndRegister/memberLogin";
 		}
+		
+		// 計算累積消費，並寫回資料庫
+	    memberService.updateAccumulatedConsumption(loginMember.getMemberId());
+
+	    // 重新抓最新會員資料（包含更新後的累積消費）
+	    loginMember = memberService.getOneMember(loginMember.getMemberId());
+
+	    // 判斷會員等級
+	    loginMember = memberClassService.prepareMemberInfo(loginMember);
+
+	    
 		model.addAttribute("loginMember", loginMember);
 		return "front-end/member/myMemberClass";
 	}
@@ -238,7 +252,7 @@ public class FrontMemberController {
 	
 	
 	@GetMapping("memberTicket")
-	@Transactional(readOnly = true)
+	@Transactional
 	public String memberTicket(@RequestParam(defaultValue = "0") int page, 
 			Model model, 
 			HttpSession session) { 
@@ -294,13 +308,7 @@ public class FrontMemberController {
 				order.setQrCode(verifyCode);
 				orderService.updateOrder(order);
 			}
-	        
-	        
-	        // 將驗票網址放進QrCode
-	        String qrUrl = "http://showise.ddns.net/ticket/verify?code=" + order.getQrCode();
-	        
-	        String qrCodeBase64 = QrCodeGenerator.generateQRCodeBase64(qrUrl, 400, 400);
-	        model.addAttribute("qrCodeBase64", qrCodeBase64);
+
 	    }
 	    
 	    model.addAttribute("order", order);
@@ -405,13 +413,15 @@ public class FrontMemberController {
 	public ResponseEntity<byte[]> getMovieImage(@PathVariable Integer id) {
 	    MovieVO movie = movieService.getById(id);
 
-	    byte[] imageBytes = (movie != null && movie.getImage() != null) ? movie.getImage() : new byte[0];
+	    if (movie == null || movie.getImage() == null) {
+	        return ResponseEntity.notFound().build();
+	    }
 
 	    return ResponseEntity.ok()
-	            .contentType(MediaType.IMAGE_JPEG) // 或 MediaType.IMAGE_PNG，看你的圖片類型
-	            .body(imageBytes);
-	    // ResponseEntity<byte[]> 這個方法會回傳一個 HTTP 回應，body是byte[]
+	            .contentType(MediaType.APPLICATION_OCTET_STREAM)	// 告訴瀏覽器，這是一個「二進位檔案」。不論圖片是jpg、png、webp皆可
+	            .body(movie.getImage());
 	}
+
 	
 	@GetMapping("memberStyle")
 	public String memberStyle(HttpSession session, Model model) {
@@ -524,5 +534,29 @@ public class FrontMemberController {
 	    return "redirect:/member/memberStyle";
 	}
 
-	
+	@PostMapping("verify")
+    @Transactional
+    public String verifyTicket(@RequestParam("orderId") Integer orderId,
+                               @RequestParam(defaultValue = "0") int page,
+                               Model model,
+                               HttpSession session) {
+
+        MemberVO loginMember = (MemberVO) session.getAttribute("loginMember");
+        if (loginMember == null) {
+            return "redirect:/loginAndRegister/memberLogin";
+        }
+
+        OrderVO order = orderService.getDetails(orderId);
+        if (order != null && !Boolean.TRUE.equals(order.getUsed())) {
+            order.setUsed(true);
+            orderService.updateOrder(order);
+            model.addAttribute("verifyMessage", "驗票成功！");
+        } else {
+            model.addAttribute("verifyMessage", "此票券已驗票或無效！");
+        }
+
+        // 重新載入頁面資料
+        return memberTicket(page, model, session);
+    }
 }
+

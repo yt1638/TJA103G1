@@ -42,4 +42,20 @@ public class MemberClassService {
 		return getOneMemberClass(memberClassId).getMember();
 	}
 	
+	public MemberVO prepareMemberInfo(MemberVO member) {
+
+        Integer total = member.getAccConsumption();  // 從 MemberService 拿到的累積消費
+
+        MemberClassVO memberClass;
+        if (total >= 10000) {
+            memberClass = repository.findByMemberName("白金會員");
+        } else if (total >= 5000) {
+            memberClass = repository.findByMemberName("黃金會員");
+        } else {
+            memberClass = repository.findByMemberName("一般會員");
+        }
+
+        member.setMemberClass(memberClass);
+        return member;
+    }
 }
