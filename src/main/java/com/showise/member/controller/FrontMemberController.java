@@ -69,6 +69,15 @@ public class FrontMemberController {
 		if (loginMember == null) {
 			return "redirect:/loginAndRegister/memberLogin";
 		} 
+		// 計算累積消費，並寫回資料庫
+	    memberService.updateAccumulatedConsumption(loginMember.getMemberId());
+
+	    // 重新抓最新會員資料（包含更新後的累積消費）
+	    loginMember = memberService.getOneMember(loginMember.getMemberId());
+
+	    // 判斷會員等級
+	    loginMember = memberClassService.prepareMemberInfo(loginMember);
+		
 		model.addAttribute("loginMember", loginMember);	// 因為Thymeleaf預設是從Model取資料，而現在資料是在session中，因此將session中的資料存到model
 		return "front-end/member/mainMemberPage";
 	}
@@ -83,7 +92,6 @@ public class FrontMemberController {
 		}
 		
 		model.addAttribute("loginMember", loginMember);
-		
 		return "front-end/member/updateMemberData";
 	}
 	
