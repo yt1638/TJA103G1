@@ -182,11 +182,30 @@
                 color: white;
                 font-weight: bold;
                 border: none;
+                
             }
             .loginBtn:hover{
                 background-color: rgb(60, 54, 143);
                 color: white;
             }
+            
+            .seePwd{
+                opacity: 0;
+                width: 0;
+            }
+
+            .seePwdImg{
+                width: 20px;
+                height: 16px;
+                margin-top: 2px;
+            }
+            .emailP{
+            	width: 315px;
+            }
+            .pwdP{
+            	width: 340px;
+            }
+            
         </style>
 
     </head>
@@ -208,11 +227,14 @@
                 <p th:if="${loginError}" th:text="${loginError}" style="color:red; text-align:center;"></p>
                 
                 <form class="formInfo loginInfo" th:action="@{/loginAndRegister/memberLoginHandler}" method="post" name="loginForm">
-                    <p>帳號：
+                    <p class="emailP">帳號：
                         <input type="text" class="loginInput loginAccount" name="email" placeholder="請輸入帳號" required>
                     </p>
-                    <p> 密碼：
-                        <input type="password" class="loginInput loginPassword" name="password" placeholder="請輸入密碼" required>
+                    <p class="pwdP">密碼：
+                        <input type="password" class="loginInput loginPassword memberPwdInput" name="password" placeholder="請輸入密碼" required>
+                    	<label>
+                            <input type="checkbox" class="seePwd"><img th:src="@{/img/member/eye.png}" alt="檢視密碼圖案" class="seePwdImg">
+                        </label>
                     </p>
                     <p class="forgetPwd"><a class="linkToForgetPwd" th:href="@{/loginAndRegister/forgetPwd}">忘記密碼？</a></p>
                     <input type="submit" class="btn btn-warning loginBtn " value="登入">
@@ -224,7 +246,12 @@
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
         <script>
-
+	        let pwdInput = document.querySelector(".memberPwdInput");
+	        let seePwdBtn = document.querySelector(".seePwd");
+	        let seePwdImg = document.querySelector(".seePwdImg");
+	        seePwdBtn.addEventListener("click", function(){
+	            pwdInput.type = (pwdInput.type === "password")? "text": "password";
+	        })
         </script>
     </body>
 </html>

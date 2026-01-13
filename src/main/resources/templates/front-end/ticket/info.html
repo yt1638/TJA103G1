@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>票券資訊</title>
+<style>
+body { font-family: Arial; background: #f2f2f2; text-align: center; padding-top: 50px; }
+.ticket { background: white; padding: 20px; border-radius: 15px; display: inline-block; }
+button { margin-top: 20px; padding: 10px 20px; font-size: 16px; cursor: pointer; }
+.status { margin-top: 10px; font-weight: bold; color: green; }
+.status.used { color: red; }
+</style>
+</head>
+<body>
+
+<div class="ticket" th:if="${order != null}">
+    <h2>電影票券</h2>
+    <p>訂單編號：<span th:text="${order.orderId}"></span></p>
+    <p>電影名稱：<span th:text="${order.session.movie.nameTw}"></span></p>
+    <p>場次時間：<span th:text="${order.session.sessionTime}"></span></p>
+    
+    <p>座位：
+        <span th:each="ticket, iterStat : ${order.orderTickets}">
+            <span th:text="${ticket.seat}"></span><span th:if="${!iterStat.last}">, </span>
+        </span>
+    </p>
+
+    <div class="status" th:classappend="${order.used} ? 'used'" 
+         th:text="${order.used} ? '已使用' : '未使用'"></div>
+
+    <!-- 驗票按鈕 -->
+    <form th:if="${!order.used}" method="post" th:action="@{/ticket/verify}">
+        <input type="hidden" name="code" th:value="${order.qrCode}" />
+        <button type="submit">驗票</button>
+    </form>
+</div>
+
+<div th:if="${error}" style="color:red;">
+    <p th:text="${error}"></p>
+</div>
+
+</body>
+</html>

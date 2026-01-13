@@ -17,5 +17,13 @@ public interface MemberRepository extends JpaRepository<MemberVO, Integer>{
 	List<MemberVO> findByNameContaining(String name);
 
 	Optional<MemberVO> findByEmail(String email);
+	
+	// 查某會員累積消費總額，沒訂單回傳0
+	@Query(value = """
+	        SELECT COALESCE(SUM(o.total_price), 0)
+	        FROM order_info o
+	        WHERE o.member_id = :memberId
+	    """, nativeQuery = true)
+	    Integer sumConsumption(@Param("memberId") Integer memberId);
 
 }

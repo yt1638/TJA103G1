@@ -78,7 +78,24 @@ public class MemberService {
 		return repository.findMemberByPrefer(movieTypeId);
 	}
 	
+	// 計算累積消費金額
+	public Integer getAccumulatedConsumption(Integer memberId) {
+        return repository.sumConsumption(memberId);
+    }
 
+	// 更新累積消費金額到資料庫
+    public void updateAccumulatedConsumption(Integer memberId) {
+        Integer total = getAccumulatedConsumption(memberId);
+
+        // 先抓會員物件
+        Optional<MemberVO> memberOpt = repository.findById(memberId);
+        if (memberOpt.isPresent()) {
+            MemberVO member = memberOpt.get();
+            member.setAccConsumption(total);
+            repository.save(member); // 寫回資料庫
+        }
+    }
+	
 	// 根據關鍵字找會員
 	public List<MemberVO> findByNameContaining(String keyword) {
 	    return repository.findByNameContaining(keyword);
